@@ -1,0 +1,6 @@
+phpmyadmin url: https://depts.washington.edu/tedsrate/phpmyadmin/
+
+ftp client: Filezilla
+
+server user name: tedsrate; password: dongh3d3long
+mysql database user name: root; password: dongh3d3long
