@@ -16,7 +16,7 @@
     require_once "session_inc.php";
 // ============================== authentication ===============================
     require_once "dbconnect.php";
-    $root_url = "http://depts.washington.edu/";
+    $root_url = "https://depts.washington.edu/";
 
 if (isset($_GET['trigger']) && isset($_GET['type'])) {
     try {

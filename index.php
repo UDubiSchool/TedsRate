@@ -82,7 +82,7 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
         <div id="footWrapper">
             <p><a href="https://www.washington.edu/" target="blank">University of Washington</a></p>
             <p><a href="https://ischool.uw.edu/" target="blank">Information School</a></p>
-            <p>Contact us at <a href="mailto:gaodl@uw.edu">link</a> | <small>All rights reserved</small></p>
+            <p>Contact us at <a href="mailto:jscholl@uw.edu">link</a> | <small>All rights reserved</small></p>
         </div>
 	</div>
     <div id="noticeInfo"></div>
