@@ -1,8 +1,12 @@
 $(function() {
 //    var root_url = "http://localhost:90"; -- local dev
-    var root_url = "http://depts.washington.edu/tedsrate"; // -- remote env
+//    var root_url = "https://depts.washington.edu/tedsrate"; // -- remote env
+    var root_url = "//depts.washington.edu/tedsrate"; // -- remote env
+
+
 
     $('.email_sender').click(function() {
+	debugger;
         // handle click ajax for sending email - ugly
         var urpID = $(this).attr("data-urpid");
         var email = $(this).attr("data-email");
@@ -12,8 +16,11 @@ $(function() {
 //        $('#emailModal div.rating_info_check')
 //            .html("")
 //            .append(rating_info);
-        var res = email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/g);
-        if (res) {
+
+debugger;        
+		var res = email.match(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i);
+		
+		if (res) {
             $('#emailModal div.email_check')
                 .html("")
                 .append(email);

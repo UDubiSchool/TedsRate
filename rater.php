@@ -244,7 +244,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     }).click();
 
                     //ajax call to save current php session, sessions are currently default files and are stored for 4 weeks with clientside cookie reference
-                    $("#saveForm").click(function(){
+                    $("#saveForm").click(function(){ 
                         $.post("saveform.php", $("#rateForm").serialize(), function(data) {
                             //console.log($("#rateForm").serialize());
                             $('#savemsg').reveal();

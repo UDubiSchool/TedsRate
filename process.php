@@ -57,7 +57,9 @@ try {
 
 	if($_POST['rate']){ //array of form elements with name="rate[]" from rater.php, they correspond to all category rating inputs
 		$_SESSION['rateform'] = $_POST['rate'];
-			
+
+debugger;
+
 		foreach($_POST['rate'] as $k => $v) { 
 			if (is_numeric($v) && $v != 0){ // if input is a number and not 0
 
@@ -70,7 +72,7 @@ try {
 				//prepare PDO statement, addUserRating SPROC is now an INSERT OR UPDATE ON UNIQUE KEY
 				$stmt = $dbq->prepare("CALL addUserRating(:uid,:rid,:upid,:psid,:scid,:aid,@nrid,:urpID)");
 				$stmt->bindValue(':uid',$ids['user'], PDO::PARAM_INT);
-				$stmt->bindValue(':rid',$v, PDO::PARAM_INT);
+				$stmt->bindValue(':rid',$v, PDO::PARAM_STR);
 				$stmt->bindValue(':upid',$ids['upid'], PDO::PARAM_INT);
 				$stmt->bindValue(':psid',$ids['psid'], PDO::PARAM_INT);
 				$stmt->bindValue(':scid',$scid, PDO::PARAM_INT);
@@ -177,7 +179,7 @@ if (!$error_free) {
         <h2>Warning: records not saved! </h2>
         <p>Ooops! Server error. More information as following:</p>
         <p><b><? printf($ids['db_err_message']) ?></b></p>
-        <p>Please try again, or contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
+        <p>Please try again, or contact us: <a href="mailto:timca@uw.edu">TEDS team</a></p>
         <p>Sorry for the troubles.</p>
     </div>
     <?
