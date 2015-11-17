@@ -1,4 +1,4 @@
-var app = angular.module('dawgCoffee')
+var app = angular.module('ratingsApp')
    .service("rating",['$http', function($http) {
 
       var ratings = [];
