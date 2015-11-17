@@ -5,3 +5,8 @@
     max-height: 600px;
     overflow-y:scroll;
 }
+#user_rating_progress_tbl thead {
+    display:block;
+    postion:fixed;
+    top:0px;
+}
