@@ -4,7 +4,7 @@ var app = angular.module('ratingsApp', [])
       var ratings = [];
 
       this.get = function() {
-        $http.get("../models/admin_rp_model.php").then(function (response) {
+        $http.get("models/admin_rp_model.php").then(function (response) {
           ratings = response.data;
         });
         console.log(ratings);
