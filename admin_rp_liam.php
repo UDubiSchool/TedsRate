@@ -30,48 +30,52 @@ try {
         <div id="sitecontainer" style="width:900px;">
             <h1>User Rating Progress Information</h1>
             <dl>
-                <dt>Project</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.project" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
-                <dt>Artifact</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.artifact" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in artifactOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
-                <dt>Persona</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.persona" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in personaOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
-                <dt>Scenario</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.scenario" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in scenarioOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
-                <dt>User</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.userprofile" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
-                <dt>Complete</dt>
-                <dd>
-                    <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
-                        <option value=""></option>
-                        <option ng-repeat="option in completeOptions" value="{{option}}">{{option}}</option>
-                    </select>
-                </dd>
+                <div class="col-xs-6">
+                    <dt>Project</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.project" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>Artifact</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.artifact" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in artifactOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>Persona</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.persona" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in personaOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                </div>
+                <div class="col-xs-6">
+                    <dt>Scenario</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.scenario" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in scenarioOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>User</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.userprofile" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>Complete</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
+                            <option value=""></option>
+                            <option value="true">True</option>
+                        </select>
+                    </dd>
+                </div>
             </dl>
 
             <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped tablesorter">
