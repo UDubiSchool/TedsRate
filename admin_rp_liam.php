@@ -62,6 +62,7 @@ try {
                 ?> -->
                 </tbody>
             </table>
+            {{ratings}}
 
 
             <h1>Admin Form</h1>
