@@ -4,10 +4,11 @@ var app = angular.module('ratingsApp', [])
       var ratings = [];
 
       this.get = function() {
-        $http.get("models/admin_rp_model.php").then(function (response) {
-          ratings = response.data;
+        $http.get("models/admin_rp_model.php").success(function(data) {
+          ratings = data;
+          console.log(data);
         });
-        console.log(ratings);
+
         return ratings;
       }
 
