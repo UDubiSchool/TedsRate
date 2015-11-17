@@ -1,15 +1,16 @@
 var app = angular.module('ratingsApp', [])
    .service("rating",['$http', function($http) {
 
-      var ratings = [];
+      // var ratings = [];
 
       this.get = function() {
+        var ratings = {};
         $http.get("models/admin_rp_model.php").success(function(data) {
-          this.ratings = data;
+          ratings = data;
           console.log(data);
         });
 
-        return this.ratings;
+        return ratings;
       }
 
    }])
