@@ -6,8 +6,8 @@ var app = angular.module('ratingsApp', [])
       this.get = function() {
         var ratings = {};
         $http.get("models/admin_rp_model.php").success(function(data) {
-          ratings = data;
-          console.log(data);
+          ratings = JSON.parse(data);
+          // console.log(data);
         });
 
         return ratings;
