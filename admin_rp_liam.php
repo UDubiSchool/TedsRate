@@ -15,7 +15,7 @@ try {
 
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular.min.js" type="text/javascript"></script>
-<script src="js/ratingsApp.js"></script>
+<script src="javascripts/ratingsApp.js"></script>
 <div id="wrapper">
      <?php
         include "nav_part.inc.php";
