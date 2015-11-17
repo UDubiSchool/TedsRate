@@ -1,4 +1,4 @@
-var app = angular.module('dawgCoffee', ['ui.router'])
+var app = angular.module('dawgCoffee')
    .service("rating",['$http', function($http) {
 
       var ratings = [];
@@ -13,7 +13,7 @@ var app = angular.module('dawgCoffee', ['ui.router'])
 
    }])
 
-   .controller('MainController', ['$scope', '$http', 'rating' , function($scope, $http, $cart) {
+   .controller('MainController', ['$scope', '$http', 'rating' , function($scope, $http, $rating) {
 
       $scope.ratings = $rating.get();
 
