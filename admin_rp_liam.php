@@ -41,7 +41,7 @@ try {
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="ratings as rating"><td>{{rating.project}}</td><td>{{rating.artifact}}</td><td>{{rating.persona}}</td>
+                <tr ng-repeat="rating in ratings"><td>{{rating.project}}</td><td>{{rating.artifact}}</td><td>{{rating.persona}}</td>
                 <td>{{rating.scenario}}</td>
                 <td>{{rating.userprofile}}</td>
                 <td>{{rating.complete}}</td></tr>
@@ -105,7 +105,7 @@ try {
                     }
                     ?>
                 </select>
-                <a href="admin_pjt_persona.php">Add New Persona</a>
+                <a href="admin_pjt_p    ersona.php">Add New Persona</a>
 
                 <div id="persona_based_wrapper" style="display: none;" class="dependWrapper">
                     <h3>2.1 Choose Scenario</h3>
