@@ -1,5 +1,5 @@
 var app = angular.module('ratingsApp', [])
-   .controller('MainController', ['$scope', '$http', 'rating' , function($scope, $http, $rating) {
+   .controller('MainController', ['$scope', '$http' , function($scope, $http) {
 
       $http.get("models/admin_rp_model.php").then(function(response) {
         // var temp = JSON.parse(response.data);
