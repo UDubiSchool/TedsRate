@@ -36,6 +36,7 @@
         while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
             array_push($arrayToSend, $row);
         }
+        header('Content-Type: application/json');
         echo json_encode($arrayToSend);
         //close connection
         $dbq = NULL;
