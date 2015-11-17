@@ -37,7 +37,7 @@
             array_push($arrayToSend, $row);
         }
         header('Content-Type: application/json');
-        echo json_encode($arrayToSend);
+        echo json_encode($arrayToSend, TRUE);
         //close connection
         $dbq = NULL;
 
