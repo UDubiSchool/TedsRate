@@ -41,25 +41,29 @@ try {
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="ratings as rating"><td>{{rating.project}}</td><td>{{rating.artifact}}</td><td>{{rating.persona}}</td>
+                <tr ng-repeat="ratings as rating">
+                <td>{{rating.project}}</td>
+                <td>{{rating.artifact}}</td>
+                <td>{{rating.persona}}</td>
                 <td>{{rating.scenario}}</td>
                 <td>{{rating.userprofile}}</td>
-                <td>{{rating.complete}}</td></tr>
-                <?php
+                <td>{{rating.complete}}</td>
+                </tr>
+<!--                 <?php
 
-                while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-                    // print_r($row);
-                    // $languageID = $row['scenarioLanguageID'];
-                    // $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
-                    // print($lan_re);
-                    printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-                            $row['project'],$row['artifact'],$row['persona'],$row['scenario'], $row['userprofile'],
-                            $row['complete'] ? "Completed at " . $row['completionDate'] :
-                            "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
-                            "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
-                    );
+                // while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
+                //     // print_r($row);
+                //     // $languageID = $row['scenarioLanguageID'];
+                //     // $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
+                //     // print($lan_re);
+                //     printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+                //             $row['project'],$row['artifact'],$row['persona'],$row['scenario'], $row['userprofile'],
+                //             $row['complete'] ? "Completed at " . $row['completionDate'] :
+                //             "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
+                //             "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
+                //     );
                 }
-                ?>
+                ?> -->
                 </tbody>
             </table>
 
