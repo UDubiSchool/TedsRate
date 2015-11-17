@@ -91,12 +91,18 @@ try {
                 </thead>
                 <tbody>
                 <tr ng-repeat="rating in ratings | filter:ratingOptions">
-                <td>{{rating.project}}</td>
-                <td>{{rating.artifact}}</td>
-                <td>{{rating.persona}}</td>
-                <td>{{rating.scenario}}</td>
-                <td>{{rating.userprofile}}</td>
-                <td>{{rating.complete}}</td></tr>
+                    <td>{{rating.project}}</td>
+                    <td>{{rating.artifact}}</td>
+                    <td>{{rating.persona}}</td>
+                    <td>{{rating.scenario}}</td>
+                    <td>{{rating.userprofile}}</td>
+                    <td>
+                        <div ng-if="rating.complete === 'true'">Completed at {{rating.comletionDate}}</div>
+                        <div ng-if="rating.complete !== 'true'">
+                            <button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='{{rating.email}}' data-urpid='{{rating.urpID}}'>Send Invitation</button>
+                        </div>
+                    </td>
+                </tr>
                 <!-- <?php
 
                 // while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
