@@ -5,7 +5,7 @@ var app = angular.module('ratingsApp', [])
 
       this.get = function() {
         // var ratings = [];
-        $http.get("models/admin_rp_model.php").success(function(response) {
+        $http.get("models/admin_rp_model.php").then(function(response) {
           // var temp = JSON.parse(response.data);
           this.ratings = response;
           console.log(response);
@@ -18,7 +18,11 @@ var app = angular.module('ratingsApp', [])
 
    .controller('MainController', ['$scope', '$http', 'rating' , function($scope, $http, $rating) {
 
-      $scope.ratings = $rating.get();
+      $http.get("models/admin_rp_model.php").then(function(response) {
+        // var temp = JSON.parse(response.data);
+        $scope.ratings = response;
+        console.log(response);
+      });
       console.log($scope.ratings);
 
    }]);
