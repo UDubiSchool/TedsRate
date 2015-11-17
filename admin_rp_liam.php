@@ -97,9 +97,9 @@ try {
                     <td>{{rating.scenario}}</td>
                     <td>{{rating.userprofile}}</td>
                     <td>
-                        <div ng-if="rating.complete === 'true'">Completed at {{rating.comletionDate}}</div>
+                        <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
                         <div ng-if="rating.complete !== 'true'">
-                            <button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='{{rating.email}}' data-urpid='{{rating.urpID}}'>Send Invitation</button>
+                            <button class='email_sender btn btn-primary btn-sm' data-toggle="modal" data-target='#emailModal' data-email='{{rating.email}}' data-urpid='{{rating.urpID}}'>Send Invitation</button>
                         </div>
                     </td>
                 </tr>
