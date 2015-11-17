@@ -41,15 +41,11 @@ try {
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="ratings as rating">
-                <td>{{rating.project}}</td>
-                <td>{{rating.artifact}}</td>
-                <td>{{rating.persona}}</td>
+                <tr ng-repeat="ratings as rating"><td>{{rating.project}}</td><td>{{rating.artifact}}</td><td>{{rating.persona}}</td>
                 <td>{{rating.scenario}}</td>
                 <td>{{rating.userprofile}}</td>
-                <td>{{rating.complete}}</td>
-                </tr>
-<!--                 <?php
+                <td>{{rating.complete}}</td></tr>
+                <!-- <?php
 
                 // while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
                 //     // print_r($row);
@@ -62,7 +58,7 @@ try {
                 //             "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
                 //             "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
                 //     );
-                }
+                //}
                 ?> -->
                 </tbody>
             </table>
