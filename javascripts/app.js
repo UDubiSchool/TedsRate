@@ -10,7 +10,7 @@ var app = angular.module('ratingsApp', [])
           ratings = response;
           console.log(response);
         });
-
+        console.log(ratings);
         return ratings;
       }
 
