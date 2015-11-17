@@ -5,11 +5,11 @@ var app = angular.module('ratingsApp', [])
 
       this.get = function() {
         $http.get("models/admin_rp_model.php").success(function(data) {
-          ratings = data;
+          this.ratings = data;
           console.log(data);
         });
 
-        return ratings;
+        return this.ratings;
       }
 
    }])
