@@ -78,7 +78,7 @@ try {
                 </div>
             </dl>
 
-            <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
+            <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th>Project</th>
