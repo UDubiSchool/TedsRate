@@ -34,7 +34,7 @@
                                      and s.scenarioID = urp.scenarioID order by completionDate DESC");
         $pre_result->execute();
         while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-            $arrayToSend[] = $row;
+            array_push($arrayToSend, $row);
         }
         echo json_encode($arrayToSend);
         //close connection
