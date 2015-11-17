@@ -29,6 +29,10 @@ try {
         <!-- container -->
         <div id="sitecontainer" style="width:900px;">
             <h1>User Rating Progress Information</h1>
+            <select name="project" ng-model="ratingOptions.project" id="">
+                <option value=""></option>
+                <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
+            </select>
             <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped tablesorter">
                 <thead>
                 <tr>
@@ -41,7 +45,10 @@ try {
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="rating in ratings"><td>{{rating.project}}</td><td>{{rating.artifact}}</td><td>{{rating.persona}}</td>
+                <tr ng-repeat="rating in ratings | filter:ratingOptions">
+                <td>{{rating.project}}</td>
+                <td>{{rating.artifact}}</td>
+                <td>{{rating.persona}}</td>
                 <td>{{rating.scenario}}</td>
                 <td>{{rating.userprofile}}</td>
                 <td>{{rating.complete}}</td></tr>
