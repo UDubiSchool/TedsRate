@@ -29,10 +29,29 @@ try {
         <!-- container -->
         <div id="sitecontainer" style="width:900px;">
             <h1>User Rating Progress Information</h1>
-            <select name="project" ng-model="ratingOptions.project" id="">
-                <option value=""></option>
-                <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
-            </select>
+            <form action="">
+                <select class="form-control pull-left" name="project" ng-model="ratingOptions.project" id="">
+                    <option value=""></option>
+                    <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
+                </select>
+                <select class="form-control pull-left" name="project" ng-model="ratingOptions.artifact" id="">
+                    <option value=""></option>
+                    <option ng-repeat="option in artifactOptions" value="{{option}}">{{option}}</option>
+                </select>
+                <select class="form-control pull-left" name="project" ng-model="ratingOptions.persona" id="">
+                    <option value=""></option>
+                    <option ng-repeat="option in personaOptions" value="{{option}}">{{option}}</option>
+                </select>
+                <select class="form-control pull-left" name="project" ng-model="ratingOptions.scenario" id="">
+                    <option value=""></option>
+                    <option ng-repeat="option in scenarioOptions" value="{{option}}">{{option}}</option>
+                </select>
+                <select class="form-control pull-left" name="project" ng-model="ratingOptions.userprofile" id="">
+                    <option value=""></option>
+                    <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
+                </select>
+            </form>
+
             <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped tablesorter">
                 <thead>
                 <tr>
