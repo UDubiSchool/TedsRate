@@ -71,7 +71,7 @@ try {
                     <dt>Complete</dt>
                     <dd>
                         <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
-                            <option value=""></option>
+                            <option value="null"></option>
                             <option value="true">True</option>
                         </select>
                     </dd>
