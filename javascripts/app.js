@@ -26,7 +26,7 @@ var app = angular.module('ratingsApp', [])
           if($scope.userOptions.indexOf(value.userprofile) === -1) {
             $scope.userOptions.push(value.userprofile);
           }
-        }
+        });
         // console.log(response);
       });
       // console.log($scope.ratings);
