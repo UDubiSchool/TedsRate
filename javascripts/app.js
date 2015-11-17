@@ -17,6 +17,6 @@ var app = angular.module('ratingsApp', [])
    .controller('MainController', ['$scope', '$http', 'rating' , function($scope, $http, $rating) {
 
       $scope.ratings = $rating.get();
-      console.log($scope.ratings);
+      console.log("scope ratings" + $scope.ratings);
 
    }]);
