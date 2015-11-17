@@ -68,17 +68,17 @@ try {
                             <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
                         </select>
                     </dd>
-                    <dt>Complete</dt>
+<!--                     <dt>Complete</dt>
                     <dd>
                         <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
                             <option value="null"></option>
                             <option value="true">True</option>
                         </select>
-                    </dd>
+                    </dd> -->
                 </div>
             </dl>
 
-            <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped tablesorter">
+            <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th>Project</th>
