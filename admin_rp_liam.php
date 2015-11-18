@@ -132,7 +132,7 @@ try {
                     <select name="project" id="projectID" class="form-control notEmpty">
                         <option value="" disabled selected>Select your option</option>
 
-                        <?
+                        <?php
                             //make project options
                             foreach ($dbq->query($sql["project"]) as $row) {
                                 printf('<option value="' . $row['projectID'] . '">' . $row['projectTitle'] . '</option>');
@@ -156,7 +156,7 @@ try {
                 <h2>2. Choose a Persona</h2>
                 <select id="personaID" class="form-control notEmpty" name="persona">
                     <option value="" disabled selected>Select your option</option>
-                    <?
+                    <?php
                     //make persona options
                     foreach ($dbq->query($sql["persona"]) as $row) {
                         printf('<option value="' . $row['perid'] . '">' . $row['perTitle'] . '</option>');
@@ -187,7 +187,7 @@ try {
             </form>
         </div>
 
-          <?
+          <?php
           // logout form
           require_once "logout_form.inc.php";
           ?>
@@ -213,7 +213,7 @@ try {
           </div>
       </div>
 
-        <?
+        <?php
             //close connection
             $dbq = NULL;
         } catch (PDOException $e) {

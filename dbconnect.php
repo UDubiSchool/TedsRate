@@ -14,8 +14,8 @@ function db_connect (){
    $dbh = new PDO('mysql:host=tedsrate.ovid.u.washington.edu;port=3306;dbname=artifactRating2', 'root', 'dongh3d3long', array( // new remote server
       PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
       PDO::ATTR_PERSISTENT => true
-   )); 
-   
+   ));
+
 	return ($dbh);
 }
 ?>
