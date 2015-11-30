@@ -1,5 +1,4 @@
 function readyModal(button) {
-    console.log("start sender");
     // handle click ajax for sending email - ugly
     var urpID = $(button).attr("data-urpid");
     var email = $(button).attr("data-email");
