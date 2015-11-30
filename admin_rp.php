@@ -80,44 +80,29 @@ try {
 
             <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
                 <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Artifact</th>
-                    <th>Persona</th>
-                    <th>Scenario</th>
-                    <th>User</th>
-                    <th>Status</th>
-                </tr>
+                    <tr>
+                        <th>Project</th>
+                        <th>Artifact</th>
+                        <th>Persona</th>
+                        <th>Scenario</th>
+                        <th>User</th>
+                        <th>Status</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="rating in ratings | filter:ratingOptions">
-                    <td>{{rating.project}}</td>
-                    <td>{{rating.artifact}}</td>
-                    <td>{{rating.persona}}</td>
-                    <td>{{rating.scenario}}</td>
-                    <td>{{rating.userprofile}}</td>
-                    <td>
-                        <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
-                        <div ng-if="rating.complete !== 'true'">
-                            <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}">Send Invitation</button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- <?php
-
-                // while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-                //     // print_r($row);
-                //     // $languageID = $row['scenarioLanguageID'];
-                //     // $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
-                //     // print($lan_re);
-                //     printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-                //             $row['project'],$row['artifact'],$row['persona'],$row['scenario'], $row['userprofile'],
-                //             $row['complete'] ? "Completed at " . $row['completionDate'] :
-                //             "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
-                //             "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
-                //     );
-                //}
-                ?> -->
+                    <tr ng-repeat="rating in ratings | filter:ratingOptions">
+                        <td>{{rating.project}}</td>
+                        <td>{{rating.artifact}}</td>
+                        <td>{{rating.persona}}</td>
+                        <td>{{rating.scenario}}</td>
+                        <td>{{rating.userprofile}}</td>
+                        <td>
+                            <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
+                            <div ng-if="rating.complete !== 'true'">
+                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}">Send Invitation</button>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -224,7 +209,7 @@ try {
 <!-- include js files -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="javascripts/modernizr.foundation.js"></script>
-    <script src="javascripts/foundation.js"></script>
+    <!-- // <script src="javascripts/foundation.js"></script> -->
     <script src="javascripts/app.js"></script>
     <script src="javascripts/admin.js"></script>
     <script>

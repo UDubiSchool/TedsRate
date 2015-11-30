@@ -9,7 +9,7 @@ var AjaxHandler = (function() {
 //            alert("fired");
 //            console.log(triggerDom);
             triggerDom.change(function() {
-                var url = "/tedsrate/teds/ajax_service.php?trigger=" + triggerDom.val() + "&type=" + typeFlag;
+                var url = "ajax_service.php?trigger=" + triggerDom.val() + "&type=" + typeFlag;
                 console.log(url);
                 $.ajax({
                     url:url
