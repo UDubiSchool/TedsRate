@@ -8,12 +8,12 @@
 
 	try {
 		$dbq = db_connect();
-		
+
 ?>
 
 <div id="wrapper">
 	<?php
-     	include "nav_part.inc.php"; 
+     	include "nav_part.inc.php";
      ?>
 
 	<div id="page-wrapper">
@@ -54,13 +54,13 @@
 							<label for="artifactTitle[]">Artifact Title</label><input class="input-text form-control notEmpty" type="text" name="artifactTitle[]" />
 							<label for="artifactURL[]">Artifact URL</label><input class="input-text form-control notEmpty" type="text" name="artifactURL[]" />
 							<select name="projectID[]" class="form-control notEmpty">
-								<?
+								<?php
 									//make languages select
 									foreach ($dbq->query('select * from project') as $row) {
 										printf('<option value="' . $row['projectID'] . '">' . $row['projectTitle'] . '</option>');
 									}
 								?>
-							</select>	
+							</select>
 						</div>
 					</div>
 					<input type="hidden" name="source" value="atft" class="notEmpty">
@@ -71,14 +71,14 @@
 
 	</div>
 
-    <?
+    <?php
     // logout form
     require_once "logout_form.inc.php";
     ?>
 
 </div>
 
-<?
+<?php
 		//close connection
 		$dbq = NULL;
 	} catch (PDOException $e) {
@@ -89,7 +89,7 @@
 
 <?php
      	$active = "Artifact";
-     	include "footer.inc.php"; 
+     	include "footer.inc.php";
 ?>
 <!-- include js files -->
 	<!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->

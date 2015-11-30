@@ -1,4 +1,4 @@
-<?
+<?php
 // ============================== authentication ===============================
 //    if (session_status() == PHP_SESSION_NONE) {
 //        session_start();
@@ -79,7 +79,7 @@
           </div>
         </div><!-- /.row -->
 
-<?
+<?php
     // outer level query
     $query = "select CONCAT(upro.firstName, ' ', upro.lastName) as userName,
                 upro.email as email,
@@ -102,7 +102,7 @@
         while ($row = $first_level_result->fetch(PDO::FETCH_ASSOC)) {
 ?>
 
-<?
+<?php
     // inner level query
         $inner_query = "select c.categoryTitle as cTitle,
                         ur.ratingID as ratingScore
@@ -139,7 +139,7 @@
                                         <th>Category</th>
                                         <th>User rating score</th>
                                     </tr>
-                                    <?
+                                    <?php
                                     for ($i = 0; $i < count($sec_first_half); $i++) {
                                         print "<tr class='data_wrapper'><td>" . $sec_first_half[$i]['cTitle'] . "</td>";
                                         print "<td>" . $sec_first_half[$i]['ratingScore'] . "</td></tr>";
@@ -153,7 +153,7 @@
                                         <th>Category</th>
                                         <th>User rating score</th>
                                     </tr>
-                                    <?
+                                    <?php
                                     for ($i = 0; $i < count($sec_second_half); $i++) {
                                         print "<tr class='data_wrapper'><td>" . $sec_second_half[$i]['cTitle'] . "</td>";
                                         print "<td>" . $sec_second_half[$i]['ratingScore'] . "</td></tr>";
@@ -166,12 +166,12 @@
                 </div>
             </div><!-- /accordion -->
         </div><!-- /.row -->
-<?
+<?php
         }
 ?>
 
 
-        <?
+        <?php
             require_once "logout_form.inc.php";
         ?>
       </div><!-- /#page-wrapper -->
@@ -181,8 +181,8 @@
   <!-- /template -->
 
 
-  
-  
+
+
   <!-- Included JS Files -->
   <!-- template plugins -->
   <!-- JavaScript -->
@@ -198,12 +198,12 @@
     <script src="javascripts/main.js"></script>
     <script src="javascripts/notice.js"></script>
   <!-- /template plugins -->
-    <?
+    <?php
         require_once "notice.inc.php";
     ?>
 </body>
 </html>
-<?
+<?php
     } catch (PDOException $e) {
         print ("getMessage(): " . $e->getMessage () . "\n");
     }

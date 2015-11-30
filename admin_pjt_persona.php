@@ -8,12 +8,12 @@
 
 	try {
 		$dbq = db_connect();
-		
+
 ?>
 
 <div id="wrapper">
 	<?php
-     	include "nav_part.inc.php"; 
+     	include "nav_part.inc.php";
      ?>
 
 	<div id="page-wrapper">
@@ -61,14 +61,14 @@
 
 	</div>
 
-    <?
+    <?php
     // logout form
     require_once "logout_form.inc.php";
     ?>
 
 </div>
 
-<?
+<?php
 		//close connection
 		$dbq = NULL;
 	} catch (PDOException $e) {
@@ -86,5 +86,5 @@
 
 <?php
      	$active = "Persona";
-     	include "footer.inc.php"; 
+     	include "footer.inc.php";
 ?>

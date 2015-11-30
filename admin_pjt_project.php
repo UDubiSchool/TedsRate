@@ -8,12 +8,12 @@
 
 	try {
 		$dbq = db_connect();
-		
+
 ?>
 
 <div id="wrapper">
 	<?php
-     	include "nav_part.inc.php"; 
+     	include "nav_part.inc.php";
      ?>
 
 	<div id="page-wrapper">
@@ -28,7 +28,12 @@
 			<tbody>
 
 				<?php
-					foreach($dbq->query('CALL getAllProjects(@ID,@projectTitle,@Description)') as $row) {
+					foreach($dbq->query("
+						SELECT p.projectID as ID,
+						p.projectTitle as projectTitle,
+						p.projectDescription as Description
+						FROM project p;
+						") as $row) {
 						printf('<tr><td>%s</td><td>%s</td></tr>', $row['projectTitle'], $row['Description']);
 					}
 				?>
@@ -48,7 +53,7 @@
 						<label for="projectDesc">Project Description</label><textarea class="form-control notEmpty" name="projectDesc"></textarea>
 						<label for="projectLang">Project Language</label>
 						<select name="projectLang" class="form-control notEmpty">
-							<?
+							<?php
 								//make languages select
 								foreach ($dbq->query($sql["language"]) as $row) {
 									printf('<option value="' . $row['languageID'] . '">' . $row['languageTitle'] . '</option>');
@@ -64,14 +69,14 @@
 
 	</div>
 
-    <?
+    <?php
     // logout form
     require_once "logout_form.inc.php";
     ?>
 
 </div>
 
-<?
+<?php
 		//close connection
 		$dbq = NULL;
 	} catch (PDOException $e) {
@@ -83,7 +88,7 @@
 
 <?php
      	$active = "Project";
-     	include "footer.inc.php"; 
+     	include "footer.inc.php";
 ?>
 <!-- include js files -->
 	<!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->

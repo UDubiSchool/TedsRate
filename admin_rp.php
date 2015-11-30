@@ -11,24 +11,74 @@ $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
 $sql["persona"] = 'select personaeID as perid, personaTitle as perTitle from personae';
 
 try {
-	$dbq = db_connect();
-	
-?>
+    $dbq = db_connect();
 
+?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular.min.js" type="text/javascript"></script>
+<script src="javascripts/app.js" type="text/javascript"></script>
 <div id="wrapper">
      <?php
-     	include "nav_part.inc.php"; 
+        include "nav_part.inc.php";
      ?>
 
-      <div id="page-wrapper">
+      <div id="page-wrapper" ng-app="ratingsApp" ng-controller="MainController">
 
           <!-- notice info -->
           <div id="noticeInfo"></div>
 
-		<!-- container -->
-		<div id="sitecontainer" style="width:900px;">
+        <!-- container -->
+        <div id="sitecontainer" style="width:900px;">
             <h1>User Rating Progress Information</h1>
-            <table id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped tablesorter">
+            <dl class="clearfix">
+                <div class="col-xs-6">
+                    <dt>Project</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.project" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in projectOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>Artifact</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.artifact" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in artifactOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>Persona</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.persona" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in personaOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                </div>
+                <div class="col-xs-6">
+                    <dt>Scenario</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.scenario" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in scenarioOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+                    <dt>User</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.userprofile" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
+                        </select>
+                    </dd>
+<!--                     <dt>Complete</dt>
+                    <dd>
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
+                            <option value="null"></option>
+                            <option value="true">True</option>
+                        </select>
+                    </dd> -->
+                </div>
+            </dl>
+
+            <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
                     <th>Project</th>
@@ -40,65 +90,58 @@ try {
                 </tr>
                 </thead>
                 <tbody>
+                <tr ng-repeat="rating in ratings | filter:ratingOptions">
+                    <td>{{rating.project}}</td>
+                    <td>{{rating.artifact}}</td>
+                    <td>{{rating.persona}}</td>
+                    <td>{{rating.scenario}}</td>
+                    <td>{{rating.userprofile}}</td>
+                    <td>
+                        <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
+                        <div ng-if="rating.complete !== 'true'">
+                            <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}">Send Invitation</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- <?php
 
-                <?php
-                $pre_result = $dbq->prepare("SELECT pjt.projectTitle as project, a.artifactTitle as artifact,
-                                             p.personaTitle as persona, s.scenarioTitle as scenario,
-                                             CONCAT(upro.firstName, ' ', upro.lastName) as userprofile,
-                                             urp.isComplete as complete,
-                                             urp.completionDate as completionDate,
-                                             upro.email as email,
-                                             urp.userRatingProgressID as urpID
-                                             FROM userRatingProgress urp
-                                             join userProfile upro on urp.userID = upro.userID
-                                             join userPersonae uper on uper.userID = upro.userID
-                                             join personae p on uper.personaeID = p.personaeID
-                                             join personaScenario ps on p.personaeID = ps.personaID
-                                             join scenario s on ps.scenarioID = s.scenarioID
-                                             join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
-                                             join project pjt on pjt.projectID = pa.projectID
-                                             join artifact a on a.artifactID = pa.artifactID
-                                             where upro.userID = urp.userID
-                                             and p.personaeID = urp.personaID
-                                             and s.scenarioID = urp.scenarioID order by completionDate DESC");
-                $pre_result->execute();
-                while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-                    // print_r($row);
-                    // $languageID = $row['scenarioLanguageID'];
-                    // $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
-                    // print($lan_re);
-                    printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-                            $row['project'],$row['artifact'],$row['persona'],$row['scenario'], $row['userprofile'],
-                            $row['complete'] ? "Completed at " . $row['completionDate'] :
-                            "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
-                            "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
-                    );
-                }
-                ?>
+                // while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
+                //     // print_r($row);
+                //     // $languageID = $row['scenarioLanguageID'];
+                //     // $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
+                //     // print($lan_re);
+                //     printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+                //             $row['project'],$row['artifact'],$row['persona'],$row['scenario'], $row['userprofile'],
+                //             $row['complete'] ? "Completed at " . $row['completionDate'] :
+                //             "<button class='email_sender btn btn-primary btn-sm' data-target='#emailModal' data-email='" . $row['email'] .
+                //             "' data-urpid='" . $row['urpID'] . "'>Send Invitation</button>"
+                //     );
+                //}
+                ?> -->
                 </tbody>
             </table>
 
 
-			<h1>Admin Form</h1>
+            <h1>Admin Form</h1>
 
-			<form id="addProject" name="addProject" action="adminproc.php" method="post">
+            <form id="addProject" name="addProject" action="adminproc.php" method="post">
 
-				<!--- Add Project -->
-				<h2>1. Choose a Project</h2>
-				<div id="project">
-				    <select name="project" id="projectID" class="form-control notEmpty">
+                <!--- Add Project -->
+                <h2>1. Choose a Project</h2>
+                <div id="project">
+                    <select name="project" id="projectID" class="form-control notEmpty">
                         <option value="" disabled selected>Select your option</option>
-				
-                        <?
+
+                        <?php
                             //make project options
                             foreach ($dbq->query($sql["project"]) as $row) {
                                 printf('<option value="' . $row['projectID'] . '">' . $row['projectTitle'] . '</option>');
                             }
                         ?>
-				    </select>
+                    </select>
                     <!-- link to add project -->
                     <a href="admin_pjt_project.php">Add New Project</a>
-				</div>
+                </div>
                 <div id="project_based_wrapper" style="display: none;" class="dependWrapper">
                     <h3>1.1 Choose Project Artifact</h3>
                     <select id="projectArtifactReceiver" class="form-control notEmpty" name="artifact">
@@ -113,14 +156,14 @@ try {
                 <h2>2. Choose a Persona</h2>
                 <select id="personaID" class="form-control notEmpty" name="persona">
                     <option value="" disabled selected>Select your option</option>
-                    <?
+                    <?php
                     //make persona options
                     foreach ($dbq->query($sql["persona"]) as $row) {
                         printf('<option value="' . $row['perid'] . '">' . $row['perTitle'] . '</option>');
                     }
                     ?>
                 </select>
-                <a href="admin_pjt_persona.php">Add New Persona</a>
+                <a href="admin_pjt_p    ersona.php">Add New Persona</a>
 
                 <div id="persona_based_wrapper" style="display: none;" class="dependWrapper">
                     <h3>2.1 Choose Scenario</h3>
@@ -138,13 +181,13 @@ try {
                 <!-- user rating progress / user rating process -->
                 <input type="hidden" value="user_rating_progress" name="source" class="notEmpty">
                 <!--==========================================================================================-->
-				<div class="form-group">
+                <div class="form-group">
                     <input type="submit" class="btn btn-success form-control form-button">
                 </div>
-			</form>
-		</div>
+            </form>
+        </div>
 
-          <?
+          <?php
           // logout form
           require_once "logout_form.inc.php";
           ?>
@@ -170,20 +213,20 @@ try {
           </div>
       </div>
 
-		<?
-			//close connection
-			$dbq = NULL;
-		} catch (PDOException $e) {
-		     print ("getMessage(): " . $e->getMessage () . "\n");
-		}
-		?>
+        <?php
+            //close connection
+            $dbq = NULL;
+        } catch (PDOException $e) {
+             print ("getMessage(): " . $e->getMessage () . "\n");
+        }
+        ?>
 
 <!-- include js files -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/modernizr.foundation.js"></script>
+    <script src="javascripts/foundation.js"></script>
+    <script src="javascripts/app.js"></script>
+    <script src="javascripts/admin.js"></script>
     <script>
         $(function() {
 //            console.log("triggered");
@@ -193,9 +236,9 @@ try {
         });
     </script>
 
-	<?php
-     	$active = "Process";
-     	include "footer.inc.php"; 
+    <?php
+        $active = "Process";
+        include "footer.inc.php";
      ?>
 
 

@@ -37,13 +37,13 @@ $error_free = true;
 try {
 	$dbq = db_connect();
 	$dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
+
 	//set up simple SQL statements for grabbing some intermediate combination IDs to use in the addUserRating SPROC below
 	$sql['psid'] = 'SELECT psID from personaScenario WHERE personaID='.$ids['persona'].' AND scenarioID='.$ids['scenario'];
 	$sql['upid'] = 'SELECT userPersonaeID from userPersonae WHERE userID='.$ids['user'].' AND personaeID='.$ids['persona'];
 	//  $sql['upid'] = 'SELECT userPersonaeID from userPersonae WHERE userID='.$ids['user'].' AND personaeID='.$ids['persona'];
 	$sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID='.$ids['project'].' AND artifactID='.$ids['artifact'];
-	
+
 	//run queries set up above, put values in to $ids array
 	foreach($sql as $k => $v){
 		foreach ($dbq->query($v) as $row) {
@@ -60,15 +60,15 @@ try {
 
 debugger;
 
-		foreach($_POST['rate'] as $k => $v) { 
+		foreach($_POST['rate'] as $k => $v) {
 			if (is_numeric($v) && $v != 0){ // if input is a number and not 0
 
 				//get scenarioCategoryID
 				$sql = 'SELECT SC_ID from scenarioCategory WHERE scenarioID=' . $ids['scenario'] . ' AND categoryID=' . $k;
 				foreach ($dbq->query($sql) as $row) {
 					$scid = $row[0];
-				}				
-				
+				}
+
 				//prepare PDO statement, addUserRating SPROC is now an INSERT OR UPDATE ON UNIQUE KEY
 				$stmt = $dbq->prepare("CALL addUserRating(:uid,:rid,:upid,:psid,:scid,:aid,@nrid,:urpID)");
 				$stmt->bindValue(':uid',$ids['user'], PDO::PARAM_INT);
@@ -79,7 +79,7 @@ debugger;
 				$stmt->bindValue(':aid',$ids['artifact'], PDO::PARAM_INT);
                 $stmt->bindValue(':urpID', $ids['userRating'], PDO::PARAM_INT);
 				$stmt->execute();
-				
+
 				//debug statements
 //				echo "last insert / update id: ". $dbq->query('SELECT @nrid')->fetchColumn() . '<br />';
 				$ids['lastUserRatingProcessID'] = $dbq->query('SELECT @nrid')->fetchColumn();
@@ -92,7 +92,7 @@ debugger;
 
 	if($_POST['ratingNarrative']){ //if descriptive narrative exists, do things with it
 		$_SESSION['ratingNarrative'] = $_POST['ratingNarrative'];
-		
+
 //		$stmt = $dbq->prepare("CALL addNarrative(narrative,urid,@nnid)");
 //		$stmt->bindValue('narrative',$_POST['ratingNarrative'], PDO::PARAM_STR);
 //		$stmt->bindValue('urid',$ids['userRating'], PDO::PARAM_INT);
@@ -104,7 +104,7 @@ debugger;
                             (" . $ids['userRating'] . ", '" . (string)$_POST['ratingNarrative'] ."')");
 
         $stmt->execute();
-		
+
 		//debug statements
 //		echo $_POST['ratingNarrative'] . '<br />';
 //		echo "last insert / update id: ".$dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn() . '<br />';
@@ -134,7 +134,7 @@ debugger;
 			} else {
 //				echo "Uploaded: " . $_FILES["scn"]["name"][$i] . "<br />";
 				$screenshots[$i] = $updir . $_FILES["scn"]["name"][$i];
-				
+
 				if (file_exists($updir . $_FILES["scn"]["name"][$i])){
 //					echo $_FILES["scn"]["name"][$i] . " already exists.<br />";
                     $error_free = false;
@@ -142,25 +142,25 @@ debugger;
 					move_uploaded_file($_FILES["scn"]["tmp_name"][$i],
 					$updir . $_FILES["scn"]["name"][$i]);
 //					echo "Stored in: " . $updir . $_FILES["scn"]["name"][$i] . "<br />";
-				}	
+				}
 			}
 		}
-		
+
 		//debug statements
 //		echo $updir . $_FILES["scn"]["name"][0];
 //		echo $updir . $_FILES["scn"]["name"][1];
-		
+
 		//call to database and store screenshot locations
 		$stmt = $dbq->prepare("CALL addScreenShot(:urid,:scn1,:scn2,@scnid)");
 		$stmt->bindValue(':urid',$ids['userRating'], PDO::PARAM_INT);
 		$stmt->bindValue(':scn1',$updir . $_FILES["scn"]["name"][0], PDO::PARAM_STR);
 		$stmt->bindValue(':scn2',$updir . $_FILES["scn"]["name"][1], PDO::PARAM_STR);
 		$stmt->execute();
-		
+
 		//debug statements
 //		echo "last insert / update id: ". $dbq->query('SELECT @scnid')->fetchColumn() . '<br />';
-	}	
-	
+	}
+
 	//close dbconn
 //	$dbq = NULL;
 //	print "close db connection<br />";
@@ -182,7 +182,7 @@ if (!$error_free) {
         <p>Please try again, or contact us: <a href="mailto:timca@uw.edu">TEDS team</a></p>
         <p>Sorry for the troubles.</p>
     </div>
-    <?
+    <?php
 
 } else {
     ?>
@@ -191,7 +191,7 @@ if (!$error_free) {
         <p>Thank you for your participation! We appreciate it!</p>
         <p>If you have any question about the rating, don't hesitate to contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
     </div>
-    <?
+    <?php
 
     // update userRatingProcess table
     $urp_update_query = "UPDATE `userRatingProgress` SET `isComplete`='true',`completionDate`=NOW()

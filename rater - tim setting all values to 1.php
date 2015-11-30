@@ -26,7 +26,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <p>If the problem still occurs, contact us: <a href="mailto:timca@uw.edu">TEDS team</a></p>
                 <p>Sorry for the trouble.</p>
             </div>
-            <?
+            <?php
 
             return;
         }
@@ -68,7 +68,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <p>Please try again using the original link from your email. </p>
                 <p>And if it still does not work, please contact us: <a href="mailto:timca@uw.edu">TEDS team</a></p>
             </div>
-        <?
+        <?php
         } else {
 //            print_r($flag[0]['userRatingProgressID']);
 //            echo($flag[0]['userRatingProgressID']);
@@ -89,7 +89,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                             <input type="hidden" name="personaID" value="<?= $personaID ?>" class="notEmpty">
                             <input type="hidden" name="scenarioID" value="<?= $scenarioID ?>" class="notEmpty">
                             <input type="hidden" name="urpID" value="<?= $urpID ?>" class="notEmpty">
-            <?
+            <?php
                 $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
                 $sth->execute();
                 while ($row = $sth->fetch()){
@@ -97,7 +97,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <dl id="anchorSel" class="sub-nav">
                   <dt>Active site view:</dt>
                   <dd class="active"><a href="#">
-            <?
+            <?php
                 //populate site (artifact) title in view toggle
                 printf($row['title']);
             ?>
@@ -108,7 +108,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                 <div id="sitePane">
                     <div id="currRate" class="activeSite">
-            <?
+            <?php
 
                  printf("<h2>%s: %s</h2>", $row['title'], urldecode($row['URL']));
                  print_r('<iframe width="100%" scrolling="auto" src="' . urldecode($row['URL']) . '"></iframe>');
@@ -125,7 +125,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
 
                         <div id="ratePane" class="four columns">
-            <?
+            <?php
                 //populate project title and description
                 $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
                 //printf ("rows/cols returned: %d, %d\n", $sth->rowCount(),$sth->columnCount());
@@ -140,7 +140,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     <td>
             1. Current Persona:
             <p id="personae">
-            <?
+            <?php
                 //populate personas the "language" value (5) is hard coded!
                 $sth = $dbq->query('select * from personae where personae.personaeID = ' . $personaID);
                 while ($row = $sth->fetch()){
@@ -153,7 +153,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     <td>
             2. Current Scenario
             <p id="scenario">
-            <?
+            <?php
             //populate scenarios the "language" value (5) is hard coded!
 
                 $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
@@ -170,7 +170,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         <h2>Categories</h2>
 
             <ul id="categories">
-            <?
+            <?php
             //populate categories the "language" value (1) is hard coded!
 
                 $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
@@ -179,7 +179,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 printf('<li><b>%s</b>', $prow['categoryTitle']);
             ?>
                 <ul>
-            <?
+            <?php
                     foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
                         if (isset($_SESSION['rateform'])){
                             printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="1"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
@@ -200,7 +200,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
 ?>
                 </ul>
-            <?
+            <?php
                 print "</li>";
                 }
                 $sth->closeCursor();
@@ -211,7 +211,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             </ul>
 
             <h2>Descriptive Comments</h2>
-                        <?
+                        <?php
                         if (isset($_SESSION['ratingNarrative'])){
                             printf('<textarea id="detailrating" name="ratingNarrative">'.$_SESSION['ratingNarrative'].'</textarea>');
                         } else {
@@ -255,7 +255,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     }).click();
 
                     //ajax call to save current php session, sessions are currently default files and are stored for 4 weeks with clientside cookie reference
-                    $("#saveForm").click(function(){ 
+                    $("#saveForm").click(function(){
                         $.post("saveform.php", $("#rateForm").serialize(), function(data) {
                             //console.log($("#rateForm").serialize());
                             $('#savemsg').reveal();
@@ -276,7 +276,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 });
 
             </script>
-            <?
+            <?php
             printf('existing session: %s', session_id() );
             ?>
 
@@ -285,7 +285,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <p>The fields you have filled out so far have been saved, but they have not been submitted. Please submit all results once you are done.</p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
-<?
+<?php
         }
     } catch (PDOException $e) {
          print ("getMessage(): " . $e->getMessage () . "\n");
@@ -293,7 +293,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
     ?>
 
 
-<?
+<?php
 } else {
 ?>
     <div class="error_container">
@@ -303,7 +303,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
         <p>If the problem still occurs, contact us: <a href="mailto:timca@uw.edu">TEDS team</a></p>
         <p>Sorry for the trouble.</p>
     </div>
-<?
+<?php
 }
 ?>
 

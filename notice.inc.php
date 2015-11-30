@@ -1,4 +1,4 @@
-<?
+<?php
 if (isset($_GET['notice']) && !preg_match("/^\s*$/i", $_GET['notice'])) {
     $notice = $_GET['notice'];
     switch ($notice) {

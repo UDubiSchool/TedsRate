@@ -9,12 +9,12 @@
 
 	try {
 		$dbq = db_connect();
-		
+
 ?>
 
 <div id="wrapper">
 	<?php
-     	include "nav_part.inc.php"; 
+     	include "nav_part.inc.php";
      ?>
 
 	<div id="page-wrapper">
@@ -60,7 +60,7 @@
 <!--                            <label for="passwordVerify">Confirm Password</label><input class="input-text form-control notEmpty" id="password_verify" type="password" name="passwordVery" /> <span id="pw_very_show"></span>-->
 							<label for="languageID">User Preferred Language</label>
 							<select name="languageID" class="form-control notEmpty">
-								<?
+								<?php
 									//make languages select
 									foreach ($dbq->query('SELECT * FROM languages') as $row) {
 										printf('<option value="' . $row['languageID'] . '">' . $row['languageTitle'] . '</option>');
@@ -70,7 +70,7 @@
 							<input type="hidden" name="AuthorityLevel" class="form-control notEmpty" value="1">
                             <label for="userPersona[]">Choose Personas</label>
                             <div class="checkbox">
-                                <?
+                                <?php
                                     // make checkbox for persona options
                                     foreach ($dbq->query($sql['persona']) as $row) {
                                         printf('<label><input type="checkbox" name="userPersona[]" value=' . $row['personaeID'] . '>' . $row['personaTitle'] . '</label><br/>');
@@ -87,14 +87,14 @@
 
 	</div>
 
-    <?
+    <?php
     // logout form
     require_once "logout_form.inc.php";
     ?>
 
 </div>
 
-<?
+<?php
 		//close connection
 		$dbq = NULL;
 	} catch (PDOException $e) {
@@ -113,7 +113,7 @@
 
 <?php
      	$active = "User";
-     	include "footer.inc.php"; 
+     	include "footer.inc.php";
 ?>
     <script>
         $(function() {

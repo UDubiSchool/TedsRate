@@ -8,12 +8,12 @@
 
 	try {
 		$dbq = db_connect();
-		
+
 ?>
 
 <div id="wrapper">
 	<?php
-     	include "nav_part.inc.php"; 
+     	include "nav_part.inc.php";
      ?>
 
 	<div id="page-wrapper">
@@ -35,7 +35,7 @@
 						// print_r($row);
 						// $languageID = $row['scenarioLanguageID'];
 						// $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
-						// print($lan_re); 
+						// print($lan_re);
 						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['scenarioTitle'],$row['scenarioDescription'] ? $row['scenarioDescription'] : "No information provided", "placeholder");
 					}
 				?>
@@ -63,14 +63,14 @@
 		</div>
 	</div>
 
-    <?
+    <?php
     // logout form
     require_once "logout_form.inc.php";
     ?>
 
 </div>
 
-<?
+<?php
 		//close connection
 		$dbq = NULL;
 	} catch (PDOException $e) {
@@ -87,5 +87,5 @@
 	<script src="javascripts/admin.js"></script>
 <?php
      	$active = "Scenario";
-     	include "footer.inc.php"; 
+     	include "footer.inc.php";
 ?>

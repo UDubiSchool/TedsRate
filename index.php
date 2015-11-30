@@ -95,7 +95,7 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
 	<script src="javascripts/app.js"></script>
     <script src="javascripts/main.js"></script>
     <script src="javascripts/notice.js"></script>
-    <?
+    <?php
         require_once "notice.inc.php";
     ?>
 
