@@ -16,6 +16,8 @@
     require_once "session_inc.php";
 // ============================== authentication ===============================
     require_once "dbconnect.php";
+    require 'PHPMailer/PHPMailerAutoload.php';
+
     // $root_url = "https://depts.washington.edu/";
 
     $url = $_SERVER['REQUEST_URI']; //returns the current URL
@@ -142,21 +144,39 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                                 </html>
                                 ';
 
-                    // To send HTML mail, the Content-type header must be set
-                    $headers  = 'MIME-Version: 1.0' . "\r\n";
-                    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+                    $mail = new PHPMailer;
 
-                    // Additional headers
-                    $headers .= 'To: ' . $result['firstName'] . ' <' . $email . '>' . "\r\n";
-                    $headers .= 'From: TEDS Eval <' . $root_url . '>' . "\r\n";
-                    $headers .= 'Cc: gaodl@uw.edu' . "\r\n";
-                    $headers .= 'Bcc: gdlshallowshade@gmail.com' . "\r\n";
+                    //$mail->SMTPDebug = 3;                               // Enable verbose debug output
 
-                    // Mail it
-                    mail($to, $subject, $message, $headers);
-                    // modify message
-                    $email_flag = true;
-                    $email_message = "Url sent successfully to " . $email;
+                    $mail->isSMTP();                                      // Set mailer to use SMTP
+                    $mail->Host = 'smtp.gmail.com;';  // Specify main SMTP server
+                    $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                    $mail->Username = 'tedsratemailer@gmail.com';                 // SMTP username FOR INFO REGARDING THIS EMAIL CONTACT wtmenten@gmail.com
+                    $mail->Password = 'Tedsrate2015';                           // SMTP password
+                    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                    $mail->Port = 587;                                    // TCP port to connect to
+
+                    $mail->setFrom('tedsratemailer@gmail.com', 'Mailer');
+                    $mail->addAddress($to);     // Add a recipient
+                    // $mail->addAddress('ellen@example.com', "John Doe");               // Name is optional
+                    // $mail->addReplyTo('info@example.com', 'Information');
+                    // $mail->addCC('cc@example.com');
+                    // $mail->addBCC('bcc@example.com');
+
+                    $mail->isHTML(true);                                  // Set email format to HTML
+
+                    $mail->Subject = $subject;
+                    $mail->Body    = $message;
+                    // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+                    if(!$mail->send()) {
+                        $email_flag = false;
+                        $email_message = "Url failed to send to " . $email;
+                    } else {
+                        $email_flag = true;
+                        $email_message = "Url sent successfully to " . $email;
+                    }
+
                 }
 
                 //
