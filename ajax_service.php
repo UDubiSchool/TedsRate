@@ -16,7 +16,14 @@
     require_once "session_inc.php";
 // ============================== authentication ===============================
     require_once "dbconnect.php";
-    $root_url = "https://depts.washington.edu/";
+    // $root_url = "https://depts.washington.edu/";
+
+    $url = $_SERVER['REQUEST_URI']; //returns the current URL
+    $parts = explode('/',$url);
+    $root_url = $_SERVER['SERVER_NAME'];
+    for ($i = 0; $i < count($parts) - 1; $i++) {
+     $root_url .= $parts[$i] . "/";
+    }
 
 if (isset($_GET['trigger']) && isset($_GET['type'])) {
     try {
@@ -104,7 +111,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                 $scenario = $result['scenarioID'];
                 $userName = $result['firstName'] . " " . $result['lastName'];
 
-                $targetURL = "/tedsrate/teds/rater.php?selLanguage=" . $language . "&selProject=" . $project . "&selArtifact=" . $artifact . "&selScenario=" . $scenario . "&selPersona=" . $persona . "&urpId=" . $urpID;
+                $targetURL = "rater.php?selLanguage=" . $language . "&selProject=" . $project . "&selArtifact=" . $artifact . "&selScenario=" . $scenario . "&selPersona=" . $persona . "&urpId=" . $urpID;
 
                 $email_flag = false;
                 $email_message = "Invalid email! Please try again!";

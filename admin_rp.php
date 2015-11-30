@@ -14,7 +14,8 @@ try {
     $dbq = db_connect();
 
 ?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular.min.js" type="text/javascript"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular.min.js" type="text/javascript"></script> -->
+<script src="javascripts/angular.min.js" type="text/javascript"></script>
 <script src="javascripts/app.js" type="text/javascript"></script>
 <div id="wrapper">
      <?php
@@ -99,7 +100,7 @@ try {
                         <td>
                             <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
                             <div ng-if="rating.complete !== 'true'">
-                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}">Send Invitation</button>
+                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}" onclick="readyModal($(this))">Send Invitation</button>
                             </div>
                         </td>
                     </tr>
