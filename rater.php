@@ -83,12 +83,12 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     <div class="row">
                         <div id="artPane" class="eight columns">
                         <form action="process.php" id="rateForm" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="actProject" value="<?echo $pid;?>" class="notEmpty">
-                            <input type="hidden" name="actArtifact" value="<?echo $aid;?>" class="notEmpty">
-                            <input type="hidden" name="userID" value="<?= $uid ?>" class="notEmpty">
-                            <input type="hidden" name="personaID" value="<?= $personaID ?>" class="notEmpty">
-                            <input type="hidden" name="scenarioID" value="<?= $scenarioID ?>" class="notEmpty">
-                            <input type="hidden" name="urpID" value="<?= $urpID ?>" class="notEmpty">
+                            <input type="hidden" name="actProject" value="<?php echo $pid;?>" class="notEmpty">
+                            <input type="hidden" name="actArtifact" value="<?php echo $aid;?>" class="notEmpty">
+                            <input type="hidden" name="userID" value="<?php echo $uid ?>" class="notEmpty">
+                            <input type="hidden" name="personaID" value="<?php echo $personaID ?>" class="notEmpty">
+                            <input type="hidden" name="scenarioID" value="<?php echo $scenarioID ?>" class="notEmpty">
+                            <input type="hidden" name="urpID" value="<?php echo $urpID ?>" class="notEmpty">
             <?php
                 $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
                 $sth->execute();
@@ -172,7 +172,29 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             <ul id="categories">
             <?php
             //populate categories the "language" value (1) is hard coded!
-
+                try {
+                    echo "started retieval";
+                    $ratingData = [];
+                    $current = "SELECT
+                    userRating.ratingID,
+                    category.categoryID,
+                    category.categoryTitle
+                    FROM userRatingProgress
+                    JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProcessID
+                    JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
+                    JOIN category ON scenarioCategory.categoryID = category.categoryID
+                    WHERE userRatingProgress.userRatingProgressID = $urpID;";
+                    $current = $dbq->query($current);
+                    while ($currentResult = $current->fetch()){
+                        array_push($ratingData, $currentResult);
+                    }
+                } catch (PDOException $e) {
+                    echo $e;
+                }
+                // echo"<pre>";
+                // print_r($ratingData);
+                // echo"</pre>";
+                // exit;
                 $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
 
                 while ($prow = $sth->fetch()){
@@ -183,8 +205,10 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
                         if (isset($_SESSION['rateform'])){
                             printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="' . $_SESSION['rateform'][$row['categoryID']] . '"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
+                        } elseif (!empty($ratingData)) {
+                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="' . $ratingData[array_search($row['categoryID'], array_column($ratingData, 'categoryID'))]['ratingID'] . '"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
                         } else {
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" /><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
+                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
                         }
                     }
             ?>
@@ -229,8 +253,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             <!-- Included JS Files -->
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
             <script src="javascripts/modernizr.foundation.js"></script>
-            <script src="javascripts/foundation.js"></script>
-            <script src="javascripts/app.js"></script>
 
             <script>
                 $(document).ready(function() {
