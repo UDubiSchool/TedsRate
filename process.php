@@ -147,96 +147,10 @@ try {
                 //              echo "last insert / update id: ". $dbq->query('SELECT @nrid')->fetchColumn() . '<br />';
 
 
-            }
-        }
-    }
-
-    if ($_POST['ratingNarrative']) { //if descriptive narrative exists, do things with it
-        $_SESSION['ratingNarrative'] = $_POST['ratingNarrative'];
-
-        //      $stmt = $dbq->prepare("CALL addNarrative(narrative,urid,@nnid)");
-        //      $stmt->bindValue('narrative',$_POST['ratingNarrative'], PDO::PARAM_STR);
-        //      $stmt->bindValue('urid',$ids['userRating'], PDO::PARAM_INT);
-        //      $stmt->execute();
-
-        $stmt = $dbq->prepare("INSERT INTO ratingNarrative
-                            (userRatingID, userNarrative)
-                            VALUES
-                            (" . $ids['userRating'] . ", '" . (string)$_POST['ratingNarrative'] . "')");
-        $stmt->execute();
-
-        // debug statements
-        //      echo $_POST['ratingNarrative'] . '<br />';
-        //      echo "last insert / update id: ".$dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn() . '<br />';
-
-        $ids['narrativeID'] = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
-
-        //        echo("INSERT INTO ratingNarrative
-        //                            (userRatingID, userNarrative)
-        //                            VALUES
-        //                            (" . $ids['userRating'] . ", '" . (string)$_POST['ratingNarrative'] ."')");
-        //        echo("<p>last inserted narrative id: " . $ids['narrativeID'] . "</p>");
-
-        if (preg_match("/^\s*$/i", $ids['narrativeID'])) {
-            $error_free = false;
-        }
-    }
-
-    if ($_FILES) {
-        $updir = "upload/"; //set up upload directory
-
-        //        print_r($_FILES);
-        // test if files exist, if yes, then say so, in not, upload and move files from tmp
-
-        for ($i = 0; $i < 2; $i++) {
-            if ($_FILES["scn"]["error"][$i] > 0) {
-
-                //              echo "Return Code: " . $_FILES["scn"]["error"][$i] . " NO FILE UPLOADED " . "<br />";
-                //                $error_free = false;
-
-                $screenshots[$i] = NULL;
-            }
-            else {
-
-                //              echo "Uploaded: " . $_FILES["scn"]["name"][$i] . "<br />";
-
-                $screenshots[$i] = $updir . $_FILES["scn"]["name"][$i];
-                if (file_exists($updir . $_FILES["scn"]["name"][$i])) {
-
-                    //                  echo $_FILES["scn"]["name"][$i] . " already exists.<br />";
-
-                    $error_free = false;
-                }
-                else {
-                    move_uploaded_file($_FILES["scn"]["tmp_name"][$i], $updir . $_FILES["scn"]["name"][$i]);
-
-                    //                  echo "Stored in: " . $updir . $_FILES["scn"]["name"][$i] . "<br />";
-
-                }
-            }
-        }
-
-        // debug statements
-        //      echo $updir . $_FILES["scn"]["name"][0];
-        //      echo $updir . $_FILES["scn"]["name"][1];
-        // call to database and store screenshot locations
-
-        $stmt = $dbq->prepare("CALL addScreenShot(:urid,:scn1,:scn2,@scnid)");
-        $stmt->bindValue(':urid', $ids['userRating'], PDO::PARAM_INT);
-        $stmt->bindValue(':scn1', $updir . $_FILES["scn"]["name"][0], PDO::PARAM_STR);
-        $stmt->bindValue(':scn2', $updir . $_FILES["scn"]["name"][1], PDO::PARAM_STR);
-        $stmt->execute();
-
-        // debug statements
-        //      echo "last insert / update id: ". $dbq->query('SELECT @scnid')->fetchColumn() . '<br />';
-
-    }
-
-    // close dbconn
-    //  $dbq = NULL;
-    //  print "close db connection<br />";
-
-}
+            }//end if is a number
+        } // end print rate row
+    } // if post rate is set
+} //END TRY
 
 catch(PDOException $e) {
 

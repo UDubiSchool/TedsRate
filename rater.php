@@ -291,22 +291,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
         ?>
             </ul>
 
-            <h2>Descriptive Comments</h2>
-                        <?php
-                        if (isset($_SESSION['ratingNarrative'])){
-                            printf('<textarea id="detailrating" name="ratingNarrative">'.$_SESSION['ratingNarrative'].'</textarea>');
-                        } else {
-                            printf('<textarea id="detailrating" name="ratingNarrative"></textarea>');
-                        }
-                        ?>
-
-
-                        <h2>Screenshots</h2>
-                        <input name="scn[]" type="file" />
-                        <input name="scn[]" type="file" />
-
-                        <br /><hr /><br />
-
                         <button id="saveForm" class="btn btn-primary">Save Form</button>
                         <button id="submitForm" class="btn btn-success">Submit Form</button>
 
