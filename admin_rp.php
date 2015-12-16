@@ -28,7 +28,7 @@ try {
           <div id="noticeInfo"></div>
 
         <!-- container -->
-        <div id="sitecontainer" style="width:900px;">
+        <div id="sitecontainer" style="width:75%;">
             <h1>User Rating Progress Information</h1>
             <dl class="clearfix">
                 <div class="col-xs-6">
@@ -79,7 +79,7 @@ try {
                 </div>
             </dl>
 
-            <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover table-striped">
+            <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>Project</th>
@@ -88,6 +88,7 @@ try {
                         <th>Scenario</th>
                         <th>User</th>
                         <th>Status</th>
+                        <th>Rating</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,6 +104,7 @@ try {
                                 <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}" onclick="readyModal($(this))">Send Invitation</button>
                             </div>
                         </td>
+                        <td><div ng-show="rating.ratingUrl"><a ng-href="http://{{rating.ratingUrl}}" class="btn btn-primary" target="_blank"><i class="fa fa-pencil"></i></a></div></td>
                     </tr>
                 </tbody>
             </table>
@@ -208,8 +210,7 @@ try {
         ?>
 
 <!-- include js files -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/modernizr.foundation.js"></script>
+    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
     <!-- // <script src="javascripts/foundation.js"></script> -->
     <script src="javascripts/app.js"></script>
     <script src="javascripts/admin.js"></script>

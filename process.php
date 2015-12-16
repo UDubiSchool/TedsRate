@@ -55,7 +55,7 @@ try {
             if (is_numeric($v) && $v != 0) { // if input is a number and not 0
 
                 // get scenarioCategoryID
-
+                // echo $v;
                 $sql = 'SELECT SC_ID from scenarioCategory WHERE scenarioID=' . $ids['scenario'] . ' AND categoryID=' . $k;
                 foreach($dbq->query($sql) as $row) {
                     $scid = $row[0];
@@ -73,13 +73,67 @@ try {
                 $stmt->bindValue(':urpID', $ids['userRating'], PDO::PARAM_INT);
                 $stmt->execute();
 
-                // debug statements
-                //              echo "last insert / update id: ". $dbq->query('SELECT @nrid')->fetchColumn() . '<br />';
+                // $userRating_ID = $dbq->query('SELECT @lurID')->fetchColumn();
+                $userRating_ID = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
+                // echo $userRating_ID;
 
                 $ids['lastUserRatingProcessID'] = $dbq->query('SELECT @nrid')->fetchColumn();
+                // echo $ids['lastUserRatingProcessID'];
+                // exit;
+
                 if (preg_match("/^\s*$/i", $ids['lastUserRatingProcessID'])) {
                     $error_free = false;
                 }
+                // echo "<pre>";
+                // print_r($_FILES['screenshot']);
+                // echo"</pre>";
+
+                // if there is a file set for this rating then add it
+                if($_FILES['screenshot']['name'][$k] !== ''){
+                      $thisScreenshot = $_FILES['screenshot'];
+                      $errors= array();
+                      $file_name = $thisScreenshot['name'][$k];
+                      $file_size =$thisScreenshot['size'][$k];
+                      $file_tmp =$thisScreenshot['tmp_name'][$k];
+                      $file_type=$thisScreenshot['type'][$k];
+                      $file_ext=strtolower(end(explode('.',$thisScreenshot['name'][$k])));
+
+                      $expensions= array("jpeg","jpg","png");
+
+                      if(in_array($file_ext,$expensions)=== false){
+                         $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+                      }
+
+                      if($file_size > 2097152){
+                         $errors[]='File size must be less than 2 MB';
+                      }
+
+                      if(empty($errors)==true){
+                        $path = "upload/screenshots/".$file_name;
+                         move_uploaded_file($file_tmp, $path);
+                         echo "Success";
+
+                         // add screenshot to table
+                         echo $path;
+                        $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
+
+                        $dbq->query($screen_sql);
+                        $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+                        $userRating_screen_sql = "INSERT INTO userRating_screenshot (userRatingID, screenshotID) VALUES ($userRating_ID , $screenshot_ID)";
+                        $dbq->query($userRating_screen_sql);
+
+
+
+                      }
+                      else{
+                         print_r($errors);
+                      }
+                   }
+
+                // debug statements
+                //              echo "last insert / update id: ". $dbq->query('SELECT @nrid')->fetchColumn() . '<br />';
+
+
             }
         }
     }

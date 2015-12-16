@@ -7,15 +7,14 @@
 	<!-- Included JS Files -->
 	<!-- template plugins -->
 	<!-- JavaScript -->
-    <script src="javascripts/jquery-1.11.0.min.js"></script>
-    <script src="javascripts/bootstrap.js"></script>
+
 
     <!-- Page Specific Plugins -->
     <script src="javascripts/morris/chart-data-morris.js"></script>
-    <script src="javascripts/tablesorter/jquery.tablesorter.js"></script>
-    <script src="javascripts/tablesorter/tables.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/admin.js"></script>
+    <!-- // <script src="javascripts/tablesorter/jquery.tablesorter.js"></script>/ -->
+    <!-- // <script src="javascripts/tablesorter/tables.js"></script> -->
+    <script src="javascripts/modernizr.foundation.js"></script>
+    <script src="javascripts/admin.js"></script>
     <!-- js_objects -->
     <script src="javascripts/js_objects.js" type="text/javascript"></script>
     <script src="javascripts/ajax_handler.js" type="text/javascript"></script>

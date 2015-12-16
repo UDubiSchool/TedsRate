@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <!-- customized css -->
     <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+    <script src="javascripts/jquery-1.11.0.min.js"></script>
+    <script src="javascripts/bootstrap.js"></script>
     <!-- Page Specific CSS -->
     <!-- <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css"> -->
 </head>

@@ -82,7 +82,10 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <div id="sitecontainer">
                     <div class="row">
                         <div id="artPane" class="eight columns">
+
                         <form action="process.php" id="rateForm" method="post" enctype="multipart/form-data">
+
+
                             <input type="hidden" name="actProject" value="<?php echo $pid;?>" class="notEmpty">
                             <input type="hidden" name="actArtifact" value="<?php echo $aid;?>" class="notEmpty">
                             <input type="hidden" name="userID" value="<?php echo $uid ?>" class="notEmpty">
@@ -176,13 +179,21 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     echo "started retieval";
                     $ratingData = [];
                     $current = "SELECT
+                    userRating.id,
                     userRating.ratingID,
                     category.categoryID,
-                    category.categoryTitle
+                    category.categoryTitle,
+                    screenshot.screenshotPath,
+                    screenshot.screenshotDesc,
+                    comment.comment
                     FROM userRatingProgress
                     JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProcessID
                     JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
                     JOIN category ON scenarioCategory.categoryID = category.categoryID
+                    LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
+                    LEFT JOIN screenshot ON userRating_screenshot.screenshotID = screenshot.screenshotID
+                    LEFT JOIN userRating_comment ON userRating.id = userRating_comment.userRatingID
+                    LEFT JOIN comment ON userRating_comment.commentID = comment.commentID
                     WHERE userRatingProgress.userRatingProgressID = $urpID;";
                     $current = $dbq->query($current);
                     while ($currentResult = $current->fetch()){
@@ -202,14 +213,44 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             ?>
                 <ul>
             <?php
+
+                    //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
                     foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
+                        echo "<li><div>";
+                        echo $row['categoryTitle'] . '<input class="notEmpty ratingInput" name="rate[' . $row['categoryID'] .  ']" type="text"';
                         if (isset($_SESSION['rateform'])){
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="' . $_SESSION['rateform'][$row['categoryID']] . '"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
+                            printf('value="' . $_SESSION['rateform'][$row['categoryID']] . '"/>');
                         } elseif (!empty($ratingData)) {
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="' . $ratingData[array_search($row['categoryID'], array_column($ratingData, 'categoryID'))]['ratingID'] . '"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
+                            $rating = '';
+                            $ratingCat ='';
+
+                            foreach ($ratingData as $key => $value) {
+                                // echo "<pre>";
+                                // echo $row['categoryID'];
+                                // print_r($value);
+                                // echo "</pre>";
+                                if ($value['categoryID'] == $row['categoryID']) {
+                                    $rating = $value['ratingID'];
+                                    $ratingCat = $value['categoryID'];
+                                    // echo "found";
+                                }
+                            }
+                            // echo $rating;
+                            // echo $ratingCat;
+                            printf('value="' . $rating . '"/>');
                         } else {
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
+                            printf('/>');
                         }
+                        echo '<b class="toggle" data-target="definition">Show Definition</b>
+                                 <b class="toggle" data-target="screenshot">Add Screenshot</b>
+                                 <b class="toggle" data-target="comment">Add Comment</b>
+                                 </div>
+                                 <div>
+                                    <div class="definition toggle-target"><p>' . $row['categoryDescription'] . '</p></div>
+                                    <div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>
+                                    <div class="comment toggle-target"><input type="file" class="form-control" name="comment['  . $row['categoryID'] .  ']"></div>
+                                 </div>';
+                        echo "</li>";
                     }
             ?>
                 </ul>
@@ -251,8 +292,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             <!-- sitecontainer -->
 
             <!-- Included JS Files -->
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-            <script src="javascripts/modernizr.foundation.js"></script>
+            <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
 
             <script>
                 $(document).ready(function() {
@@ -282,7 +322,10 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     });
 
                     $(".toggle").click(function(){
-                        $(this).next(".definition").toggle();
+                        var target = ".";
+                        target = target + $(this).attr('data-target');
+                        console.log(target);
+                        $(this).parent().next().children(target).slideToggle();
                     });
                 });
 

@@ -1,0 +1,1 @@
+ALTER TABLE userRatingProgress ADD COLUMN ratingUrl VARCHAR(2083);

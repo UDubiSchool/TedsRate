@@ -27,7 +27,7 @@ var app = angular.module('ratingsApp', [])
             $scope.userOptions.push(value.userprofile);
           }
         });
-        console.log(response.data);
+        // console.log(response.data);
       });
       // console.log($scope.ratings);
 

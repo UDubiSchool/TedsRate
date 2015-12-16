@@ -156,7 +156,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                     $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
                     $mail->Port = 587;                                    // TCP port to connect to
 
-                    $mail->setFrom('tedsratemailer@gmail.com', 'Mailer');
+                    $mail->setFrom('tedsratemailer@gmail.com', 'TEDSRate');
                     $mail->addAddress($to);     // Add a recipient
                     // $mail->addAddress('ellen@example.com', "John Doe");               // Name is optional
                     // $mail->addReplyTo('info@example.com', 'Information');

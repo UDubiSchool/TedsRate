@@ -18,7 +18,7 @@ if($_POST){
     $authenticated = false;
 	try {
 		$dbq = db_connect();
-		
+
 
 		// echo "<html><br/></html>";
 		// print($projectTitle);
@@ -27,12 +27,12 @@ if($_POST){
 		// echo "<html><br/></html>";
 		// print($projectLanguageID);
 		// echo "<html><br/></html>";
-		
+
 
 		switch ($source) {
 			case 'project':
 				//try to insert the project into mysql database and get the new added project id
-				//prepare PDO statement, addProject SPROC 
+				//prepare PDO statement, addProject SPROC
 				//temperaly comment these codes
 				$projectTitle = $_POST['projectName'];
 				$projectDescription = $_POST['projectDesc'];
@@ -58,7 +58,7 @@ if($_POST){
 				$scenarioDesc = $_POST['scenarioDesc'];
 				$scenarioIDs = array();
 				for($i = 0; $i < count($scenarioTitle); $i++) {
-					//prepare PDO statement, addArtifact SPROC 
+					//prepare PDO statement, addArtifact SPROC
 					// echo $scenarioTitle[$i] . '<br/>';
 					$stmt = $dbq->prepare("CALL addScenario(:title,:description,:languageID,@nid)");
 					$stmt->bindValue(':title',$scenarioTitle[$i], PDO::PARAM_STR);
@@ -96,7 +96,7 @@ if($_POST){
 				$artifactLanguage = 5;
 				$artifactIDs = array();
 				for($i = 0; $i < count($artifactTitle); $i++) {
-					//prepare PDO statement, addArtifact SPROC 
+					//prepare PDO statement, addArtifact SPROC
 					// echo $artifactURL[$i] . '<br/>';
 					$stmt = $dbq->prepare("CALL addArtifact(:atitle,:aurl,:typeID,:Lan,@nid)");
 					$stmt->bindValue(':atitle',$artifactTitle[$i], PDO::PARAM_STR);
@@ -123,7 +123,7 @@ if($_POST){
 				}
 
 //                print_r($artifactIDs);
-				
+
 				//update projectArtifact
 				$paids = array();
 				for($i = 0; $i < count($artifactIDs); $i++) {
@@ -159,7 +159,7 @@ if($_POST){
 				// echo "<html><br/></html>";
 				$personaIDs = array();
 				for($i = 0; $i < count($personaTitle); $i++) {
-					//prepare PDO statement, addArtifact SPROC 
+					//prepare PDO statement, addArtifact SPROC
 					// echo $personaTitle[$i] . '<br/>';
 					$stmt = $dbq->prepare("CALL addPersona(:title,:description,:languageID,@nid)");
 					$stmt->bindValue(':title',$personaTitle[$i], PDO::PARAM_STR);
@@ -200,7 +200,7 @@ if($_POST){
 
 			case 'user':
 				//try to insert the project into mysql database and get the new added project id
-				//prepare PDO statement, addProject SPROC 
+				//prepare PDO statement, addProject SPROC
 				//temperaly comment these codes
 				$email = $_POST['email'];
 				$firstName = $_POST['firstName'];
@@ -241,6 +241,12 @@ if($_POST){
 				break;
 
             case "user_rating_progress":
+
+                $root_url = $_SERVER['SERVER_NAME'];
+                for ($i = 0; $i < count($parts) - 1; $i++) {
+                 $root_url .= $parts[$i] . "/";
+                }
+
                 $project = $_POST['project'];
                 $artifact = $_POST['artifact'];
                 $persona = $_POST['persona'];
@@ -271,6 +277,17 @@ if($_POST){
                 $stmt->execute();
 
                 $user_ratingID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+
+                $language = 5;
+
+                $targetURL = "rater.php?selLanguage=" . $language . "&selProject=" . $project . "&selArtifact=" . $artifact . "&selScenario=" . $scenario . "&selPersona=" . $persona . "&urpId=" . $user_ratingID;
+                $fullUrl .= $root_url . "/";
+                $fullUrl .= $targetURL;
+                $addUrl = "UPDATE `userRatingProgress` SET `ratingUrl` = '" . $fullUrl . "' WHERE userRatingProgressID = " . $user_ratingID;
+                $exec = $dbq->prepare(
+                    $addUrl
+                );
+                $exec->execute();
 
                 break;
 

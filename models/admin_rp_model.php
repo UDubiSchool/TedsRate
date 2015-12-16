@@ -19,7 +19,8 @@
                                      urp.isComplete as complete,
                                      urp.completionDate as completionDate,
                                      upro.email as email,
-                                     urp.userRatingProgressID as urpID
+                                     urp.userRatingProgressID as urpID,
+                                     urp.ratingUrl as ratingUrl
                                      FROM userRatingProgress urp
                                      join userProfile upro on urp.userID = upro.userID
                                      join userPersonae uper on uper.userID = upro.userID

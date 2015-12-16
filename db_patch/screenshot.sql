@@ -15,13 +15,13 @@ CREATE TABLE comment (
 
 CREATE TABLE userRating_screenshot (
     userRating_screenshotID INT(11) PRIMARY KEY AUTO_INCREMENT,
-    userRatingID INT(11) NOT NULL FOREIGN KEY REFERENCES userRating(userRatingID),
-    screenshotID INT(11) NOT NULL FOREIGN KEY REFERENCES screenshot(screenshotID)
+    userRatingID INT(11) NOT NULL,
+    screenshotID INT(11) NOT NULL
 );
 
 CREATE TABLE userRating_comment (
     userRating_commentID INT(11) PRIMARY KEY AUTO_INCREMENT,
-    userRatingID INT(11) NOT NULL FOREIGN KEY REFERENCES userRating(userRatingID),
-    commentID INT(11) NOT NULL FOREIGN KEY  REFERENCES comment(commentID)
+    userRatingID INT(11) NOT NULL,
+    commentID INT(11) NOT NULL
 );
 
