@@ -79,6 +79,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             $urpID = $flag[0]['userRatingProgressID'];
         ?>
                 <!-- container -->
+                <link rel="stylesheet" href="stylesheets/rater.css">
                 <div id="sitecontainer">
                     <div class="row">
                         <div id="artPane" class="eight columns">
@@ -111,10 +112,12 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                 <div id="sitePane">
                     <div id="currRate" class="activeSite">
+
             <?php
 
                  printf("<h2>%s: %s</h2>", $row['title'], urldecode($row['URL']));
-                 print_r('<iframe width="100%" scrolling="auto" src="' . urldecode($row['URL']) . '"></iframe>');
+                 echo '<input type="hidden" id="activeIframeSrc" value="' . urldecode($row['URL']) . '">';
+                 print_r('<iframe id="activeIframe" scrolling="auto" src=""></iframe>');
                 }
                 $sth->closeCursor();
             ?>
@@ -138,6 +141,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 }
                 $sth->closeCursor();
             ?>
+
                             <table width="100%">
                                 <tr>
                                     <td>
@@ -169,14 +173,21 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     </td>
                                 </tr>
                             </table>
-
+                        <h4>Select User Agent</h4>
+                        <select class="form-control" name="userAgentPicker" id="userAgentPicker">
+                            <option class='default-val'  value="">Default</option>
+                            <option data-width="640" data-height="1136" value="Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3">Chrome, iPhone 5</option>
+                            <option data-width="720" data-height="1280" value="Mozilla/5.0 (Linux; U; Android-4.0.3; en-us; Galaxy Nexus Build/IML74K) AppleWebKit/535.7 (KHTML, like Gecko) CrMo/16.0.912.75 Mobile Safari/535.7">Chrome, Galaxy Nexus</option>
+                            <option  data-width="720" data-height="1280" value="Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0">Firefox, Android</option>
+                        </select>
+                        <br>
                         <h2>Categories</h2>
 
             <ul id="categories">
             <?php
             //populate categories the "language" value (1) is hard coded!
                 try {
-                    echo "started retieval";
+                    // echo "started retieval";
                     $ratingData = [];
                     $current = "SELECT
                     userRating.id,
@@ -309,8 +320,21 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             <script>
                 $(document).ready(function() {
                     //automatically set height of iframe based on browser window size on page load
+                    var defaultUA = navigator.userAgent;
+                    // console.log(defaultUA);
+                    var defaultUrl = "UAProxy.php?";
+                    // var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  defaultUA;
+                    // $("#activeIframe").attr("src", finalUrl);
                     var ifheight = $(window).height() - $("#sitePane").offset()['top']-50;
                     $("#sitePane iframe").height(ifheight);
+
+                    $('#userAgentPicker .default-val').attr("value", defaultUA);
+                    $('#userAgentPicker .default-val').attr("data-width", "100%");
+                    $('#userAgentPicker .default-val').attr("data-height", ifheight);
+
+                    changeIframe();
+
+
 
                     //toggle category box collapse/expand on click of main category title
                     $("#categories > li b").click(function(){
@@ -341,7 +365,38 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         console.log(target);
                         $(this).parent().next().children(target).slideToggle();
                     });
-                });
+
+                    $("#userAgentPicker").change(function() {
+                        changeIframe();
+                        // document.getElementById('activeIframe').contentWindow.location.reload();
+
+
+                    });
+
+                    function changeIframe() {
+                        var option = $("#userAgentPicker").find(":selected");
+                        var width = option.attr("data-width");
+                        if (width == "100%") {
+                            width = $("#sitePane").width();
+                        }
+                        var height = option.attr("data-height");
+                        // var wrapper = $("#activeIframeWrapper");
+                        var iframe = $("#activeIframe");
+                        var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  option.val() + "&w=" + width + "&h=" + height;
+                        // wrapper.width(width);
+                        console.log(width);
+                        console.log($(window).width());
+                        var scale = parseInt(width) / (parseInt($(window).width()) + 100);
+                        // scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
+                        iframe.width(width/scale)
+                        iframe.height(height/scale);
+
+                        console.log(scale);
+                        iframe.css("-webkit-transform", "scale(" + scale + ")");
+                        iframe.css("-moz-transform-scale", scale);
+                        iframe.attr("src", finalUrl);
+                    }
+                }); // END DOC READY
 
             </script>
             <?php
