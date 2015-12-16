@@ -216,27 +216,37 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                     //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
                     foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
+                        $rating = '';
+                        $hasScreenshot = false;
+                        $hasComment = false;
+                        $screenshot_path = '';
+                        $comment = '';
+
+                        if (!empty($ratingData)) {
+                            foreach ($ratingData as $key => $value) {
+                                if ($value['categoryID'] == $row['categoryID']) {
+                                    $rating = $value['ratingID'];
+                                    if(isset($value['screenshotPath'])) {
+
+                                        $hasScreenshot = true;
+                                        $screenshot_path = $value['screenshotPath'];
+                                        // echo 'found screenshot';
+                                        // echo $value['screenshotPath'];
+                                    }
+                                    if(isset($value['comment'])) {
+                                        $hasComment = true;
+                                        $comment = $value['comment'];
+                                        // echo $thisComment;
+                                    }
+                                }
+                            }
+                        }
+
                         echo "<li><div>";
                         echo $row['categoryTitle'] . '<input class="notEmpty ratingInput" name="rate[' . $row['categoryID'] .  ']" type="text"';
                         if (isset($_SESSION['rateform'])){
                             printf('value="' . $_SESSION['rateform'][$row['categoryID']] . '"/>');
                         } elseif (!empty($ratingData)) {
-                            $rating = '';
-                            $ratingCat ='';
-
-                            foreach ($ratingData as $key => $value) {
-                                // echo "<pre>";
-                                // echo $row['categoryID'];
-                                // print_r($value);
-                                // echo "</pre>";
-                                if ($value['categoryID'] == $row['categoryID']) {
-                                    $rating = $value['ratingID'];
-                                    $ratingCat = $value['categoryID'];
-                                    // echo "found";
-                                }
-                            }
-                            // echo $rating;
-                            // echo $ratingCat;
                             printf('value="' . $rating . '"/>');
                         } else {
                             printf('/>');
@@ -246,10 +256,27 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                  <b class="toggle" data-target="comment">Add Comment</b>
                                  </div>
                                  <div>
-                                    <div class="definition toggle-target"><p>' . $row['categoryDescription'] . '</p></div>
-                                    <div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>
-                                    <div class="comment toggle-target"><input type="file" class="form-control" name="comment['  . $row['categoryID'] .  ']"></div>
-                                 </div>';
+                                    <div class="definition toggle-target"><p>' . $row['categoryDescription'] . '</p></div>';
+                        if (!empty($ratingData)) {
+
+                            if ($hasScreenshot) {
+                                echo '<div class="screenshot toggle-target"><a href="' . $screenshot_path . '" target="_blank">Screenshot</a></div>';
+                            } else {
+                                echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
+                            }
+
+                            if($hasComment) {
+                                echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']">' . $comment . '</textarea></div>';
+                            } else {
+                                echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']"></textarea></div>';
+                            }
+
+                        } else {
+                            echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>
+                                    <div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']"></textarea></div>';
+                        }
+
+                        echo '</div>';
                         echo "</li>";
                     }
             ?>
@@ -280,7 +307,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                         <br /><hr /><br />
 
-                        <a id="saveForm" href="#" class="small white radius button">Save Form</a><input style="margin-left:25px;" type="submit" value="Submit Ratings" />
+                        <button id="saveForm" class="btn btn-primary">Save Form</button>
+                        <button id="submitForm" class="btn btn-success">Submit Form</button>
 
                         </form>
                     </div>
@@ -305,13 +333,15 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         $(this).parent("li").find("ul").toggle();
                     }).click();
 
-                    //ajax call to save current php session, sessions are currently default files and are stored for 4 weeks with clientside cookie reference
+                    //runs process.php and redirects back to this page.
                     $("#saveForm").click(function(){
-                        $.post("saveform.php", $("#rateForm").serialize(), function(data) {
-                            //console.log($("#rateForm").serialize());
-                            $('#savemsg').reveal();
-                        });
-                        return false;
+                        $("#rateForm").attr('action', 'process.php?type=save');
+                        $("#rateForm").submit();
+                    });
+
+                    $("#submitForm").click(function(){
+                        $("#rateForm").attr('action', 'process.php?type=submit');
+                        $("#rateForm").submit();
                     });
 
                     //toggle between anchor site display and current rating site

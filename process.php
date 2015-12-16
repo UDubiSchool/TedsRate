@@ -89,7 +89,8 @@ try {
                 // echo"</pre>";
 
                 // if there is a file set for this rating then add it
-                if($_FILES['screenshot']['name'][$k] !== ''){
+                if(!empty($_FILES['screenshot']['name'][$k])){
+
                       $thisScreenshot = $_FILES['screenshot'];
                       $errors= array();
                       $file_name = $thisScreenshot['name'][$k];
@@ -111,10 +112,10 @@ try {
                       if(empty($errors)==true){
                         $path = "upload/screenshots/".$file_name;
                          move_uploaded_file($file_tmp, $path);
-                         echo "Success";
+                         // echo "Success";
 
                          // add screenshot to table
-                         echo $path;
+                         // echo $path;
                         $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
 
                         $dbq->query($screen_sql);
@@ -128,6 +129,18 @@ try {
                       else{
                          print_r($errors);
                       }
+                   }
+
+
+                   //adding comments if they exist
+                   if(!empty($_POST['comment'][$k])){
+                    // echo "found one";
+                    $addComment = $dbq->prepare("INSERT INTO comment (comment, userCreated) VALUES ( :comment , :userID)");
+                    $addComment->execute(array(':comment' => $_POST['comment'][$k], ':userID' => $ids['user'] ));
+                    $comment_id = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
+
+                    $add_comment_assoc_sql = "INSERT INTO userRating_comment (userRatingID, commentID) VALUES ($userRating_ID, $comment_id)";
+                    $dbq->query($add_comment_assoc_sql);
                    }
 
                 // debug statements
@@ -247,23 +260,31 @@ if (!$error_free) {
     <?php
 }
 else {
+    if ($_GET['type'] == 'save') {
+        $referer = $_SERVER['HTTP_REFERER'];
+        header("Location: $referer");
+    }
+    if ($_GET['type'] == 'submit') {
+
 ?>
-    <div class="info_container">
-        <h2>Success: records successfully saved to the database! </h2>
-        <p>Thank you for your participation! We appreciate it!</p>
-        <p>If you have any question about the rating, don't hesitate to contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
-    </div>
-    <?php
+        <div class="info_container">
+            <h2>Success: records successfully saved to the database! </h2>
+            <p>Thank you for your participation! We appreciate it!</p>
+            <p>If you have any question about the rating, don't hesitate to contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
+        </div>
+        <?php
 
-    // update userRatingProcess table
+        // update userRatingProcess table
 
-    $urp_update_query = "UPDATE `userRatingProgress` SET `isComplete`='true',`completionDate`=NOW()
-                        WHERE `userRatingProgressID` = " . $ids['userRating'];
+        $urp_update_query = "UPDATE `userRatingProgress` SET `isComplete`='true',`completionDate`=NOW()
+                            WHERE `userRatingProgressID` = " . $ids['userRating'];
 
-    //    echo($urp_update_query);
+        //    echo($urp_update_query);
 
-    $stmt = $dbq->query($urp_update_query);
+        $stmt = $dbq->query($urp_update_query);
+    }
     $dbq = NULL;
+
 }
 
 $_SESSION['ids'] = $ids;
