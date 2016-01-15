@@ -387,7 +387,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         console.log(width);
                         console.log($(window).width());
                         var scale = parseInt(width) / (parseInt($(window).width()) + 100);
-                        // scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
+                        scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
                         iframe.width(width/scale)
                         iframe.height(height/scale);
 
