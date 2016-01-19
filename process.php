@@ -1,4 +1,3 @@
-
 <?php
 
 // require_once "session_inc.php";
@@ -119,7 +118,7 @@ try {
                           $userRating_screen_sql = "INSERT INTO userRating_screenshot (userRatingID, screenshotID) VALUES ($userRating_ID , $screenshot_ID)";
                           $dbq->query($userRating_screen_sql);
                         } else {
-                          echo "could not upload file at " . $file_tmp;
+                          // echo "could not upload file at " . $file_tmp;
                           exit;
                         }
                       }
