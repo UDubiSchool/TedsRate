@@ -230,7 +230,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         $rating = '';
                         $hasScreenshot = false;
                         $hasComment = false;
-                        $screenshot_path = '';
+                        $screenshots = array();
+                        // $screenshot_path = '';
                         $comment = '';
 
                         if (!empty($ratingData)) {
@@ -240,7 +241,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     if(isset($value['screenshotPath'])) {
 
                                         $hasScreenshot = true;
-                                        $screenshot_path = $value['screenshotPath'];
+                                        array_push($screenshots, $value['screenshotPath']);
                                         // echo 'found screenshot';
                                         // echo $value['screenshotPath'];
                                     }
@@ -271,21 +272,20 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         if (!empty($ratingData)) {
 
                             if ($hasScreenshot) {
-                                echo '<div class="screenshot toggle-target"><a href="' . $screenshot_path . '" target="_blank">Screenshot</a></div>';
+                                echo '<div class="screenshot toggle-target">';
+                                foreach ($screenshots as $key => $value) {
+                                    echo '<p><a href="' . $value . '" target="_blank">Screenshot ' . $key . '</a></p>';
+                                }
+                                echo '<input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
                             } else {
                                 echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
                             }
-
-                            if($hasComment) {
-                                echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']">' . $comment . '</textarea></div>';
-                            } else {
-                                echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']"></textarea></div>';
-                            }
-
                         } else {
-                            echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>
-                                    <div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']"></textarea></div>';
+                            echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
                         }
+
+                        echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']">' . $comment . '</textarea></div>';
+
 
                         echo '</div>';
                         echo "</li>";

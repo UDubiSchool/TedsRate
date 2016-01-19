@@ -110,21 +110,20 @@ try {
                       }
 
                       if(empty($errors)==true){
-                        $path = "upload/screenshots/".$file_name;
-                         move_uploaded_file($file_tmp, $path);
-                         // echo "Success";
+                        $root = getcwd();
+                        $path = "/upload/screenshots/".$file_name;
+                        $path = $root.$path;
+                        if(move_uploaded_file($file_tmp, $path)) {
+                          $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
 
-                         // add screenshot to table
-                         // echo $path;
-                        $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
-
-                        $dbq->query($screen_sql);
-                        $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
-                        $userRating_screen_sql = "INSERT INTO userRating_screenshot (userRatingID, screenshotID) VALUES ($userRating_ID , $screenshot_ID)";
-                        $dbq->query($userRating_screen_sql);
-
-
-
+                          $dbq->query($screen_sql);
+                          $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+                          $userRating_screen_sql = "INSERT INTO userRating_screenshot (userRatingID, screenshotID) VALUES ($userRating_ID , $screenshot_ID)";
+                          $dbq->query($userRating_screen_sql);
+                        } else {
+                          echo "could not upload file at " . $file_tmp;
+                          exit;
+                        }
                       }
                       else{
                          print_r($errors);
