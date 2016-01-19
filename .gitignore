@@ -41,9 +41,10 @@ attachments/
 data/companies.sql
 config/database.yml
 db/schema.rb
-db/schema.sql 
+db/schema.sql
 db/*.git
 .idea
+db_connect.php
 
 
 delta_output.txt
