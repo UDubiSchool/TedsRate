@@ -381,22 +381,22 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         var width = option.attr("data-width");
                         var sitePaneWidth = parseInt($("#sitePane").width());
                         var windowWidth = parseInt($(window).width());
+                        var iframe = $("#activeIframe");
                         if (width == "100%") {
                             width = $("#sitePane").width();
                         }
+
+                        var innerWidth = iframe.contents().width();
+                        // var innerWidth = 980;
+                        var scale = (width - 15) / innerWidth ;
+
+
                         var height = option.attr("data-height");
-                        // var wrapper = $("#activeIframeWrapper");
-                        var iframe = $("#activeIframe");
                         var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  option.val() + "&w=" + width + "&h=" + height;
-                        // wrapper.width(width);
-                        console.log(width);
-                        console.log($(window).width());
-                        var scale = parseInt(width) / (sitePaneWidth - 150);
-                        // scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
+
+
                         iframe.width(width/scale)
                         iframe.height(height/scale);
-
-                        console.log(scale);
                         iframe.css("-webkit-transform", "scale(" + scale + ")");
                         iframe.css("-moz-transform-scale", scale);
                         iframe.attr("src", finalUrl);
