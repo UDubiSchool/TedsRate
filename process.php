@@ -2,7 +2,7 @@
 
 // require_once "session_inc.php";
 
-require_once "header.no_session.inc.php";
+
 
 /*
 Setting up some default values so there are no nulls
@@ -158,6 +158,7 @@ catch(PDOException $e) {
 }
 
 if (!$error_free) {
+  require_once "header.no_session.inc.php";
 ?>
     <div class="error_container">
         <h2>Warning: records not saved! </h2>
@@ -175,6 +176,7 @@ else {
         header("Location: $referer");
     }
     if ($_GET['type'] == 'submit') {
+      require_once "header.no_session.inc.php";
 
 ?>
         <div class="info_container">
