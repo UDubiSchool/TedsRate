@@ -130,14 +130,14 @@ try {
 
                    //adding comments if they exist
                    if(!empty($_POST['comment'][$k])){
-                    echo "found one";
+                    // echo "found one";
                     // exit;
                     $oldCom = $dbq->prepare("SELECT commentID FROM userRating_comment WHERE userRatingID = :urid");
                     $oldCom->execute(array(':urid' => $userRating_ID));
                     $comID = $oldCom->fetchColumn();
-                    echo $comID;
-                    if ($comID) {
-                      echo "updating";
+                    // echo $comID;
+                    if ($commentID) {
+                      // echo "updating";
                       $updateCom = $dbq->prepare("UPDATE comment SET comment = :comment, dateCreated = NOW() WHERE commentID = :commentID");
                       $updateCom->execute(array(':comment' => $_POST['comment'][$k], ':commentID' => $comID));
                     } else {
@@ -149,9 +149,6 @@ try {
                       $add_comment_assoc_sql = "INSERT INTO userRating_comment (userRatingID, commentID) VALUES ($userRating_ID, $comment_id)";
                       $dbq->query($add_comment_assoc_sql);
                     }
-
-
-                    // exit;
                    }
 
                 // debug statements
