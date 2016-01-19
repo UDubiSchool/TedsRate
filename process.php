@@ -110,9 +110,7 @@ try {
                       }
 
                       if(empty($errors)==true){
-                        $root = getcwd();
                         $path = "/upload/screenshots/".$file_name;
-                        $path = $root.$path;
                         if(move_uploaded_file($file_tmp, $path)) {
                           $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
 
