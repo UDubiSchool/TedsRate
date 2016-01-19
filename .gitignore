@@ -30,6 +30,7 @@ attachments/
 *.sqlite3
 *.tmproj
 *.espressostorage
+*.env
 
 .rvmrc*
 .powrc*

@@ -379,6 +379,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     function changeIframe() {
                         var option = $("#userAgentPicker").find(":selected");
                         var width = option.attr("data-width");
+                        var sitePaneWidth = parseInt($("#sitePane").width());
+                        var windowWidth = parseInt($(window).width());
                         if (width == "100%") {
                             width = $("#sitePane").width();
                         }
@@ -389,8 +391,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         // wrapper.width(width);
                         console.log(width);
                         console.log($(window).width());
-                        var scale = parseInt(width) / (parseInt($(window).width()) + 100);
-                        scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
+                        var scale = parseInt(width) / (sitePaneWidth - 150);
+                        // scale = scale * (parseInt($(window).width())/parseInt($("#sitePane").width()));
                         iframe.width(width/scale)
                         iframe.height(height/scale);
 
