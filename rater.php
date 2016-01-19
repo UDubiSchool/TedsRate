@@ -241,7 +241,9 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     if(isset($value['screenshotPath'])) {
 
                                         $hasScreenshot = true;
-                                        array_push($screenshots, $value['screenshotPath']);
+                                        if(!in_array($value['screenshootPath'], $screenshots)) {
+                                            array_push($screenshots, $value['screenshotPath']);
+                                        }
                                         // echo 'found screenshot';
                                         // echo $value['screenshotPath'];
                                     }
