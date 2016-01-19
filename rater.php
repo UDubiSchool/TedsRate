@@ -254,6 +254,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                     }
                                 }
                             }
+                            array_reverse($screenshots);
                         }
 
                         echo "<li><div>";
