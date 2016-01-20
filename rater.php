@@ -77,6 +77,182 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             // available variables
             $uid = $flag[0]['userID'];
             $urpID = $flag[0]['userRatingProgressID'];
+            $data = [
+                'userRatingProgressID' => $urpID
+            ];
+
+
+            //populate site (artifact) title in view toggle
+            $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
+            $sth->execute();
+            while ($row = $sth->fetch()){
+            $tmp = [
+                'title' => $row['title'],
+                'url' => $row['URL']
+            ];
+            $data['artifact'] = $tmp;
+            };
+            $sth->closeCursor();
+
+
+
+            //populate project title and description
+            $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
+            while ($row = $sth->fetch()){
+             $tmp = [
+                 'title' => $row['title'],
+                 'description' => $row['description']
+             ];
+             $data['project'] = $tmp;
+            }
+            $sth->closeCursor();
+
+
+
+            //populate personas the "language" value (5) is hard coded!
+            $sth = $dbq->query('select * from personae where personae.personaeID = ' . $personaID);
+            while ($row = $sth->fetch()){
+                $tmp = [
+                    'personaTitle' => $row['personaTitle'],
+                ];
+                $data['persona'] = $tmp;
+            }
+            $sth->closeCursor();
+
+
+
+            //populate scenarios the "language" value (5) is hard coded!
+            $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
+            while ($row = $sth->fetch()){
+                $tmp = [
+                    'scenarioTitle' => $row['scenarioTitle'],
+                ];
+                $data['scenario'] = $tmp;
+            }
+            $sth->closeCursor();
+
+
+
+
+
+            //populate categories the "language" value (1) is hard coded!
+            try {
+                // echo "started retieval";
+                $ratingData = [];
+                $current = "SELECT
+                userRating.id,
+                userRating.ratingID,
+                category.categoryID,
+                category.categoryTitle,
+                screenshot.screenshotPath,
+                screenshot.screenshotDesc,
+                comment.comment
+                FROM userRatingProgress
+                JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProcessID
+                JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
+                JOIN category ON scenarioCategory.categoryID = category.categoryID
+                LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
+                LEFT JOIN screenshot ON userRating_screenshot.screenshotID = screenshot.screenshotID
+                LEFT JOIN userRating_comment ON userRating.id = userRating_comment.userRatingID
+                LEFT JOIN comment ON userRating_comment.commentID = comment.commentID
+                WHERE userRatingProgress.userRatingProgressID = $urpID;";
+                $current = $dbq->query($current);
+                while ($currentResult = $current->fetch()){
+                    array_push($ratingData, $currentResult);
+                }
+                $data['ratingsData']= $ratingData;
+            } catch (PDOException $e) {
+                echo $e;
+            }
+
+
+
+
+
+
+
+
+
+
+                $categoryGroups = [];
+
+                // gets categories and attaches ratings comments and files
+                $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
+                while ($prow = $sth->fetch()){
+                    $group = [
+                        'categoryGroupTitle' => $prow['categoryTitle'],
+                        'categoryGroupID' => $prow['categoryID'],
+                        'categoryGroupDescription' => $prow['categoryDescription']
+                    ];
+                    $attributes = [];
+
+                    //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
+                    foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
+                        $rating = '';
+                        $hasScreenshot = false;
+                        $hasComment = false;
+                        $screenshots = [];
+                        $comment = '';
+
+
+                        if (!empty($data['ratingsData'])) {
+
+                            foreach ($data['ratingsData'] as $key => $value) {
+
+                                if ($value['categoryID'] == $row['categoryID']) {
+
+                                    $rating = $value['ratingID'];
+
+                                    if(isset($value['screenshotPath'])) {
+                                        $hasScreenshot = true;
+                                        if(!in_array($value['screenshotPath'], $screenshots)) {
+                                            array_push($screenshots, $value['screenshotPath']);
+                                        }
+                                    }
+
+                                    if(isset($value['comment'])) {
+                                        $hasComment = true;
+                                        $comment = $value['comment'];
+                                    }
+                                }
+                            }
+                            array_reverse($screenshots);
+                        }
+
+                        $attribute = [
+                            'categoryID' => $row['categoryID'],
+                            'categoryTitle' => $row['categoryTitle'],
+                            'categoryDescription' => $row['categoryDescription'],
+                            'rating' => $rating,
+                            'hasScreenshot' => $hasScreenshot,
+                            'hasComment' => $hasComment,
+                            'screenshots' => $screenshots,
+                            'comment' => $comment
+                        ];
+
+                        array_push($attributes, $attribute);
+                    }
+                    array_reverse($attributes);
+                    $group['attributes'] = $attributes;
+                    array_push($categoryGroups, $group);
+
+                }
+                array_reverse($categoryGroups);
+                $data['categoryGroups'] = $categoryGroups;
+                $sth->closeCursor();
+
+            //close connection
+            $dbq = NULL;
+
+            unset($data['ratingsData']);
+
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // exit;
+
+
+
         ?>
                 <!-- container -->
                 <link rel="stylesheet" href="stylesheets/rater.css">
@@ -93,228 +269,103 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                             <input type="hidden" name="personaID" value="<?php echo $personaID ?>" class="notEmpty">
                             <input type="hidden" name="scenarioID" value="<?php echo $scenarioID ?>" class="notEmpty">
                             <input type="hidden" name="urpID" value="<?php echo $urpID ?>" class="notEmpty">
-            <?php
-                $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
-                $sth->execute();
-                while ($row = $sth->fetch()){
-            ?>
-                <dl id="anchorSel" class="sub-nav">
-                  <dt>Active site view:</dt>
-                  <dd class="active"><a href="#">
-            <?php
-                //populate site (artifact) title in view toggle
-                printf($row['title']);
-            ?>
-                  </a></dd>
-                  <dd><a href="#">Anchor Site</a></dd>
-                </dl>
-
-
-                <div id="sitePane">
-                    <div id="currRate" class="activeSite">
-
-            <?php
-
-                 printf("<h2>%s: %s</h2>", $row['title'], urldecode($row['URL']));
-                 echo '<input type="hidden" id="activeIframeSrc" value="' . urldecode($row['URL']) . '">';
-                 print_r('<iframe id="activeIframe" scrolling="auto" src=""></iframe>');
-                }
-                $sth->closeCursor();
-            ?>
-                    </div>
-                    <div id="anchor" class="activeSite">
-                        <h2>Anchor Site - Wikipedia.org, http://en.wikipedia.org</h2>
-                        <iframe width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
-                    </div>
-                </div>
+                            <dl id="anchorSel" class="sub-nav">
+                              <dt>Active site view:</dt>
+                              <dd class="active"><a href="#"><?php echo $data['artifact']['title']; ?></a></dd>
+                              <dd><a href="#">Anchor Site</a></dd>
+                            </dl>
+                            <div id="sitePane">
+                                <div id="currRate" class="activeSite">
+                                <h2><?php echo $data['artifact']['title'] . ": " . urldecode($data['artifact']['url']); ?></h2>
+                                <input type="hidden" id="activeIframeSrc" value="<?php echo urldecode($data['artifact']['url']); ?>">
+                                <iframe id="activeIframe" scrolling="auto" src=""></iframe>
+                                </div>
+                                <div id="anchor" class="activeSite">
+                                    <h2>Anchor Site - Wikipedia.org, http://en.wikipedia.org</h2>
+                                    <iframe width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
+                                </div>
+                            </div>
                         </div>
-
-
                         <div id="ratePane" class="four columns">
-            <?php
-                //populate project title and description
-                $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
-                //printf ("rows/cols returned: %d, %d\n", $sth->rowCount(),$sth->columnCount());
-
-                while ($row = $sth->fetch()){
-                 printf ("<h2>%s</h2><p>%s</p>", $row['title'], $row['description']);
-                }
-                $sth->closeCursor();
-            ?>
-
+                            <h2><?php echo $data['project']['title']; ?></h2><p><?php echo $data['project']['description']; ?></p>
                             <table width="100%">
                                 <tr>
                                     <td>
-            1. Current Persona:
-            <p id="personae">
-            <?php
-                //populate personas the "language" value (5) is hard coded!
-                $sth = $dbq->query('select * from personae where personae.personaeID = ' . $personaID);
-                while ($row = $sth->fetch()){
-                    echo($row['personaTitle']);
-                }
-                $sth->closeCursor();
-            ?>
-            </p>
+                                        1. Current Persona:
+                                        <p id="personae"><?php echo $data['persona']['personaTitle']; ?></p>
                                     </td>
                                     <td>
-            2. Current Scenario
-            <p id="scenario">
-            <?php
-            //populate scenarios the "language" value (5) is hard coded!
-
-                $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
-                while ($row = $sth->fetch()){
-                    echo($row['scenarioTitle']);
-                }
-                $sth->closeCursor();
-            ?>
-            </p>
+                                        2. Current Scenario
+                                        <p id="scenario"><?php echo $data['scenario']['scenarioTitle']; ?></p>
                                     </td>
                                 </tr>
                             </table>
-                        <h4>Select User Agent</h4>
-                        <select class="form-control" name="userAgentPicker" id="userAgentPicker">
-                            <option class='default-val'  value="">Default</option>
-                            <option data-width="640" data-height="1136" value="Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3">Chrome, iPhone 5</option>
-                            <option data-width="720" data-height="1280" value="Mozilla/5.0 (Linux; U; Android-4.0.3; en-us; Galaxy Nexus Build/IML74K) AppleWebKit/535.7 (KHTML, like Gecko) CrMo/16.0.912.75 Mobile Safari/535.7">Chrome, Galaxy Nexus</option>
-                            <option  data-width="720" data-height="1280" value="Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0">Firefox, Android</option>
-                        </select>
-                        <br>
-                        <h2>Categories</h2>
+                            <h4>Select User Agent</h4>
+                            <select class="form-control" name="userAgentPicker" id="userAgentPicker">
+                                <option class='default-val'  value="">Default</option>
+                                <option data-width="640" data-height="1136" value="Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3">Chrome, iPhone 5</option>
+                                <option data-width="720" data-height="1280" value="Mozilla/5.0 (Linux; U; Android-4.0.3; en-us; Galaxy Nexus Build/IML74K) AppleWebKit/535.7 (KHTML, like Gecko) CrMo/16.0.912.75 Mobile Safari/535.7">Chrome, Galaxy Nexus</option>
+                                <option  data-width="720" data-height="1280" value="Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0">Firefox, Android</option>
+                            </select>
+                            <br>
+                            <h2>Categories</h2>
 
-            <ul id="categories">
-            <?php
-            //populate categories the "language" value (1) is hard coded!
-                try {
-                    // echo "started retieval";
-                    $ratingData = [];
-                    $current = "SELECT
-                    userRating.id,
-                    userRating.ratingID,
-                    category.categoryID,
-                    category.categoryTitle,
-                    screenshot.screenshotPath,
-                    screenshot.screenshotDesc,
-                    comment.comment
-                    FROM userRatingProgress
-                    JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProcessID
-                    JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
-                    JOIN category ON scenarioCategory.categoryID = category.categoryID
-                    LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
-                    LEFT JOIN screenshot ON userRating_screenshot.screenshotID = screenshot.screenshotID
-                    LEFT JOIN userRating_comment ON userRating.id = userRating_comment.userRatingID
-                    LEFT JOIN comment ON userRating_comment.commentID = comment.commentID
-                    WHERE userRatingProgress.userRatingProgressID = $urpID;";
-                    $current = $dbq->query($current);
-                    while ($currentResult = $current->fetch()){
-                        array_push($ratingData, $currentResult);
-                    }
-                } catch (PDOException $e) {
-                    echo $e;
-                }
-                // echo"<pre>";
-                // print_r($ratingData);
-                // echo"</pre>";
-                // exit;
-                $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
-
-                while ($prow = $sth->fetch()){
-                printf('<li><b>%s</b>', $prow['categoryTitle']);
-            ?>
-                <ul>
-            <?php
-
-                    //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
-                    foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
-                        $rating = '';
-                        $hasScreenshot = false;
-                        $hasComment = false;
-                        $screenshots = array();
-                        // $screenshot_path = '';
-                        $comment = '';
-
-                        if (!empty($ratingData)) {
-                            foreach ($ratingData as $key => $value) {
-                                if ($value['categoryID'] == $row['categoryID']) {
-                                    $rating = $value['ratingID'];
-                                    if(isset($value['screenshotPath'])) {
-
-                                        $hasScreenshot = true;
-                                        if(!in_array($value['screenshotPath'], $screenshots)) {
-                                            array_push($screenshots, $value['screenshotPath']);
-                                        }
-                                        // echo 'found screenshot';
-                                        // echo $value['screenshotPath'];
-                                    }
-                                    if(isset($value['comment'])) {
-                                        $hasComment = true;
-                                        $comment = $value['comment'];
-                                        // echo $thisComment;
-                                    }
-                                }
-                            }
-                            array_reverse($screenshots);
-                        }
-
-                        echo "<li><div>";
-                        echo $row['categoryTitle'] . '<input class="notEmpty ratingInput" name="rate[' . $row['categoryID'] .  ']" type="text"';
-                        if (isset($_SESSION['rateform'])){
-                            printf('value="' . $_SESSION['rateform'][$row['categoryID']] . '"/>');
-                        } elseif (!empty($ratingData)) {
-                            printf('value="' . $rating . '"/>');
-                        } else {
-                            printf('/>');
-                        }
-                        echo '<b class="toggle" data-target="definition">Show Definition</b>
-                                 <b class="toggle" data-target="screenshot">Add Screenshot</b>
-                                 <b class="toggle" data-target="comment">Add Comment</b>
-                                 </div>
-                                 <div>
-                                    <div class="definition toggle-target"><p>' . $row['categoryDescription'] . '</p></div>';
-                        if (!empty($ratingData)) {
-
-                            if ($hasScreenshot) {
-                                echo '<div class="screenshot toggle-target">';
-                                foreach ($screenshots as $key => $value) {
-                                    echo '<p><a href="' . $value . '" target="_blank">Screenshot ' . $key . '</a></p>';
-                                }
-                                echo '<input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
-                            } else {
-                                echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
-                            }
-                        } else {
-                            echo '<div class="screenshot toggle-target"><input type="file" class="form-control" name="screenshot['  . $row['categoryID'] .  ']"></div>';
-                        }
-
-                        echo '<div class="comment toggle-target"><textarea class="form-control" name="comment['  . $row['categoryID'] .  ']">' . $comment . '</textarea></div>';
+                            <ul id="categories">
+                            <?php
+                                foreach ($data['categoryGroups'] as $key => $parent) {
+                            ?>
+                                <li>
+                                    <b><?php echo $parent['categoryGroupTitle']; ?></b>
+                                    <ul>
+                                        <?php
+                                            foreach ($parent['attributes'] as $key => $attribute) {
+                                        ?>
+                                        <li>
+                                            <div>
+                                                <h5><?php echo $attribute['categoryTitle']; ?></h5>
+                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['categoryID']; ?>']" type="text" value="<?php echo $attribute['rating']; ?>"/>
+                                                <b class="toggle" data-target="definition">Show Definition</b>
+                                                <b class="toggle" data-target="screenshot">Add Screenshot</b>
+                                                <b class="toggle" data-target="comment">Add Comment</b>
+                                            </div>
+                                            <div>
+                                                <div class="definition toggle-target">
+                                                    <p><?php echo $attribute['categoryDescription']; ?></p>
+                                                </div>
+                                                <div class="screenshot toggle-target">
+                                                    <?php
+                                                    foreach ($attribute['screenshots'] as $key => $value) {
+                                                        echo '<p><a href="' . $value . '" target="_blank">Screenshot ' . $key . '</a></p>';
+                                                    }
+                                                    ?>
+                                                    <input type="file" class="form-control" name="screenshot['<?php echo $attribute['categoryID']; ?>']">
+                                                </div>
+                                                <div class="comment toggle-target">
+                                                    <textarea class="form-control" name="comment['<?php echo $attribute['categoryID']; ?>']"><?php echo $attribute['comment']; ?></textarea>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <?php
+                                            } // end attribute foreach
+                                        ?>
+                                    </ul>
+                                </li>
 
 
-                        echo '</div>';
-                        echo "</li>";
-                    }
-            ?>
-                </ul>
-            <?php
-                print "</li>";
-                }
-                $sth->closeCursor();
+                            <?php
+                                } // end groups foreach
+                            ?>
+                            </ul>
+                            <button id="saveForm" class="btn btn-primary">Save Form</button>
+                            <button id="submitForm" class="btn btn-success">Submit Form</button>
 
-            //close connection
-            $dbq = NULL;
-        ?>
-            </ul>
+                            </form>
+                        </div>
 
-                        <button id="saveForm" class="btn btn-primary">Save Form</button>
-                        <button id="submitForm" class="btn btn-success">Submit Form</button>
-
-                        </form>
                     </div>
 
+
                 </div>
-
-
-            </div>
             <!-- sitecontainer -->
 
             <!-- Included JS Files -->
