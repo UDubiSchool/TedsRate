@@ -161,18 +161,18 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
             // gets categories and attaches ratings comments and files
             try {
-                $categoryGroups = [];
-                $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
+                $criteria = [];
+                $sth = $dbq->query('CALL getCriteria(5,@cid,@ctitle,@cdesc)');
                 while ($prow = $sth->fetch()){
                     $group = [
-                        'categoryGroupTitle' => $prow['categoryTitle'],
-                        'categoryGroupID' => $prow['categoryID'],
-                        'categoryGroupDescription' => $prow['categoryDescription']
+                        'criteriaName' => $prow['criteriaName'],
+                        'criteriaID' => $prow['criteriaID'],
+                        'criteriaDesc' => $prow['criteriaDesc']
                     ];
                     $attributes = [];
 
                     //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
-                    foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
+                    foreach($dbq->query('CALL getCategories('. $prow['criteriaID'] .',@cid,@ctitle,@description)') as $row) {
                         $rating = '';
                         $hasScreenshot = false;
                         $hasComment = false;
@@ -219,11 +219,11 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     }
                     array_reverse($attributes);
                     $group['attributes'] = $attributes;
-                    array_push($categoryGroups, $group);
+                    array_push($criteria, $group);
 
                 }
-                array_reverse($categoryGroups);
-                $data['categoryGroups'] = $categoryGroups;
+                array_reverse($criteria);
+                $data['criteria'] = $criteria;
                 $sth->closeCursor();
 
                 unset($data['ratingsData']);
@@ -294,13 +294,13 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                             <ul id="categories">
                             <?php
-                                foreach ($data['categoryGroups'] as $key => $parent) {
+                                foreach ($data['criteria'] as $key => $criteria) {
                             ?>
                                 <li>
-                                    <b><?php echo $parent['categoryGroupTitle']; ?></b>
+                                    <b><?php echo $criteria['criteriaName']; ?></b>
                                     <ul>
                                         <?php
-                                            foreach ($parent['attributes'] as $key => $attribute) {
+                                            foreach ($criteria['attributes'] as $key => $attribute) {
                                         ?>
                                         <li>
                                             <div>
