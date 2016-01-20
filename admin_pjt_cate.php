@@ -12,33 +12,37 @@
 ?>
 
 <div id="wrapper">
-	<?php
-     	include "nav_part.inc.php";
-     ?>
+    <?php
+    include "nav_part.inc.php";
+    ?>
 
-	<div id="page-wrapper">
-		<h1>Category Information</h1>
-		<table id="pjt_cate_tbl" class="table table-bordered table-hover table-striped tablesorter">
-			<thead>
-              	<tr>
-	                <th>Category Title</th>
-	               	<th>Category Description</th>
-	               	<th>Category Language</th>
-              	</tr>
+    <div id="page-wrapper">
+        <h1>Category Information</h1>
+        <table id="pjt_cate_tbl" class="table table-bordered table-hover table-striped tablesorter">
+            <thead>
+            	<tr>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Criteria</th>
+                        <th>Language</th>
+            	</tr>
             </thead>
-			<tbody>
+            <tbody>
 
-				<?php
-					$pre_result = $dbq->prepare("select categoryTitle, categoryDescription, categoryLanguage from category");
-					$pre_result->execute();
-					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-						// print_r($row);
-						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['categoryTitle'],$row['categoryDescription'] ? $row['categoryDescription'] : "No information provided", "placeholder");
-					}
-				?>
-			</tbody>
-		</table>
-	</div>
+            <?php
+            $pre_result = $dbq->prepare("select categoryTitle, categoryDescription, criteriaName, languageTitle
+                FROM category
+                JOIN criteria ON criteria.criteriaID = category.criteriaID
+                JOIN languages ON languages.languageID = category.categoryLanguage");
+            $pre_result->execute();
+            while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
+            // print_r($row);
+            echo "<tr><td>$row[categoryTitle]</td><td>$row[categoryDescription]</td><td>$row[criteriaName]</td><td>$row[languageTitle]</td></tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
 
     <?php
     // logout form
