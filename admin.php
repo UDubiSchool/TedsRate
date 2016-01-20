@@ -20,14 +20,14 @@
     <title>Dashboard - SB Admin</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Add custom CSS here -->
-    <link href="stylesheets/sb-admin.css" rel="stylesheet">
+    <link href="css/sb-admin.css" rel="stylesheet">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <!-- Page Specific CSS -->
     <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
-    <link rel="stylesheet" href="stylesheets/main.css">
+    <link rel="stylesheet" href="css/main.css">
   </head>
 
   <body>

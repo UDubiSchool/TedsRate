@@ -10,17 +10,17 @@
 
 
     <!-- Page Specific Plugins -->
-    <script src="javascripts/morris/chart-data-morris.js"></script>
-    <!-- // <script src="javascripts/tablesorter/jquery.tablesorter.js"></script>/ -->
-    <!-- // <script src="javascripts/tablesorter/tables.js"></script> -->
-    <script src="javascripts/modernizr.foundation.js"></script>
-    <script src="javascripts/admin.js"></script>
+    <script src="js/morris/chart-data-morris.js"></script>
+    <!-- // <script src="js/tablesorter/jquery.tablesorter.js"></script>/ -->
+    <!-- // <script src="js/tablesorter/tables.js"></script> -->
+    <script src="js/modernizr.foundation.js"></script>
+    <script src="js/admin.js"></script>
     <!-- js_objects -->
-    <script src="javascripts/js_objects.js" type="text/javascript"></script>
-    <script src="javascripts/ajax_handler.js" type="text/javascript"></script>
-    <script src="javascripts/notice.js" type="text/javascript"></script>
-    <script src="javascripts/main.js" type="text/javascript"></script>
-    <script src="javascripts/form.js" type="text/javascript"></script>
+    <script src="js/js_objects.js" type="text/javascript"></script>
+    <script src="js/ajax_handler.js" type="text/javascript"></script>
+    <script src="js/notice.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="js/form.js" type="text/javascript"></script>
     <!-- /template plugins -->
 	<script type="text/javascript">
 		$(function() {

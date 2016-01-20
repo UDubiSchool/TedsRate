@@ -95,7 +95,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             $sth->closeCursor();
 
 
-
             //populate project title and description
             $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
             while ($row = $sth->fetch()){
@@ -106,7 +105,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
              $data['project'] = $tmp;
             }
             $sth->closeCursor();
-
 
 
             //populate personas the "language" value (5) is hard coded!
@@ -120,7 +118,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             $sth->closeCursor();
 
 
-
             //populate scenarios the "language" value (5) is hard coded!
             $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
             while ($row = $sth->fetch()){
@@ -130,10 +127,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 $data['scenario'] = $tmp;
             }
             $sth->closeCursor();
-
-
-
-
 
             //populate categories the "language" value (1) is hard coded!
             try {
@@ -166,17 +159,9 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             }
 
 
-
-
-
-
-
-
-
-
+            // gets categories and attaches ratings comments and files
+            try {
                 $categoryGroups = [];
-
-                // gets categories and attaches ratings comments and files
                 $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
                 while ($prow = $sth->fetch()){
                     $group = [
@@ -241,21 +226,18 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 $data['categoryGroups'] = $categoryGroups;
                 $sth->closeCursor();
 
+                unset($data['ratingsData']);
+
+            } catch (PDOException $e) {
+                echo $e;
+            }
+
             //close connection
             $dbq = NULL;
 
-            unset($data['ratingsData']);
-
-            // echo '<pre>';
-            // print_r($data);
-            // echo '</pre>';
-            // exit;
-
-
-
         ?>
                 <!-- container -->
-                <link rel="stylesheet" href="stylesheets/rater.css">
+                <link rel="stylesheet" href="css/rater.css">
                 <div id="sitecontainer">
                     <div class="row">
                         <div id="artPane" class="eight columns">
@@ -350,8 +332,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                         ?>
                                     </ul>
                                 </li>
-
-
                             <?php
                                 } // end groups foreach
                             ?>
@@ -361,15 +341,9 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                             </form>
                         </div>
-
                     </div>
-
-
                 </div>
             <!-- sitecontainer -->
-
-            <!-- Included JS Files -->
-            <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
 
             <script>
                 $(document).ready(function() {

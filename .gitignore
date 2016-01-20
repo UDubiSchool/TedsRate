@@ -22,6 +22,7 @@ coverage/
 public/system/
 public/assets/
 attachments/
+upload/screenshots/
 
 # ignore specific file types
 *.log
