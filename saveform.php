@@ -1,12 +1,6 @@
 <?php
+// THIS FILE IS UNUSED
 // ============================== authentication ===============================
-//if (session_status() == PHP_SESSION_NONE) {
-//    session_start();
-//}
-//session_regenerate_id();
-//if(!isset($_SESSION['user_email'])) {    // if there is no valid session
-//    header("Location: index.php?notice=login_first");
-//}
 require "session_inc.php";
 // ============================== authentication ===============================
 
@@ -35,16 +29,16 @@ require_once "dbconnect.php";
 try {
 	$dbq = db_connect();
 	$dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
+
 	$sql['psid'] = 'SELECT psID from personaScenario WHERE personaID='.$ids['persona'].' AND scenarioID='.$ids['scenario'];
 	// $sql['upid'] = 'SELECT userPersonaeID from userPersonae WHERE userID='.$ids['user'].' AND personaeID='.$ids['persona'];
 	$sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID='.$ids['user'].' AND personaID='.$ids['persona'];
 	$sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID='.$ids['project'].' AND artifactID='.$ids['artifact'];
-	
+
 	foreach($sql as $k => $v){
 		foreach ($dbq->query($v) as $row) {
 			$ids[$k] = $row[0];
-		}	
+		}
 	}
 
 	$dbq = NULL;

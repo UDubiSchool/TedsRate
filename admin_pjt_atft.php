@@ -14,7 +14,7 @@
 <div id="wrapper">
 	<?php
      	include "nav_part.inc.php";
-     ?>
+	?>
 
 	<div id="page-wrapper">
 		<h1>Project Artifact Information</h1>
