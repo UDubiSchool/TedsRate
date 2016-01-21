@@ -15,8 +15,8 @@ try {
 
 ?>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular.min.js" type="text/javascript"></script> -->
-<script src="javascripts/angular.min.js" type="text/javascript"></script>
-<script src="javascripts/app.js" type="text/javascript"></script>
+<script src="js/angular.min.js" type="text/javascript"></script>
+<script src="js/app.js" type="text/javascript"></script>
 <div id="wrapper">
      <?php
         include "nav_part.inc.php";
@@ -212,8 +212,8 @@ try {
 <!-- include js files -->
     <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
     <!-- // <script src="javascripts/foundation.js"></script> -->
-    <script src="javascripts/app.js"></script>
-    <script src="javascripts/admin.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
     <script>
         $(function() {
 //            console.log("triggered");

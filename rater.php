@@ -396,9 +396,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                     $("#userAgentPicker").change(function() {
                         changeIframe();
-                        // document.getElementById('activeIframe').contentWindow.location.reload();
-
-
                     });
 
                     function changeIframe() {
@@ -429,15 +426,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 }); // END DOC READY
 
             </script>
-            <?php
-            printf('existing session: %s', session_id() );
-            ?>
-
-            <div id="savemsg" class="reveal-modal">
-                <h2>Your form been saved</h2>
-                <p>The fields you have filled out so far have been saved, but they have not been submitted. Please submit all results once you are done.</p>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
 <?php
         }
     } catch (PDOException $e) {
