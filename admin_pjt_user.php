@@ -5,7 +5,7 @@
 
 	//set up some SQL statements
 	$sql["language"] = 'SELECT * from languages';
-    $sql['persona'] = 'select * from personae';
+    $sql['persona'] = 'select * from persona';
 
 	try {
 		$dbq = db_connect();
@@ -31,13 +31,14 @@
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select firstName, lastName, email, preferredLanguage, AuthorityLevel
+					$pre_result = $dbq->prepare("select firstName, lastName, email, languageTitle, AuthorityLevel
 					                             from userProfile
+                                                                                                JOIN language ON language.languageID = userProfile.preferredLanguage
 					                             where AuthorityLevel = 1");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
-						printf('<tr><td>%s %s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['firstName'],$row['lastName'],$row['email'],$row['preferredLanguage'],$row['AuthorityLevel'] == 2 ? "Administrator" : "User");
+						printf('<tr><td>%s %s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['firstName'],$row['lastName'],$row['email'],$row['languageTitle'],$row['AuthorityLevel'] == 2 ? "Administrator" : "User");
 					}
 				?>
 			</tbody>
@@ -62,7 +63,7 @@
 							<select name="languageID" class="form-control notEmpty">
 								<?php
 									//make languages select
-									foreach ($dbq->query('SELECT * FROM languages') as $row) {
+									foreach ($dbq->query('SELECT * FROM language') as $row) {
 										printf('<option value="' . $row['languageID'] . '">' . $row['languageTitle'] . '</option>');
 									}
 								?>
@@ -73,7 +74,7 @@
                                 <?php
                                     // make checkbox for persona options
                                     foreach ($dbq->query($sql['persona']) as $row) {
-                                        printf('<label><input type="checkbox" name="userPersona[]" value=' . $row['personaeID'] . '>' . $row['personaTitle'] . '</label><br/>');
+                                        printf('<label><input type="checkbox" name="userPersona[]" value=' . $row['personaID'] . '>' . $row['personaName'] . '</label><br/>');
                                     }
                                 ?>
                             </div>

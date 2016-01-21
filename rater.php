@@ -5,17 +5,10 @@ require_once "header.no_session.inc.php";
 $pid = null; //project id
 $aid = null; //artifact id
 
-
-//get project and artifact IDS from GET variables via <form> submit in index.php
-//if ( isset($_GET['selProject']) && isset($_GET['selArtifact']) ){
-//	$pid = $_GET['selProject'];
-//	$aid = $_GET['selArtifact'];
-//}
-
 require_once "dbconnect.php";
 
 // selLanguage=5&selProject=26&selArtifact=60&selScenario=27&selPersona=20
-if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['selScenario']) && isset($_GET['selPersona']) && isset($_GET['selArtifact'])) {
+if (isset($_GET['urpId'])) {
     foreach ($_GET as $key => $value) {
         if (preg_match("/^\s*$/i", $value)) {
             ?>
@@ -37,27 +30,27 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
         $dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-        $pid = $_GET['selProject'];
-        $aid = $_GET['selArtifact'];
-        $lanID = $_GET['selLanguage'];
-        $personaID = $_GET['selPersona'];
-        $scenarioID = $_GET['selScenario'];
+        $pid = '';
+        $aid = '';
+        $lanID = '';
+        $personaID = '';
+        $scenarioID = '';
+
         $urpID = $_GET['urpId'];
 
         $authenticate_query =  "SELECT * FROM userRatingProgress urp
                                 join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
                                 join userProfile upro on upro.userID = urp.userID
-                                where pa.projectID = " . $pid .
-                                " and pa.artifactID = " . $aid .
-                                " and upro.preferredLanguage = " . $lanID .
-                                " and urp.personaID = " . $personaID .
-                                " and urp.scenarioID = " . $scenarioID .
-                                " and urp.`userRatingProgressID` = " . $urpID;
+                                where urp.`userRatingProgressID` = $urpID";
 
 //        echo($authenticate_query);
 
-        $flag = $dbq->query($authenticate_query)->fetchAll();
-//        print_r($flag);
+        $flag = $dbq->query($authenticate_query)->fetchAll();;
+        $pid = $flag[0]['projectID'];
+        $aid = $flag[0]['artifactID'];
+        $lanID = $flag[0]['preferredLanguage'];
+        $personaID = $flag[0]['personaID'];
+        $scenarioID = $flag[0]['scenarioID'];
 
         if (!$flag) {
             // authentication failed: user identity mismatch
@@ -70,9 +63,6 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
             </div>
         <?php
         } else {
-//            print_r($flag[0]['userRatingProgressID']);
-//            echo($flag[0]['userRatingProgressID']);
-//            echo($flag[0]['userID']);
 
             // available variables
             $uid = $flag[0]['userID'];
@@ -108,10 +98,10 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
 
             //populate personas the "language" value (5) is hard coded!
-            $sth = $dbq->query('select * from personae where personae.personaeID = ' . $personaID);
+            $sth = $dbq->query('select * from persona where persona.personaID = ' . $personaID);
             while ($row = $sth->fetch()){
                 $tmp = [
-                    'personaTitle' => $row['personaTitle'],
+                    'personaName' => $row['personaName'],
                 ];
                 $data['persona'] = $tmp;
             }
@@ -136,12 +126,12 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 userRating.id,
                 userRating.ratingID,
                 category.categoryID,
-                category.categoryTitle,
+                category.categoryName,
                 screenshot.screenshotPath,
                 screenshot.screenshotDesc,
                 comment.comment
                 FROM userRatingProgress
-                JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProcessID
+                JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProgressID
                 JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
                 JOIN category ON scenarioCategory.categoryID = category.categoryID
                 LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
@@ -164,15 +154,15 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 $criteria = [];
                 $sth = $dbq->query('CALL getCriteria(5,@cid,@ctitle,@cdesc)');
                 while ($prow = $sth->fetch()){
-                    $group = [
-                        'criteriaName' => $prow['criteriaName'],
-                        'criteriaID' => $prow['criteriaID'],
-                        'criteriaDesc' => $prow['criteriaDesc']
+                    $criterion = [
+                        'criterionName' => $prow['criterionName'],
+                        'criterionID' => $prow['criterionID'],
+                        'criterionDesc' => $prow['criterionDesc']
                     ];
                     $attributes = [];
 
                     //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
-                    foreach($dbq->query('CALL getCategories('. $prow['criteriaID'] .',@cid,@ctitle,@description)') as $row) {
+                    foreach($dbq->query('CALL getCategories('. $prow['criterionID'] .',@cid,@ctitle,@description)') as $row) {
                         $rating = '';
                         $hasScreenshot = false;
                         $hasComment = false;
@@ -206,8 +196,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                         $attribute = [
                             'categoryID' => $row['categoryID'],
-                            'categoryTitle' => $row['categoryTitle'],
-                            'categoryDescription' => $row['categoryDescription'],
+                            'categoryName' => $row['categoryName'],
+                            'categoryDesc' => $row['categoryDesc'],
                             'rating' => $rating,
                             'hasScreenshot' => $hasScreenshot,
                             'hasComment' => $hasComment,
@@ -218,8 +208,8 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                         array_push($attributes, $attribute);
                     }
                     array_reverse($attributes);
-                    $group['attributes'] = $attributes;
-                    array_push($criteria, $group);
+                    $criterion['attributes'] = $attributes;
+                    array_push($criteria, $criterion);
 
                 }
                 array_reverse($criteria);
@@ -264,7 +254,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                 </div>
                                 <div id="anchor" class="activeSite">
                                     <h2>Anchor Site - Wikipedia.org, http://en.wikipedia.org</h2>
-                                    <iframe width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
+                                    <iframe id="anchorIframe" width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
                                 </div>
                             </div>
                         </div>
@@ -274,7 +264,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                 <tr>
                                     <td>
                                         1. Current Persona:
-                                        <p id="personae"><?php echo $data['persona']['personaTitle']; ?></p>
+                                        <p id="personae"><?php echo $data['persona']['personaName']; ?></p>
                                     </td>
                                     <td>
                                         2. Current Scenario
@@ -294,17 +284,17 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
                             <ul id="categories">
                             <?php
-                                foreach ($data['criteria'] as $key => $criteria) {
+                                foreach ($data['criteria'] as $key => $criterion) {
                             ?>
                                 <li>
-                                    <b><?php echo $criteria['criteriaName']; ?></b>
+                                    <b><?php echo $criterion['criterionName']; ?></b>
                                     <ul>
                                         <?php
-                                            foreach ($criteria['attributes'] as $key => $attribute) {
+                                            foreach ($criterion['attributes'] as $key => $attribute) {
                                         ?>
                                         <li>
                                             <div>
-                                                <h5><?php echo $attribute['categoryTitle']; ?></h5>
+                                                <h5><?php echo $attribute['categoryName']; ?></h5>
                                                 <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['categoryID']; ?>']" type="text" value="<?php echo $attribute['rating']; ?>"/>
                                                 <b class="toggle" data-target="definition">Show Definition</b>
                                                 <b class="toggle" data-target="screenshot">Add Screenshot</b>
@@ -312,7 +302,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                                             </div>
                                             <div>
                                                 <div class="definition toggle-target">
-                                                    <p><?php echo $attribute['categoryDescription']; ?></p>
+                                                    <p><?php echo $attribute['categoryDesc']; ?></p>
                                                 </div>
                                                 <div class="screenshot toggle-target">
                                                     <?php
@@ -399,29 +389,34 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     });
 
                     function changeIframe() {
-                        var option = $("#userAgentPicker").find(":selected");
-                        var width = option.attr("data-width");
-                        var sitePaneWidth = parseInt($("#sitePane").width());
-                        var windowWidth = parseInt($(window).width());
-                        var iframe = $("#activeIframe");
-                        if (width == "100%") {
-                            width = $("#sitePane").width();
-                        }
+                        var iframes = [$("#activeIframe")];
 
-                        var innerWidth = iframe.contents().width();
-                        // var innerWidth = 980;
-                        var scale = (width - 15) / innerWidth ;
+                        iframes.forEach(function(iframe) {
+                            var option = $("#userAgentPicker").find(":selected");
+                            var width = option.attr("data-width");
+                            var sitePaneWidth = parseInt($("#sitePane").width());
+                            var windowWidth = parseInt($(window).width());
+                            // var iframe = $("#activeIframe");
+                            if (width == "100%") {
+                                width = $("#sitePane").width();
+                            }
+
+                            var innerWidth = iframe.contents().width();
+                            // var innerWidth = 980;
+                            var scale = (width - 15) / innerWidth ;
 
 
-                        var height = option.attr("data-height");
-                        var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  option.val() + "&w=" + width + "&h=" + height;
+                            var height = option.attr("data-height");
+                            var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  option.val() + "&w=" + width + "&h=" + height;
 
 
-                        iframe.width(width/scale)
-                        iframe.height(height/scale);
-                        iframe.css("-webkit-transform", "scale(" + scale + ")");
-                        iframe.css("-moz-transform-scale", scale);
-                        iframe.attr("src", finalUrl);
+                            iframe.width(width/scale)
+                            iframe.height(height/scale);
+                            iframe.css("-webkit-transform", "scale(" + scale + ")");
+                            iframe.css("-moz-transform-scale", scale);
+                            iframe.attr("src", finalUrl);
+                        })
+
                     }
                 }); // END DOC READY
 

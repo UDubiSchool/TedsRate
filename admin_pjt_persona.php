@@ -29,11 +29,11 @@
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select personaTitle, personaDescription, personaLanguage from personae");
+					$pre_result = $dbq->prepare("select personaName, personaDesc, languageTitle from persona JOIN language ON language.LanguageID = persona.personaLanguageID");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
-						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['personaTitle'],$row['personaDescription'] ? $row['personaDescription'] : "No information provided", $row['personaLanguage']);
+						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['personaName'],$row['personaDesc'] ? $row['personaDesc'] : "No information provided", $row['languageTitle']);
 					}
 				?>
 			</tbody>
@@ -49,7 +49,7 @@
 <!--					<a class="addmore" href="#" id="addMorePersonas">Add Another Persona</a>-->
 					<div id="personas">
 						<div class="addPersona">
-							<label for="personaTitle[]">Persona Title</label><input class="input-text form-control notEmpty" type="text" name="personaTitle[]" />
+							<label for="personaName[]">Persona Title</label><input class="input-text form-control notEmpty" type="text" name="personaTitle[]" />
 							<label for="personaDesc[]">Persona Description</label><input class="input-text form-control notEmpty" type="text" name="personaDesc[]" />
 						</div>
 					</div>

@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
 
 	try {
 		$dbq = db_connect();
@@ -30,14 +30,14 @@
             <tbody>
 
             <?php
-            $pre_result = $dbq->prepare("select categoryTitle, categoryDescription, criteriaName, languageTitle
+            $pre_result = $dbq->prepare("select categoryName, categoryDesc, criterionName, languageTitle
                 FROM category
-                JOIN criteria ON criteria.criteriaID = category.criteriaID
-                JOIN languages ON languages.languageID = category.categoryLanguage");
+                JOIN criterion ON criterion.criterionID = category.criterionID
+                JOIN language ON language.languageID = category.categoryLanguageID");
             $pre_result->execute();
             while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
             // print_r($row);
-            echo "<tr><td>$row[categoryTitle]</td><td>$row[categoryDescription]</td><td>$row[criteriaName]</td><td>$row[languageTitle]</td></tr>";
+            echo "<tr><td>$row[categoryName]</td><td>$row[categoryDesc]</td><td>$row[criterionName]</td><td>$row[languageTitle]</td></tr>";
             }
             ?>
             </tbody>

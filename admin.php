@@ -59,7 +59,7 @@
 
                 from userRatingProgress urp
                 join userProfile upro on urp.userID = upro.userID
-                join personae p on urp.personaID = p.personaeID
+                join persona p on urp.personaID = p.personaID
                 join scenario s on urp.scenarioID = s.scenarioID
                 join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
                 join project pjt on pjt.projectID = pa.projectID
@@ -76,10 +76,10 @@
 
 <?php
     // inner level query
-        $inner_query = "select c.categoryTitle as cTitle,
+        $inner_query = "select c.categoryName as cName,
                         ur.ratingID as ratingScore
                         from userRatingProgress urp
-                        join userRating ur on urp.userRatingProgressID = ur.userRatingProcessID
+                        join userRating ur on urp.userRatingProgressID = ur.userRatingProgressID
                         join scenarioCategory sc on ur.scenarioCategoryID = sc.SC_ID
                         join category c on c.categoryID = sc.categoryID
                         where urp.userRatingProgressID = " . $row['urpID'];
@@ -113,7 +113,7 @@
                                     </tr>
                                     <?php
                                     for ($i = 0; $i < count($sec_first_half); $i++) {
-                                        print "<tr class='data_wrapper'><td>" . $sec_first_half[$i]['cTitle'] . "</td>";
+                                        print "<tr class='data_wrapper'><td>" . $sec_first_half[$i]['cName'] . "</td>";
                                         print "<td>" . $sec_first_half[$i]['ratingScore'] . "</td></tr>";
                                     }
                                     ?>
@@ -127,7 +127,7 @@
                                     </tr>
                                     <?php
                                     for ($i = 0; $i < count($sec_second_half); $i++) {
-                                        print "<tr class='data_wrapper'><td>" . $sec_second_half[$i]['cTitle'] . "</td>";
+                                        print "<tr class='data_wrapper'><td>" . $sec_second_half[$i]['cName'] . "</td>";
                                         print "<td>" . $sec_second_half[$i]['ratingScore'] . "</td></tr>";
                                     }
                                     ?>
@@ -158,17 +158,17 @@
   <!-- Included JS Files -->
   <!-- template plugins -->
   <!-- JavaScript -->
-    <script src="javascripts/jquery-1.10.2.js"></script>
-    <script src="javascripts/bootstrap.js"></script>
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/bootstrap.js"></script>
 
     <!-- Page Specific Plugins -->
     <!-- // <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> -->
     <!-- // <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script> -->
-    <script src="javascripts/morris/chart-data-morris.js"></script>
-    <script src="javascripts/tablesorter/jquery.tablesorter.js"></script>
-    <script src="javascripts/tablesorter/tables.js"></script>
-    <script src="javascripts/main.js"></script>
-    <script src="javascripts/notice.js"></script>
+    <script src="js/morris/chart-data-morris.js"></script>
+    <script src="js/tablesorter/jquery.tablesorter.js"></script>
+    <script src="js/tablesorter/tables.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/notice.js"></script>
   <!-- /template plugins -->
     <?php
         require_once "notice.inc.php";
