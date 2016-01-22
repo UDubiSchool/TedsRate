@@ -112,7 +112,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
             $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
             while ($row = $sth->fetch()){
                 $tmp = [
-                    'scenarioTitle' => $row['scenarioTitle'],
+                    'scenarioName' => $row['scenarioName'],
                 ];
                 $data['scenario'] = $tmp;
             }
@@ -270,7 +270,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                                     </td>
                                     <td>
                                         2. Current Scenario
-                                        <p id="scenario"><?php echo $data['scenario']['scenarioTitle']; ?></p>
+                                        <p id="scenario"><?php echo $data['scenario']['scenarioName']; ?></p>
                                     </td>
                                 </tr>
                             </table>
