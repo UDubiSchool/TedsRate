@@ -77,7 +77,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
             $sth->execute();
             while ($row = $sth->fetch()){
             $tmp = [
-                'title' => $row['title'],
+                'name' => $row['name'],
                 'url' => $row['URL']
             ];
             $data['artifact'] = $tmp;
@@ -89,7 +89,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
             $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
             while ($row = $sth->fetch()){
              $tmp = [
-                 'title' => $row['title'],
+                 'name' => $row['name'],
                  'description' => $row['description']
              ];
              $data['project'] = $tmp;
@@ -245,12 +245,12 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                             <input type="hidden" name="assessmentID" value="<?php echo $assessmentID ?>" class="notEmpty">
                             <dl id="anchorSel" class="sub-nav">
                               <dt>Active site view:</dt>
-                              <dd class="active"><a href="#"><?php echo $data['artifact']['title']; ?></a></dd>
+                              <dd class="active"><a href="#"><?php echo $data['artifact']['name']; ?></a></dd>
                               <dd><a href="#">Anchor Site</a></dd>
                             </dl>
                             <div id="sitePane">
                                 <div id="currRate" class="activeSite">
-                                <h2><?php echo $data['artifact']['title'] . ": " . urldecode($data['artifact']['url']); ?></h2>
+                                <h2><?php echo $data['artifact']['name'] . ": " . urldecode($data['artifact']['url']); ?></h2>
                                 <input type="hidden" id="activeIframeSrc" value="<?php echo urldecode($data['artifact']['url']); ?>">
                                 <iframe id="activeIframe" scrolling="auto" src=""></iframe>
                                 </div>
@@ -261,7 +261,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                             </div>
                         </div>
                         <div id="ratePane" class="four columns">
-                            <h2><?php echo $data['project']['title']; ?></h2><p><?php echo $data['project']['description']; ?></p>
+                            <h2><?php echo $data['project']['name']; ?></h2><p><?php echo $data['project']['description']; ?></p>
                             <table width="100%">
                                 <tr>
                                     <td>

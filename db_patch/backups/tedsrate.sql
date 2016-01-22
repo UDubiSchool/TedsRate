@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 22, 2016 at 02:34 PM
+-- Generation Time: Jan 22, 2016 at 02:53 PM
 -- Server version: 5.6.27-0ubuntu1
 -- PHP Version: 5.6.11-1ubuntu3.1
 
@@ -19,8 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `tedsrate`
 --
-CREATE DATABASE IF NOT EXISTS `tedsrate` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `tedsrate`;
 
 DELIMITER $$
 --
@@ -187,7 +185,7 @@ END$$
 
 CREATE DEFINER=`root`@`%.washington.edu` PROCEDURE `getArtifact`(IN `artifactID` INT, OUT `name` VARCHAR(45), OUT `url` VARCHAR(255), OUT `description` VARCHAR(150), OUT `artType` VARCHAR(45))
 BEGIN
-SELECT artifact.artifactName as name, a.artifactURL as URL, atype.artifactTypeDescription as description, atype.artifactTypeTitle as artType
+SELECT a.artifactName as name, a.artifactURL as URL, atype.artifactTypeDescription as description, atype.artifactTypeName as artType
 from artifact a inner join artifactType atype on a.artifactTypeID = atype.artifactTypeID
 WHERE a.artifactID = artifactID;
 END$$
@@ -210,7 +208,7 @@ END$$
 
 CREATE DEFINER=`root`@`%.washington.edu` PROCEDURE `getProject`(IN `pID` INT, OUT `name` VARCHAR(45), OUT `description` VARCHAR(150))
 BEGIN
-SELECT project.projectName as name, p.projectDescription as description
+SELECT p.projectName as name, p.projectDescription as description
 FROM project p
 WHERE p.projectID = pID;
 END$$
@@ -265,22 +263,6 @@ CREATE TABLE IF NOT EXISTS `artifact` (
 ) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `artifact`:
---   `artifactTypeID`
---       `artifactType` -> `artifactTypeID`
---   `artifactTypeID`
---       `artifactType` -> `artifactTypeID`
---   `artifactTypeID`
---       `artifactType` -> `artifactTypeID`
---   `artifactTypeID`
---       `artifactType` -> `artifactTypeID`
---   `artifactTypeID`
---       `artifactType` -> `artifactTypeID`
---   `artifactLanguageID`
---       `language` -> `languageID`
---
-
---
 -- Dumping data for table `artifact`
 --
 
@@ -318,10 +300,6 @@ CREATE TABLE IF NOT EXISTS `artifactType` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `artifactType`:
---
-
---
 -- Dumping data for table `artifactType`
 --
 
@@ -341,10 +319,6 @@ CREATE TABLE IF NOT EXISTS `artifactTypes` (
   `artifactTypeTitle` varchar(100) NOT NULL,
   `artifactTypeDescription` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `artifactTypes`:
---
 
 --
 -- Dumping data for table `artifactTypes`
@@ -372,18 +346,6 @@ CREATE TABLE IF NOT EXISTS `assessment` (
   `completionDate` datetime DEFAULT NULL,
   `ratingUrl` varchar(2083) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `assessment`:
---   `userID`
---       `user` -> `userID`
---   `personaID`
---       `persona` -> `personaID`
---   `scenarioID`
---       `scenario` -> `scenarioID`
---   `projectArtifactID`
---       `projectArtifact` -> `projectArtifactID`
---
 
 --
 -- Dumping data for table `assessment`
@@ -569,14 +531,6 @@ CREATE TABLE IF NOT EXISTS `category` (
 ) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `category`:
---   `categoryLanguageID`
---       `language` -> `languageID`
---   `criterionID`
---       `criterion` -> `criterionID`
---
-
---
 -- Dumping data for table `category`
 --
 
@@ -641,10 +595,6 @@ CREATE TABLE IF NOT EXISTS `cluster` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `cluster`:
---
-
---
 -- Dumping data for table `cluster`
 --
 
@@ -673,14 +623,6 @@ CREATE TABLE IF NOT EXISTS `cluster_category` (
   `clusterID` int(11) NOT NULL,
   `categoryID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `cluster_category`:
---   `categoryID`
---       `category` -> `categoryID`
---   `clusterID`
---       `cluster` -> `clusterID`
---
 
 --
 -- Dumping data for table `cluster_category`
@@ -742,12 +684,6 @@ CREATE TABLE IF NOT EXISTS `comment` (
 ) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `comment`:
---   `userCreated`
---       `user` -> `userID`
---
-
---
 -- Dumping data for table `comment`
 --
 
@@ -766,12 +702,6 @@ CREATE TABLE IF NOT EXISTS `criterion` (
   `criterionDesc` varchar(255) DEFAULT NULL,
   `criterionLanguageID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `criterion`:
---   `criterionLanguageID`
---       `language` -> `languageID`
---
 
 --
 -- Dumping data for table `criterion`
@@ -797,10 +727,6 @@ CREATE TABLE IF NOT EXISTS `language` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `language`:
---
-
---
 -- Dumping data for table `language`
 --
 
@@ -819,10 +745,6 @@ CREATE TABLE IF NOT EXISTS `languages` (
   `languageID` int(11) NOT NULL,
   `languageTitle` varchar(45) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `languages`:
---
 
 --
 -- Dumping data for table `languages`
@@ -845,12 +767,6 @@ CREATE TABLE IF NOT EXISTS `persona` (
   `personaDesc` varchar(512) DEFAULT NULL,
   `personaLanguageID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `persona`:
---   `personaLanguageID`
---       `language` -> `languageID`
---
 
 --
 -- Dumping data for table `persona`
@@ -877,10 +793,6 @@ CREATE TABLE IF NOT EXISTS `personae` (
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `personae`:
---
-
---
 -- Dumping data for table `personae`
 --
 
@@ -902,14 +814,6 @@ CREATE TABLE IF NOT EXISTS `personaScenario` (
   `personaID` int(11) NOT NULL,
   `scenarioID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `personaScenario`:
---   `personaID`
---       `persona` -> `personaID`
---   `scenarioID`
---       `scenario` -> `scenarioID`
---
 
 --
 -- Dumping data for table `personaScenario`
@@ -945,12 +849,6 @@ CREATE TABLE IF NOT EXISTS `project` (
 ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `project`:
---   `projectLanguageID`
---       `language` -> `languageID`
---
-
---
 -- Dumping data for table `project`
 --
 
@@ -973,14 +871,6 @@ CREATE TABLE IF NOT EXISTS `projectArtifact` (
   `artifactID` int(11) NOT NULL,
   `isAnchor` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `projectArtifact`:
---   `artifactID`
---       `artifact` -> `artifactID`
---   `projectID`
---       `project` -> `projectID`
---
 
 --
 -- Dumping data for table `projectArtifact`
@@ -1009,14 +899,6 @@ CREATE TABLE IF NOT EXISTS `rating` (
   `ratingValue` decimal(11,1) NOT NULL,
   `categoryID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4421 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `rating`:
---   `assessmentID`
---       `assessment` -> `assessmentID`
---   `categoryID`
---       `category` -> `categoryID`
---
 
 --
 -- Dumping data for table `rating`
@@ -3582,7 +3464,8 @@ INSERT INTO `rating` (`ratingID`, `assessmentID`, `ratingValue`, `categoryID`) V
 (3491, 188, 2.0, 40),
 (3492, 188, 2.0, 41),
 (3493, 188, 3.0, 42),
-(3494, 188, 3.0, 43),
+(3494, 188, 3.0, 43);
+INSERT INTO `rating` (`ratingID`, `assessmentID`, `ratingValue`, `categoryID`) VALUES
 (3495, 188, 4.0, 44),
 (3496, 188, 3.0, 45),
 (3497, 188, 3.0, 46),
@@ -4305,14 +4188,6 @@ CREATE TABLE IF NOT EXISTS `rating_comment` (
 ) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 
 --
--- RELATIONS FOR TABLE `rating_comment`:
---   `ratingID`
---       `rating` -> `ratingID`
---   `commentID`
---       `comment` -> `commentID`
---
-
---
 -- Dumping data for table `rating_comment`
 --
 
@@ -4331,14 +4206,6 @@ CREATE TABLE IF NOT EXISTS `rating_screenshot` (
   `screenshotID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
---
--- RELATIONS FOR TABLE `rating_screenshot`:
---   `ratingID`
---       `rating` -> `ratingID`
---   `screenshotID`
---       `screenshot` -> `screenshotID`
---
-
 -- --------------------------------------------------------
 
 --
@@ -4351,12 +4218,6 @@ CREATE TABLE IF NOT EXISTS `scenario` (
   `scenarioDescription` varchar(255) DEFAULT NULL,
   `scenarioLanguageID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `scenario`:
---   `scenarioLanguageID`
---       `language` -> `languageID`
---
 
 --
 -- Dumping data for table `scenario`
@@ -4390,18 +4251,6 @@ CREATE TABLE IF NOT EXISTS `scenarioCategory` (
   `scenarioID` int(11) NOT NULL,
   `categoryID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1541 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `scenarioCategory`:
---   `scenarioID`
---       `scenario` -> `scenarioID`
---   `categoryID`
---       `category` -> `categoryID`
---   `scenarioID`
---       `scenario` -> `scenarioID`
---   `categoryID`
---       `category` -> `categoryID`
---
 
 --
 -- Dumping data for table `scenarioCategory`
@@ -5023,14 +4872,6 @@ CREATE TABLE IF NOT EXISTS `screenshot` (
   `userCreated` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
---
--- RELATIONS FOR TABLE `screenshot`:
---   `userCreated`
---       `user` -> `userID`
---   `userCreated`
---       `user` -> `userID`
---
-
 -- --------------------------------------------------------
 
 --
@@ -5046,12 +4887,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   `passwordValue` varchar(100) DEFAULT NULL,
   `AuthorityLevel` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `user`:
---   `preferredLanguage`
---       `language` -> `languageID`
---
 
 --
 -- Dumping data for table `user`
@@ -5094,14 +4929,6 @@ CREATE TABLE IF NOT EXISTS `userPersonae` (
   `userID` int(11) NOT NULL,
   `personaID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
-
---
--- RELATIONS FOR TABLE `userPersonae`:
---   `userID`
---       `user` -> `userID`
---   `personaID`
---       `persona` -> `personaID`
---
 
 --
 -- Dumping data for table `userPersonae`
