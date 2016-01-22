@@ -77,11 +77,10 @@
 <?php
     // inner level query
         $inner_query = "select c.categoryName as cName,
-                        ur.ratingID as ratingScore
+                        ur.rating as ratingScore
                         from userRatingProgress urp
                         join userRating ur on urp.userRatingProgressID = ur.userRatingProgressID
-                        join scenarioCategory sc on ur.scenarioCategoryID = sc.SC_ID
-                        join category c on c.categoryID = sc.categoryID
+                        join category c on c.categoryID = ur.categoryID
                         where urp.userRatingProgressID = " . $row['urpID'];
         $stmt = $dbq->prepare($inner_query);
         $stmt->execute();

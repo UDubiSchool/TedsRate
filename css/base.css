@@ -25,7 +25,7 @@ h3 {font:400 18px arial;}
 #categories>li{display:block;background:#222;color:#ddd;font-size:13px;padding:10px 2px 2px;font-size:16px;cursor:pointer;}
 #categories ul {margin:0;display:none;}
 #categories ul li{display:block;background:#eee;margin:0;border-bottom:1px solid #ccc;color:#333;padding:4px;}
-#categories .ratingInput {border:1px solid #333;background:#fff;margin-right:5px;width:27px;float:left;vertical-align:middle;}
+#categories .ratingInput {border:1px solid #333;background:#fff;margin-right:5px;width:27px;float:left;vertical-align:middle;padding:2px;}
 
 #categories ul li:after { content:""; display:table;clear: both;zoom:1; }
 

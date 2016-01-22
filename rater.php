@@ -124,16 +124,15 @@ if (isset($_GET['urpId'])) {
                 $ratingData = [];
                 $current = "SELECT
                 userRating.id,
-                userRating.ratingID,
-                category.categoryID,
+                userRating.rating,
+                userRating.categoryID,
                 category.categoryName,
                 screenshot.screenshotPath,
                 screenshot.screenshotDesc,
                 comment.comment
                 FROM userRatingProgress
                 JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProgressID
-                JOIN scenarioCategory ON scenarioCategory.SC_ID = userRating.scenarioCategoryID
-                JOIN category ON scenarioCategory.categoryID = category.categoryID
+                JOIN category ON userRating.categoryID = category.categoryID
                 LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
                 LEFT JOIN screenshot ON userRating_screenshot.screenshotID = screenshot.screenshotID
                 LEFT JOIN userRating_comment ON userRating.id = userRating_comment.userRatingID
@@ -143,11 +142,14 @@ if (isset($_GET['urpId'])) {
                 while ($currentResult = $current->fetch()){
                     array_push($ratingData, $currentResult);
                 }
+                array_reverse($ratingData);
                 $data['ratingsData']= $ratingData;
             } catch (PDOException $e) {
                 echo $e;
             }
-
+            // echo '<pre>';
+            // print_r($data['ratingsData']);
+            // echo'</pre>';
 
             // gets categories and attaches ratings comments and files
             try {
@@ -171,12 +173,12 @@ if (isset($_GET['urpId'])) {
 
 
                         if (!empty($data['ratingsData'])) {
-
+                            // echo "not empty!";
                             foreach ($data['ratingsData'] as $key => $value) {
 
                                 if ($value['categoryID'] == $row['categoryID']) {
 
-                                    $rating = $value['ratingID'];
+                                    $rating = intval($value['rating']);
 
                                     if(isset($value['screenshotPath'])) {
                                         $hasScreenshot = true;
@@ -184,7 +186,7 @@ if (isset($_GET['urpId'])) {
                                             array_push($screenshots, $value['screenshotPath']);
                                         }
                                     }
-
+                                    echo $value['comment'];
                                     if(isset($value['comment'])) {
                                         $hasComment = true;
                                         $comment = $value['comment'];
@@ -221,7 +223,7 @@ if (isset($_GET['urpId'])) {
             } catch (PDOException $e) {
                 echo $e;
             }
-
+            // exit;
             //close connection
             $dbq = NULL;
 
@@ -380,7 +382,6 @@ if (isset($_GET['urpId'])) {
                     $(".toggle").click(function(){
                         var target = ".";
                         target = target + $(this).attr('data-target');
-                        console.log(target);
                         $(this).parent().next().children(target).slideToggle();
                     });
 
