@@ -51,7 +51,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                 break;
             case "persona_user":
                 $sql = "SELECT u.userID as id, CONCAT(u.firstName, ' ', u.lastName) as Title FROM userPersonae up
-                        join userProfile u on u.userID = up.userID
+                        join user u on u.userID = up.userID
                         join persona p on p.personaID = up.personaID
                         where up.personaID = " . $trigger;
                 break;
@@ -91,9 +91,9 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
         $sendEmail = $_GET['sendEmail'];
 
         $first_query = "SELECT * FROM assessment ass
-                             join userProfile up on ass.userID = up.userID
+                             join user u on ass.userID = u.userID
                              where ass.`assessmentID` = " . $assessmentID . "
-                             and up.email = '" . (string)$email . "'";
+                             and u.email = '" . (string)$email . "'";
         $flag = $dbq->query($first_query)->fetchColumn();
 //        $flag->execute();
 //        echo($flag);
@@ -101,7 +101,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
         if ($flag) {
             $query = $dbq->prepare("SELECT * FROM assessment
                                     join projectArtifact pa on assessment.projectArtifactID = pa.projectArtifactID
-                                    join userProfile upro on upro.userID = assessment.userID
+                                    join user u on u.userID = assessment.userID
                                     where assessment.`assessmentID` = " . $assessmentID);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_ASSOC);
