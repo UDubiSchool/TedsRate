@@ -1,7 +1,7 @@
 ALTER TABLE artifact ADD FOREIGN KEY (artifactTypeID) REFERENCES artifactType(artifactTypeID);
-ALTER TABLE artifact ADD FOREIGN KEY (artifactLangaugeID) REFERENCES language(languageID);
+ALTER TABLE artifact ADD FOREIGN KEY (artifactLanguageID) REFERENCES language(languageID);
 
-ALTER TABLE category ADD FOREIGN KEY (categoryLangaugeID) REFERENCES language(languageID);
+ALTER TABLE category ADD FOREIGN KEY (categoryLanguageID) REFERENCES language(languageID);
 ALTER TABLE category ADD FOREIGN KEY (criterionID) REFERENCES criterion(criterionID);
 
 ALTER TABLE cluster_category ADD FOREIGN KEY (categoryID) REFERENCES category(categoryID);
@@ -31,7 +31,7 @@ ALTER TABLE screenshot ADD FOREIGN KEY (userCreated) REFERENCES userProfile(user
 ALTER TABLE userPersonae ADD FOREIGN KEY (userID) REFERENCES userProfile(userID);
 ALTER TABLE userPersonae ADD FOREIGN KEY (personaID) REFERENCES persona(personaID);
 
-ALTER TABLE userProfile ADD FOREIGN KEY (preferredLangauge) REFERENCES language(languageID);
+ALTER TABLE userProfile ADD FOREIGN KEY (preferredLanguage) REFERENCES language(languageID);
 
 ALTER TABLE userRating ADD FOREIGN KEY (userRatingProgressID) REFERENCES userRatingProgress(userRatingProgressID);
 ALTER TABLE userRating ADD FOREIGN KEY (categoryID) REFERENCES category(categoryID);
@@ -39,7 +39,7 @@ ALTER TABLE userRating ADD FOREIGN KEY (categoryID) REFERENCES category(category
 ALTER TABLE userRatingProgress ADD FOREIGN KEY (userID) REFERENCES userProfile(userID);
 ALTER TABLE userRatingProgress ADD FOREIGN KEY (personaID) REFERENCES persona(personaID);
 ALTER TABLE userRatingProgress ADD FOREIGN KEY (scenarioID) REFERENCES scenario(scenarioID);
-ALTER TABLE userRatingProgress ADD FOREIGN KEY (projectArtifact) REFERENCES projectArtifact(projectArtifactID);
+ALTER TABLE userRatingProgress ADD FOREIGN KEY (projectArtifactID) REFERENCES projectArtifact(projectArtifactID);
 
 ALTER TABLE userRating_comment ADD FOREIGN KEY (userRatingID) REFERENCES userRating(id);
 ALTER TABLE userRating_comment ADD FOREIGN KEY (commentID) REFERENCES comment(commentID);

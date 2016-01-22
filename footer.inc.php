@@ -10,10 +10,7 @@
 
 
     <!-- Page Specific Plugins -->
-    <script src="js/morris/chart-data-morris.js"></script>
-    <!-- // <script src="js/tablesorter/jquery.tablesorter.js"></script>/ -->
-    <!-- // <script src="js/tablesorter/tables.js"></script> -->
-    <script src="js/modernizr.foundation.js"></script>
+    <!-- // <script src="js/morris/chart-data-morris.js"></script> -->
     <script src="js/admin.js"></script>
     <!-- js_objects -->
     <script src="js/js_objects.js" type="text/javascript"></script>

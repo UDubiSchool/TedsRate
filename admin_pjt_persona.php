@@ -21,19 +21,19 @@
 		<table id="pjt_personae_tbl" class="table table-bordered table-hover table-striped tablesorter">
 			<thead>
               	<tr>
-	                <th>Persona Title</th>
-	               	<th>Persona Description</th>
-	               	<th>Persona Language</th>
+	                <th>Name</th>
+	               	<th>Description</th>
+	               	<th>Language</th>
               	</tr>
             </thead>
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select personaName, personaDesc, languageTitle from persona JOIN language ON language.LanguageID = persona.personaLanguageID");
+					$pre_result = $dbq->prepare("select personaName, personaDesc, languageName from persona JOIN language ON language.LanguageID = persona.personaLanguageID");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
-						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['personaName'],$row['personaDesc'] ? $row['personaDesc'] : "No information provided", $row['languageTitle']);
+						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['personaName'],$row['personaDesc'] ? $row['personaDesc'] : "No information provided", $row['languageName']);
 					}
 				?>
 			</tbody>
@@ -49,7 +49,7 @@
 <!--					<a class="addmore" href="#" id="addMorePersonas">Add Another Persona</a>-->
 					<div id="personas">
 						<div class="addPersona">
-							<label for="personaName[]">Persona Title</label><input class="input-text form-control notEmpty" type="text" name="personaTitle[]" />
+							<label for="personaName[]">Persona Name</label><input class="input-text form-control notEmpty" type="text" name="personaTitle[]" />
 							<label for="personaDesc[]">Persona Description</label><input class="input-text form-control notEmpty" type="text" name="personaDesc[]" />
 						</div>
 					</div>
@@ -78,11 +78,7 @@
 
 
 <!-- include js files -->
-	<!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+	<script src="js/admin.js"></script>
 
 <?php
      	$active = "Persona";

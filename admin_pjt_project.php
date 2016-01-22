@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
 
 	try {
 		$dbq = db_connect();
@@ -21,8 +21,8 @@
 		<table id="pjt_tbl" class="table table-bordered table-hover table-striped tablesorter">
 			<thead>
               	<tr>
-	                <th>Project Title</th>
-	                <th>Project Description</th>
+	                <th>Name</th>
+	                <th>Description</th>
               	</tr>
             </thead>
 			<tbody>
@@ -30,11 +30,11 @@
 				<?php
 					foreach($dbq->query("
 						SELECT p.projectID as ID,
-						p.projectTitle as projectTitle,
+						p.projectName as projectName,
 						p.projectDescription as Description
 						FROM project p;
 						") as $row) {
-						printf('<tr><td>%s</td><td>%s</td></tr>', $row['projectTitle'], $row['Description']);
+						printf('<tr><td>%s</td><td>%s</td></tr>', $row['projectName'], $row['Description']);
 					}
 				?>
 			</tbody>
@@ -56,7 +56,7 @@
 							<?php
 								//make languages select
 								foreach ($dbq->query($sql["language"]) as $row) {
-									printf('<option value="' . $row['languageID'] . '">' . $row['languageTitle'] . '</option>');
+									printf('<option value="' . $row['languageID'] . '">' . $row['languageName'] . '</option>');
 								}
 							?>
 						</select>
@@ -92,7 +92,4 @@
 ?>
 <!-- include js files -->
 	<!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+	<script src="js/admin.js"></script>

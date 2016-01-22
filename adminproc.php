@@ -1,13 +1,5 @@
 <?php
-// require_once "session_inc.php";
 // ============================== authentication ===============================
-//if (session_status() == PHP_SESSION_NONE) {
-//    session_start();
-//}
-//session_regenerate_id();
-//if(!isset($_SESSION['user_email'])) {    // if there is no valid session
-//    header("Location: index.php?notice=login_first");
-//}
 require_once "session_inc.php";
 // ============================== authentication ===============================
 
@@ -23,11 +15,11 @@ if ($_POST) {
             case 'project':
                 //try to insert the project into mysql database and get the new added project id
                 //prepare PDO statement, addProject SPROC
-                $projectTitle       = $_POST['projectName'];
+                $projectName       = $_POST['projectName'];
                 $projectDescription = $_POST['projectDesc'];
                 $projectLanguageID  = $_POST['projectLang'];
-                $stmt               = $dbq->prepare("CALL addProject(:ptitle,:pdescript,:pLan,@nid)");
-                $stmt->bindValue(':ptitle', $projectTitle, PDO::PARAM_STR);
+                $stmt               = $dbq->prepare("CALL addProject(:pname,:pdescript,:pLan,@nid)");
+                $stmt->bindValue(':pname', $projectName, PDO::PARAM_STR);
                 $stmt->bindValue(':pdescript', $projectDescription, PDO::PARAM_STR);
                 $stmt->bindValue(':pLan', $projectLanguageID, PDO::PARAM_INT);
                 $stmt->execute();
@@ -37,13 +29,13 @@ if ($_POST) {
 
             case 'scenario':
                 //insert scenarios
-                $scenarioTitle = $_POST['scenarioTitle'];
+                $scenarioName = $_POST['scenarioName'];
                 $scenarioDesc  = $_POST['scenarioDesc'];
                 $scenarioIDs   = array();
-                for ($i = 0; $i < count($scenarioTitle); $i++) {
+                for ($i = 0; $i < count($scenarioName); $i++) {
                     //prepare PDO statement, addArtifact SPROC
-                    $stmt = $dbq->prepare("CALL addScenario(:title,:description,:languageID,@nid)");
-                    $stmt->bindValue(':title', $scenarioTitle[$i], PDO::PARAM_STR);
+                    $stmt = $dbq->prepare("CALL addScenario(:scenarioName,:description,:languageID,@nid)");
+                    $stmt->bindValue(':scenarioName', $scenarioName[$i], PDO::PARAM_STR);
                     $stmt->bindValue(':description', $scenarioDesc[$i], PDO::PARAM_STR);
                     $stmt->bindValue(':languageID', 5, PDO::PARAM_INT);
                     $stmt->execute();
@@ -64,15 +56,15 @@ if ($_POST) {
 
             case 'atft':
                 //try to insert artifact into database
-                $artifactTitle    = $_POST['artifactTitle'];
+                $artifactName    = $_POST['artifactName'];
                 $artifactURL      = $_POST['artifactURL'];
                 $artifactTypeID   = 4;
                 $artifactLanguage = 5;
                 $artifactIDs      = array();
-                for ($i = 0; $i < count($artifactTitle); $i++) {
+                for ($i = 0; $i < count($artifactName); $i++) {
                     //prepare PDO statement, addArtifact SPROC
-                    $stmt = $dbq->prepare("CALL addArtifact(:atitle,:aurl,:typeID,:Lan,@nid)");
-                    $stmt->bindValue(':atitle', $artifactTitle[$i], PDO::PARAM_STR);
+                    $stmt = $dbq->prepare("CALL addArtifact(:artifactName,:aurl,:typeID,:Lan,@nid)");
+                    $stmt->bindValue(':artifactName', $artifactName[$i], PDO::PARAM_STR);
                     $url = $artifactURL[$i];
                     if (!preg_match('/^http\S+/i', $url)) {
                         $url = "http://{$url}";
@@ -106,8 +98,8 @@ if ($_POST) {
                 $personaDesc = $_POST['personaDesc'];
                 $personaIDs  = array();
                 for ($i = 0; $i < count($personaName); $i++) {
-                    $stmt = $dbq->prepare("CALL addPersona(:title,:description,:languageID,@nid)");
-                    $stmt->bindValue(':title', $personaName[$i], PDO::PARAM_STR);
+                    $stmt = $dbq->prepare("CALL addPersona(:personaTitle,:description,:languageID,@nid)");
+                    $stmt->bindValue(':personaTitle', $personaName[$i], PDO::PARAM_STR);
                     $stmt->bindValue(':description', $personaDesc[$i], PDO::PARAM_STR);
                     $stmt->bindValue(':languageID', 5, PDO::PARAM_INT);
                     $stmt->execute();
@@ -148,7 +140,7 @@ if ($_POST) {
                 $AuthorityLevel = 1;
                 $userPersonas   = $_POST['userPersona'];
                 $userID         = null;
-                $the_query      = "INSERT INTO `userProfile`(`email`, `firstName`, `lastName`, `preferredLanguage`, `passwordValue`, `AuthorityLevel`)
+                $the_query      = "INSERT INTO `user`(`email`, `firstName`, `lastName`, `preferredLanguage`, `passwordValue`, `AuthorityLevel`)
                                             VALUES ('" . (string) $email . "','" . (string) $firstName . "','" . (string) $lastName . "','" . (string) $languageID . "','placeholder','" . (string) $AuthorityLevel . "')";
 
                 $stmt = $dbq->prepare($the_query);
@@ -166,6 +158,8 @@ if ($_POST) {
 
             case "user_rating_progress":
 
+                $url = $_SERVER['REQUEST_URI']; //returns the current URL
+                $parts = explode('/',$url);
                 $root_url = $_SERVER['SERVER_NAME'];
                 for ($i = 0; $i < count($parts) - 1; $i++) {
                     $root_url .= $parts[$i] . "/";
@@ -183,21 +177,28 @@ if ($_POST) {
                                                    where p.projectID = ' . $project . '
                                                    and a.artifactID = ' . $artifact)->fetchColumn();
 
-                $the_query = "INSERT INTO `userRatingProgress`(`userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
+                $the_query = "INSERT INTO `assessment`(`userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
                               VALUES (" . $user . "," . $persona . "," . $scenario . "," . $project_artifactID . ",null,null)";
                 $stmt      = $dbq->prepare($the_query);
                 $stmt->execute();
 
-                $user_ratingID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+                $assessmentID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+
+                $hash = hash('sha256', $assessmentID);
+                // $addHash = $dbq->query("UPDATE assessment SET assessmentIDHashed = $hash");
+
 
                 $language = 5;
 
-                $targetURL = "rater.php?&urpId=" . $user_ratingID;
-                $fullUrl .= $root_url . "/";
+                $targetURL = "rater.php?&asid=" . $hash;
+                $fullUrl = $root_url;
                 $fullUrl .= $targetURL;
-                $addUrl = "UPDATE `userRatingProgress` SET `ratingUrl` = '" . $fullUrl . "' WHERE userRatingProgressID = " . $user_ratingID;
-                $exec   = $dbq->prepare($addUrl);
-                $exec->execute();
+
+                $addHash = $dbq->prepare("UPDATE assessment SET assessmentIDHashed = :hash, ratingUrl = :url where assessmentID = :assessmentID");
+                $addHash->bindValue(':hash', $hash, PDO::PARAM_STR);
+                $addHash->bindValue(':url', $fullUrl, PDO::PARAM_STR);
+                $addHash->bindValue(':assessmentID', $assessmentID, PDO::PARAM_INT);
+                $addHash->execute();
 
                 break;
 
@@ -207,7 +208,7 @@ if ($_POST) {
                     $user_email = $_POST['user_email'];
                     $password   = $_POST['password'];
                     if (!preg_match("/^\s*$/i", $user_email) && !preg_match("/^\s*$/i", $password)) {
-                        $auth_query = "select * from userProfile
+                        $auth_query = "select * from user
                                        where email = '" . (string) $user_email . "'
                                         and AuthorityLevel = 2";
                         $result     = $dbq->query($auth_query)->fetchAll();

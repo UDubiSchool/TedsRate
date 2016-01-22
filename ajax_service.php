@@ -38,13 +38,13 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
         switch ($type) {
             case "project_artifact" :
                 // service for projectArtifact
-                $sql = "SELECT a.artifactID AS id, a.artifactTitle AS Title
+                $sql = "SELECT a.artifactID AS id, a.artifactName AS Title
                         FROM projectArtifact pa
                         join artifact a on a.artifactID = pa.artifactID
                         where pa.projectID = " . $trigger;
                 break;
             case "persona_scenario":
-                $sql = "select s.scenarioID as id, s.scenarioTitle as Title from personaScenario ps
+                $sql = "select s.scenarioID as id, s.scenarioName as Title from personaScenario ps
                         join scenario s on ps.scenarioID = s.scenarioID
                         join persona p on ps.personaID = p.personaID
                         where p.personaID = " . $trigger;
@@ -87,22 +87,22 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
 
 
         $email = $_GET['email'];
-        $urpID = $_GET['urpID'];
+        $assessmentID = $_GET['assessmentID'];
         $sendEmail = $_GET['sendEmail'];
 
-        $first_query = "SELECT * FROM userRatingProgress urp
-                             join userProfile up on urp.userID = up.userID
-                             where urp.`userRatingProgressID` = " . $urpID . "
+        $first_query = "SELECT * FROM assessment ass
+                             join userProfile up on ass.userID = up.userID
+                             where ass.`assessmentID` = " . $assessmentID . "
                              and up.email = '" . (string)$email . "'";
         $flag = $dbq->query($first_query)->fetchColumn();
 //        $flag->execute();
 //        echo($flag);
 
         if ($flag) {
-            $query = $dbq->prepare("SELECT * FROM userRatingProgress urp
-                                    join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
-                                    join userProfile upro on upro.userID = urp.userID
-                                    where urp.`userRatingProgressID` = " . $urpID);
+            $query = $dbq->prepare("SELECT * FROM assessment
+                                    join projectArtifact pa on assessment.projectArtifactID = pa.projectArtifactID
+                                    join userProfile upro on upro.userID = assessment.userID
+                                    where assessment.`assessmentID` = " . $assessmentID);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if ($result) {
@@ -113,7 +113,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                 $scenario = $result['scenarioID'];
                 $userName = $result['firstName'] . " " . $result['lastName'];
 
-                $targetURL = "rater.php?selLanguage=" . $language . "&selProject=" . $project . "&selArtifact=" . $artifact . "&selScenario=" . $scenario . "&selPersona=" . $persona . "&urpId=" . $urpID;
+                $targetURL = "rater.php?asid=" . $assessmentID;
 
                 $email_flag = false;
                 $email_message = "Invalid email! Please try again!";

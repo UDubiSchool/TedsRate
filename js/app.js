@@ -23,8 +23,8 @@ var app = angular.module('ratingsApp', [])
           if($scope.scenarioOptions.indexOf(value.scenario) === -1) {
             $scope.scenarioOptions.push(value.scenario);
           }
-          if($scope.userOptions.indexOf(value.userprofile) === -1) {
-            $scope.userOptions.push(value.userprofile);
+          if($scope.userOptions.indexOf(value.name) === -1) {
+            $scope.userOptions.push(value.name);
           }
         });
         // console.log(response.data);

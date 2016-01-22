@@ -50,21 +50,21 @@
 
 <?php
     // outer level query
-    $query = "select CONCAT(upro.firstName, ' ', upro.lastName) as userName,
-                upro.email as email,
-                urp.completionDate as completeDate,
-                pjt.projectTitle as pjtTitle,
-                a.artifactTitle as aTitle,
-                urp.userRatingProgressID as urpID
+    $query = "select CONCAT(u.firstName, ' ', u.lastName) as userName,
+                u.email as email,
+                ass.completionDate as completeDate,
+                pjt.projectName as projectName,
+                a.artifactName as artifactName,
+                ass.assessmentID
 
-                from userRatingProgress urp
-                join userProfile upro on urp.userID = upro.userID
-                join persona p on urp.personaID = p.personaID
-                join scenario s on urp.scenarioID = s.scenarioID
-                join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
+                from assessment ass
+                join user u on ass.userID = u.userID
+                join persona p on ass.personaID = p.personaID
+                join scenario s on ass.scenarioID = s.scenarioID
+                join projectArtifact pa on ass.projectArtifactID = pa.projectArtifactID
                 join project pjt on pjt.projectID = pa.projectID
                 join artifact a on a.artifactID = pa.artifactID
-                where urp.isComplete = 'true'
+                where ass.isComplete = 'true'
                 ORDER BY completeDate DESC
                 LIMIT 25
                 ";
@@ -77,11 +77,11 @@
 <?php
     // inner level query
         $inner_query = "select c.categoryName as cName,
-                        ur.rating as ratingScore
-                        from userRatingProgress urp
-                        join userRating ur on urp.userRatingProgressID = ur.userRatingProgressID
-                        join category c on c.categoryID = ur.categoryID
-                        where urp.userRatingProgressID = " . $row['urpID'];
+                        r.ratingValue
+                        from assessment ass
+                        join rating r on ass.assessmentID = r.assessmentID
+                        join category c on c.categoryID = r.categoryID
+                        where ass.assessmentID = " . $row['assessmentID'];
         $stmt = $dbq->prepare($inner_query);
         $stmt->execute();
         $second_level_result = $stmt->fetchAll();
@@ -96,13 +96,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<?= $row['urpID'] ?>">
-                                <?= $row['userName'] . " | " . $row['pjtTitle'] . " | " . $row['aTitle'] ?>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<?= $row['assessmentID'] ?>">
+                                <?= $row['userName'] . " | " . $row['projectName'] . " | " . $row['artifactName'] ?>
                                 <span class="left-small"><?= " -- Completed at: " . $row['completeDate'] ?></span>
                             </a>
                         </h4>
                     </div>
-                    <div id="collapse_<?= $row['urpID'] ?>" class="panel-collapse collapse">
+                    <div id="collapse_<?= $row['assessmentID'] ?>" class="panel-collapse collapse">
                         <div class="panel-body">
                             <div class="half-table-wrapper">
                                 <table class="tbl_first_half table table-bordered table-hover table-striped tablesorter">
@@ -113,7 +113,7 @@
                                     <?php
                                     for ($i = 0; $i < count($sec_first_half); $i++) {
                                         print "<tr class='data_wrapper'><td>" . $sec_first_half[$i]['cName'] . "</td>";
-                                        print "<td>" . $sec_first_half[$i]['ratingScore'] . "</td></tr>";
+                                        print "<td>" . $sec_first_half[$i]['ratingValue'] . "</td></tr>";
                                     }
                                     ?>
                                 </table>
@@ -127,7 +127,7 @@
                                     <?php
                                     for ($i = 0; $i < count($sec_second_half); $i++) {
                                         print "<tr class='data_wrapper'><td>" . $sec_second_half[$i]['cName'] . "</td>";
-                                        print "<td>" . $sec_second_half[$i]['ratingScore'] . "</td></tr>";
+                                        print "<td>" . $sec_second_half[$i]['ratingValue'] . "</td></tr>";
                                     }
                                     ?>
                                 </table>
@@ -154,18 +154,9 @@
 
 
 
-  <!-- Included JS Files -->
-  <!-- template plugins -->
-  <!-- JavaScript -->
-    <script src="js/jquery-1.10.2.js"></script>
     <script src="js/bootstrap.js"></script>
 
     <!-- Page Specific Plugins -->
-    <!-- // <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> -->
-    <!-- // <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script> -->
-    <script src="js/morris/chart-data-morris.js"></script>
-    <script src="js/tablesorter/jquery.tablesorter.js"></script>
-    <script src="js/tablesorter/tables.js"></script>
     <script src="js/main.js"></script>
     <script src="js/notice.js"></script>
   <!-- /template plugins -->

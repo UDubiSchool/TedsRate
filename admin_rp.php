@@ -8,7 +8,7 @@ $sql["project"] = 'SELECT * from project';
 $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
                         join project p on p.projectID = pa.projectID
                         join artifact a on a.artifactID = pa.artifactID';
-$sql["persona"] = 'select personaeID as perid, personaTitle as perTitle from personae';
+$sql["persona"] = 'select personaID, personaName from persona';
 
 try {
     $dbq = db_connect();
@@ -64,7 +64,7 @@ try {
                     </dd>
                     <dt>User</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.userprofile" id="">
+                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.name" id="">
                             <option value=""></option>
                             <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
                         </select>
@@ -97,11 +97,11 @@ try {
                         <td>{{rating.artifact}}</td>
                         <td>{{rating.persona}}</td>
                         <td>{{rating.scenario}}</td>
-                        <td>{{rating.userprofile}}</td>
+                        <td>{{rating.name}}</td>
                         <td>
                             <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
                             <div ng-if="rating.complete !== 'true'">
-                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.urpID}}" onclick="readyModal($(this))">Send Invitation</button>
+                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.assessmentID}}" onclick="readyModal($(this))">Send Invitation</button>
                             </div>
                         </td>
                         <td><div ng-show="rating.ratingUrl"><a ng-href="http://{{rating.ratingUrl}}" class="btn btn-primary" target="_blank"><i class="fa fa-pencil"></i></a></div></td>
@@ -123,7 +123,7 @@ try {
                         <?php
                             //make project options
                             foreach ($dbq->query($sql["project"]) as $row) {
-                                printf('<option value="' . $row['projectID'] . '">' . $row['projectTitle'] . '</option>');
+                                printf('<option value="' . $row['projectID'] . '">' . $row['projectName'] . '</option>');
                             }
                         ?>
                     </select>
@@ -147,7 +147,7 @@ try {
                     <?php
                     //make persona options
                     foreach ($dbq->query($sql["persona"]) as $row) {
-                        printf('<option value="' . $row['perid'] . '">' . $row['perTitle'] . '</option>');
+                        printf('<option value="' . $row['personaID'] . '">' . $row['personaName'] . '</option>');
                     }
                     ?>
                 </select>
@@ -210,9 +210,6 @@ try {
         ?>
 
 <!-- include js files -->
-    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-    <!-- // <script src="javascripts/foundation.js"></script> -->
-    <!-- // <script src="js/app.js"></script> -->
     <script src="js/admin.js"></script>
     <script>
         $(function() {

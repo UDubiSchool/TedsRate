@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
 
 	try {
 		$dbq = db_connect();
@@ -21,22 +21,22 @@
 		<table id="pjt_scenario_tbl" class="table table-bordered table-hover table-striped tablesorter">
 			<thead>
               	<tr>
-	                <th>Scenario Title</th>
-	               	<th>Scenario Description</th>
-	               	<th>Scenario Language</th>
+	                <th>Name</th>
+	               	<th>Description</th>
+	               	<th>Language</th>
               	</tr>
             </thead>
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select scenarioTitle, scenarioDescription, scenarioLanguageID from scenario");
+					$pre_result = $dbq->prepare("select scenarioName, scenarioDescription, scenarioLanguageID from scenario");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
 						// $languageID = $row['scenarioLanguageID'];
 						// $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
 						// print($lan_re);
-						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['scenarioTitle'],$row['scenarioDescription'] ? $row['scenarioDescription'] : "No information provided", "placeholder");
+						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['scenarioName'],$row['scenarioDescription'] ? $row['scenarioDescription'] : "No information provided", "placeholder");
 					}
 				?>
 			</tbody>
@@ -52,7 +52,7 @@
 <!--					<a class="addmore" href="#" id="addMoreScenarios">Add Another Scenario</a>-->
 					<div id="scenarios" class="parent_contain">
 						<div class="addScenario">
-							<label for="scenarioTitle[]">Scenario Title</label><input class="input-text notEmpty" type="text" name="scenarioTitle[]" />
+							<label for="scenarioName[]">Scenario Title</label><input class="input-text notEmpty" type="text" name="scenarioName[]" />
 							<label for="scenarioDesc[]">Scenario Description</label><input class="input-text notEmpty" type="text" name="scenarioDesc[]" />
 						</div>
 					</div>
@@ -80,11 +80,7 @@
 
 
 <!-- include js files -->
-	<script src="javascripts/jquery-1.11.0.min.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+	<script src="js/admin.js"></script>
 <?php
      	$active = "Scenario";
      	include "footer.inc.php";

@@ -30,14 +30,14 @@
             <tbody>
 
             <?php
-            $pre_result = $dbq->prepare("select categoryName, categoryDesc, criterionName, languageTitle
+            $pre_result = $dbq->prepare("select categoryName, categoryDesc, criterionName, languageName
                 FROM category
                 JOIN criterion ON criterion.criterionID = category.criterionID
                 JOIN language ON language.languageID = category.categoryLanguageID");
             $pre_result->execute();
             while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
             // print_r($row);
-            echo "<tr><td>$row[categoryName]</td><td>$row[categoryDesc]</td><td>$row[criterionName]</td><td>$row[languageTitle]</td></tr>";
+            echo "<tr><td>$row[categoryName]</td><td>$row[categoryDesc]</td><td>$row[criterionName]</td><td>$row[languageName]</td></tr>";
             }
             ?>
             </tbody>

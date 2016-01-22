@@ -8,7 +8,7 @@ $aid = null; //artifact id
 require_once "dbconnect.php";
 
 // selLanguage=5&selProject=26&selArtifact=60&selScenario=27&selPersona=20
-if (isset($_GET['urpId'])) {
+if (isset($_GET['asid']) || isset($_GET['urpId'])) {
     foreach ($_GET as $key => $value) {
         if (preg_match("/^\s*$/i", $value)) {
             ?>
@@ -35,22 +35,22 @@ if (isset($_GET['urpId'])) {
         $lanID = '';
         $personaID = '';
         $scenarioID = '';
+        $hashedID = $_GET['asid'];
 
-        $urpID = $_GET['urpId'];
+        $authenticate_query = $dbq->prepare("SELECT * FROM assessment
+                                join projectArtifact pa on assessment.projectArtifactID = pa.projectArtifactID
+                                join user u on u.userID = assessment.userID
+                                where assessment.`assessmentIDHashed` = :hashedID");
+        $authenticate_query->bindValue(':hashedID', $hashedID, PDO::PARAM_STR);
+        $authenticate_query->execute();
 
-        $authenticate_query =  "SELECT * FROM userRatingProgress urp
-                                join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
-                                join userProfile upro on upro.userID = urp.userID
-                                where urp.`userRatingProgressID` = $urpID";
-
-//        echo($authenticate_query);
-
-        $flag = $dbq->query($authenticate_query)->fetchAll();;
+        $flag = $authenticate_query->fetchAll();;
         $pid = $flag[0]['projectID'];
         $aid = $flag[0]['artifactID'];
         $lanID = $flag[0]['preferredLanguage'];
         $personaID = $flag[0]['personaID'];
         $scenarioID = $flag[0]['scenarioID'];
+        $assessmentID = $flag[0]['assessmentID'];
 
         if (!$flag) {
             // authentication failed: user identity mismatch
@@ -66,9 +66,9 @@ if (isset($_GET['urpId'])) {
 
             // available variables
             $uid = $flag[0]['userID'];
-            $urpID = $flag[0]['userRatingProgressID'];
+            $assessmentID = $flag[0]['assessmentID'];
             $data = [
-                'userRatingProgressID' => $urpID
+                'assessmentID' => $assessmentID
             ];
 
 
@@ -123,21 +123,21 @@ if (isset($_GET['urpId'])) {
                 // echo "started retieval";
                 $ratingData = [];
                 $current = "SELECT
-                userRating.id,
-                userRating.rating,
-                userRating.categoryID,
+                rating.ratingID,
+                rating.ratingValue,
+                rating.categoryID,
                 category.categoryName,
                 screenshot.screenshotPath,
                 screenshot.screenshotDesc,
                 comment.comment
-                FROM userRatingProgress
-                JOIN userRating ON userRatingProgress.userRatingProgressID = userRating.userRatingProgressID
-                JOIN category ON userRating.categoryID = category.categoryID
-                LEFT JOIN userRating_screenshot ON userRating.id = userRating_screenshot.userRatingID
-                LEFT JOIN screenshot ON userRating_screenshot.screenshotID = screenshot.screenshotID
-                LEFT JOIN userRating_comment ON userRating.id = userRating_comment.userRatingID
-                LEFT JOIN comment ON userRating_comment.commentID = comment.commentID
-                WHERE userRatingProgress.userRatingProgressID = $urpID;";
+                FROM assessment
+                JOIN rating ON assessment.assessmentID = rating.assessmentID
+                JOIN category ON rating.categoryID = category.categoryID
+                LEFT JOIN rating_screenshot ON rating.ratingID = rating_screenshot.ratingID
+                LEFT JOIN screenshot ON rating_screenshot.screenshotID = screenshot.screenshotID
+                LEFT JOIN rating_comment ON rating.ratingID = rating_comment.ratingID
+                LEFT JOIN comment ON rating_comment.commentID = comment.commentID
+                WHERE assessment.assessmentID = $assessmentID;";
                 $current = $dbq->query($current);
                 while ($currentResult = $current->fetch()){
                     array_push($ratingData, $currentResult);
@@ -165,7 +165,7 @@ if (isset($_GET['urpId'])) {
 
                     //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
                     foreach($dbq->query('CALL getCategories('. $prow['criterionID'] .',@cid,@ctitle,@description)') as $row) {
-                        $rating = '';
+                        $ratingValue = '';
                         $hasScreenshot = false;
                         $hasComment = false;
                         $screenshots = [];
@@ -178,7 +178,7 @@ if (isset($_GET['urpId'])) {
 
                                 if ($value['categoryID'] == $row['categoryID']) {
 
-                                    $rating = intval($value['rating']);
+                                    $ratingValue = intval($value['ratingValue']);
 
                                     if(isset($value['screenshotPath'])) {
                                         $hasScreenshot = true;
@@ -200,7 +200,7 @@ if (isset($_GET['urpId'])) {
                             'categoryID' => $row['categoryID'],
                             'categoryName' => $row['categoryName'],
                             'categoryDesc' => $row['categoryDesc'],
-                            'rating' => $rating,
+                            'ratingValue' => $ratingValue,
                             'hasScreenshot' => $hasScreenshot,
                             'hasComment' => $hasComment,
                             'screenshots' => $screenshots,
@@ -242,7 +242,7 @@ if (isset($_GET['urpId'])) {
                             <input type="hidden" name="userID" value="<?php echo $uid ?>" class="notEmpty">
                             <input type="hidden" name="personaID" value="<?php echo $personaID ?>" class="notEmpty">
                             <input type="hidden" name="scenarioID" value="<?php echo $scenarioID ?>" class="notEmpty">
-                            <input type="hidden" name="urpID" value="<?php echo $urpID ?>" class="notEmpty">
+                            <input type="hidden" name="assessmentID" value="<?php echo $assessmentID ?>" class="notEmpty">
                             <dl id="anchorSel" class="sub-nav">
                               <dt>Active site view:</dt>
                               <dd class="active"><a href="#"><?php echo $data['artifact']['title']; ?></a></dd>
@@ -297,7 +297,7 @@ if (isset($_GET['urpId'])) {
                                         <li>
                                             <div>
                                                 <h5><?php echo $attribute['categoryName']; ?></h5>
-                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['categoryID']; ?>']" type="text" value="<?php echo $attribute['rating']; ?>"/>
+                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['categoryID']; ?>']" type="text" value="<?php echo $attribute['ratingValue']; ?>"/>
                                                 <b class="toggle" data-target="definition">Show Definition</b>
                                                 <b class="toggle" data-target="screenshot">Add Screenshot</b>
                                                 <b class="toggle" data-target="comment">Add Comment</b>

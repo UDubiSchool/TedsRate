@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
     $sql['persona'] = 'select * from persona';
 
 	try {
@@ -22,23 +22,23 @@
 		<table id="pjt_user_tbl" class="table table-bordered table-hover table-striped tablesorter">
 			<thead>
               	<tr>
-	                <th>User Name</th>
-	               	<th>User Email</th>
-	               	<th>User Language</th>
-	               	<th>User Type</th>
+	                <th>Name</th>
+	               	<th>Email</th>
+	               	<th>Language</th>
+	               	<th>Type</th>
               	</tr>
             </thead>
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select firstName, lastName, email, languageTitle, AuthorityLevel
-					                             from userProfile
-                                                                                                JOIN language ON language.languageID = userProfile.preferredLanguage
+					$pre_result = $dbq->prepare("select firstName, lastName, email, languageName, AuthorityLevel
+					                             from user
+                                                                                                JOIN language ON language.languageID = user.preferredLanguage
 					                             where AuthorityLevel = 1");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
-						printf('<tr><td>%s %s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['firstName'],$row['lastName'],$row['email'],$row['languageTitle'],$row['AuthorityLevel'] == 2 ? "Administrator" : "User");
+						printf('<tr><td>%s %s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['firstName'],$row['lastName'],$row['email'],$row['languageName'],$row['AuthorityLevel'] == 2 ? "Administrator" : "User");
 					}
 				?>
 			</tbody>
@@ -64,7 +64,7 @@
 								<?php
 									//make languages select
 									foreach ($dbq->query('SELECT * FROM language') as $row) {
-										printf('<option value="' . $row['languageID'] . '">' . $row['languageTitle'] . '</option>');
+										printf('<option value="' . $row['languageID'] . '">' . $row['languageName'] . '</option>');
 									}
 								?>
 							</select>
@@ -105,11 +105,7 @@
 
 
 <!-- include js files -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+	<script src="js/admin.js"></script>
 
 
 <?php

@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
 
 	try {
 		$dbq = db_connect();
@@ -21,21 +21,19 @@
 		<table id="pjt_atft_tbl" class="table table-bordered table-hover table-striped tablesorter">
 			<thead>
               	<tr>
-	                <th>Artifact Title</th>
-	                <th>Artifact URL</th>
-	                <!-- <th>Artifact Type(id)</th> -->
-	                <!-- <th>Artifact Language(id)</th> -->
-	                <th>Artifact Description</th>
+	                <th>Name</th>
+	                <th>URL</th>
+	                <th>Description</th>
               	</tr>
             </thead>
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select artifactTitle, artifactURL, artifactDescription, artifactID from artifact");
+					$pre_result = $dbq->prepare("select artifactName, artifactURL, artifactDescription, artifactID from artifact");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
-						printf('<tr id="%s"><td>%s</td><td><a href="%s" target="blank">%s</a></td><td>%s</td></tr>',$row['artifactID'] , $row['artifactTitle'],urldecode($row['artifactURL']),urldecode($row['artifactURL']),$row['artifactDescription'] ? $row['artifactDescription'] : "No information provided");
+						printf('<tr id="%s"><td>%s</td><td><a href="%s" target="blank">%s</a></td><td>%s</td></tr>',$row['artifactID'] , $row['artifactName'],urldecode($row['artifactURL']),urldecode($row['artifactURL']),$row['artifactDescription'] ? $row['artifactDescription'] : "No information provided");
 					}
 				?>
 			</tbody>
@@ -51,13 +49,13 @@
 <!--					<a class="addmore" href="#" id="addMoreArtifacts">Add Another Artifact</a>-->
 					<div id="artifacts">
 						<div class="addArtifact">
-							<label for="artifactTitle[]">Artifact Title</label><input class="input-text form-control notEmpty" type="text" name="artifactTitle[]" />
+							<label for="artifactName[]">Artifact Title</label><input class="input-text form-control notEmpty" type="text" name="artifactName[]" />
 							<label for="artifactURL[]">Artifact URL</label><input class="input-text form-control notEmpty" type="text" name="artifactURL[]" />
 							<select name="projectID[]" class="form-control notEmpty">
 								<?php
 									//make languages select
 									foreach ($dbq->query('select * from project') as $row) {
-										printf('<option value="' . $row['projectID'] . '">' . $row['projectTitle'] . '</option>');
+										printf('<option value="' . $row['projectID'] . '">' . $row['projectName'] . '</option>');
 									}
 								?>
 							</select>
@@ -92,8 +90,4 @@
      	include "footer.inc.php";
 ?>
 <!-- include js files -->
-	<!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-	<script src="javascripts/admin.js"></script>
+	<script src="js/admin.js"></script>

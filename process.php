@@ -14,7 +14,7 @@ $ids['persona'] = $_POST['personaID']; //persona id, get from rater.php form sub
 $ids['scenario'] = $_POST['scenarioID']; //scenario id, get from rater.php form submit
 $ids['project'] = $_POST['actProject']; //project id, get from rater.php form submit
 $ids['artifact'] = $_POST['actArtifact']; //artifact id, get from rater.php form submit
-$ids['userRating'] = $_POST['urpID'];
+$ids['assessmentID'] = $_POST['assessmentID'];
 $screenshots = array();
 $userRating_ID;
 
@@ -55,26 +55,24 @@ try {
             if (is_numeric($v) && $v != 0) { // if input is a number and not 0
                 $categoryID = intval(str_replace("'", "", $k));
                 // get scenarioCategoryID
-                $sql = 'SELECT SC_ID from scenarioCategory WHERE scenarioID=' . $ids['scenario'] . ' AND categoryID=' . $k;
+                $sql = 'SELECT scenarioCategoryID from scenarioCategory WHERE scenarioID=' . $ids['scenario'] . ' AND categoryID=' . $k;
                 foreach($dbq->query($sql) as $row) {
                     $scid = $row[0];
                 }
 
                 // prepare PDO statement, addUserRating SPROC is now an INSERT OR UPDATE ON UNIQUE KEY
+                // echo $ids['assessmentID'];
+                // exit;
                 // echo "value: $v";
                 // echo "category: $categoryID";
 
-                $stmt = $dbq->prepare("CALL addUserRating(:rid, :cid, :urpID, @nrid)");
-                $stmt->bindValue(':rid', $v, PDO::PARAM_STR);
-                $stmt->bindValue(':cid', $categoryID, PDO::PARAM_INT);
-                $stmt->bindValue(':urpID', $ids['userRating'], PDO::PARAM_INT);
+                $stmt = $dbq->prepare("CALL addRating(:ratingValue, :categoryID, :assessmentID, @ratingID)");
+                $stmt->bindValue(':ratingValue', $v, PDO::PARAM_STR);
+                $stmt->bindValue(':categoryID', $categoryID, PDO::PARAM_INT);
+                $stmt->bindValue(':assessmentID', $ids['assessmentID'], PDO::PARAM_INT);
                 $stmt->execute();
 
-                // $userRating_ID = $dbq->query('SELECT @lurID')->fetchColumn();
-                // $userRating_ID = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
-                // echo $userRating_ID;
-
-                $userRating_ID = $dbq->query('SELECT @nrid')->fetchColumn();
+                $ratingID = $dbq->query('SELECT @ratingID')->fetchColumn();
 
 
                 // if there is a file set for this rating then add it
@@ -105,7 +103,7 @@ try {
 
                           $dbq->query($screen_sql);
                           $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
-                          $userRating_screen_sql = "INSERT INTO userRating_screenshot (userRatingID, screenshotID) VALUES ($userRating_ID , $screenshot_ID)";
+                          $userRating_screen_sql = "INSERT INTO rating_screenshot (ratingID, screenshotID) VALUES ($ratingID , $screenshot_ID)";
                           $dbq->query($userRating_screen_sql);
                         } else {
                           // echo "could not upload file at " . $file_tmp;
@@ -122,8 +120,8 @@ try {
                    if(!empty($_POST['comment'][$k])){
                     // echo "found one";
                     // exit;
-                    $oldCom = $dbq->prepare("SELECT commentID FROM userRating_comment WHERE userRatingID = :urid");
-                    $oldCom->execute(array(':urid' => $userRating_ID));
+                    $oldCom = $dbq->prepare("SELECT commentID FROM rating_comment WHERE ratingID = :ratingID");
+                    $oldCom->execute(array(':ratingID' => $ratingID));
                     $commentID = $oldCom->fetchColumn();
                     // echo $comID;
                     if ($commentID) {
@@ -131,12 +129,12 @@ try {
                       $updateCom = $dbq->prepare("UPDATE comment SET comment = :comment, dateCreated = NOW() WHERE commentID = :commentID");
                       $updateCom->execute(array(':comment' => $_POST['comment'][$k], ':commentID' => $commentID));
                     } else {
-                      echo "inserting";
+                      // echo "inserting";
                       $addComment = $dbq->prepare("INSERT INTO comment (comment, userCreated) VALUES ( :comment , :userID)");
                       $addComment->execute(array(':comment' => $_POST['comment'][$k], ':userID' => $ids['user'] ));
                       $comment_id = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
 
-                      $add_comment_assoc_sql = "INSERT INTO userRating_comment (userRatingID, commentID) VALUES ($userRating_ID, $comment_id)";
+                      $add_comment_assoc_sql = "INSERT INTO rating_comment (ratingID, commentID) VALUES ($ratingID, $comment_id)";
                       $dbq->query($add_comment_assoc_sql);
                     }
                    }
@@ -189,8 +187,8 @@ else {
 
         // update userRatingProcess table
 
-        $urp_update_query = "UPDATE `userRatingProgress` SET `isComplete`='true',`completionDate`=NOW()
-                            WHERE `userRatingProgressID` = " . $ids['userRating'];
+        $urp_update_query = "UPDATE `assessment` SET `isComplete`='true',`completionDate`=NOW()
+                            WHERE `assessmentID` = " . $ids['assessmentID'];
 
         //    echo($urp_update_query);
 
