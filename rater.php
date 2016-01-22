@@ -186,7 +186,7 @@ if (isset($_GET['urpId'])) {
                                             array_push($screenshots, $value['screenshotPath']);
                                         }
                                     }
-                                    echo $value['comment'];
+                                    // echo $value['comment'];
                                     if(isset($value['comment'])) {
                                         $hasComment = true;
                                         $comment = $value['comment'];
