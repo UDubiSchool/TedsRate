@@ -28,6 +28,8 @@
     <!-- Page Specific CSS -->
     <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.11.0.min.js"></script>
+
   </head>
 
   <body>
