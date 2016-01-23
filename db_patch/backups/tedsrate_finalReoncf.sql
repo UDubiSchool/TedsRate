@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 22, 2016 at 10:30 PM
+-- Generation Time: Jan 22, 2016 at 10:33 PM
 -- Server version: 5.6.27-0ubuntu1
 -- PHP Version: 5.6.11-1ubuntu3.1
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `tedsrate`
 --
+CREATE DATABASE IF NOT EXISTS `tedsrate` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `tedsrate`;
 
 DELIMITER $$
 --
