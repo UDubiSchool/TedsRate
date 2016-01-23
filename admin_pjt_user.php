@@ -5,7 +5,7 @@
 
 	//set up some SQL statements
 	$sql["language"] = 'SELECT * from language';
-    $sql['persona'] = 'select * from persona';
+    $sql['persona'] = 'SELECT * from persona';
 
 	try {
 		$dbq = db_connect();
@@ -33,7 +33,7 @@
 				<?php
 					$pre_result = $dbq->prepare("select firstName, lastName, email, languageName, AuthorityLevel
 					                             from user
-                                                                                                JOIN language ON language.languageID = user.preferredLanguage
+                                                                                                JOIN language ON language.languageID = user.languageID
 					                             where AuthorityLevel = 1");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {

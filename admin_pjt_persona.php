@@ -4,7 +4,7 @@
 	require_once "dbconnect.php";
 
 	//set up some SQL statements
-	$sql["language"] = 'SELECT * from languages';
+	$sql["language"] = 'SELECT * from language';
 
 	try {
 		$dbq = db_connect();
@@ -29,7 +29,7 @@
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select personaName, personaDesc, languageName from persona JOIN language ON language.LanguageID = persona.personaLanguageID");
+					$pre_result = $dbq->prepare("select personaName, personaDesc, languageName from persona JOIN language ON language.LanguageID = persona.languageID");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);

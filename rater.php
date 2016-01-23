@@ -47,7 +47,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
         $flag = $authenticate_query->fetchAll();;
         $pid = $flag[0]['projectID'];
         $aid = $flag[0]['artifactID'];
-        $lanID = $flag[0]['preferredLanguage'];
+        $lanID = $flag[0]['languageID'];
         $personaID = $flag[0]['personaID'];
         $scenarioID = $flag[0]['scenarioID'];
         $assessmentID = $flag[0]['assessmentID'];

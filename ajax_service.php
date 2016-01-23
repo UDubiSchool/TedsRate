@@ -44,13 +44,13 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                         where pa.projectID = " . $trigger;
                 break;
             case "persona_scenario":
-                $sql = "select s.scenarioID as id, s.scenarioName as Title from personaScenario ps
+                $sql = "SELECT s.scenarioID as id, s.scenarioName as Title from personaScenario ps
                         join scenario s on ps.scenarioID = s.scenarioID
                         join persona p on ps.personaID = p.personaID
                         where p.personaID = " . $trigger;
                 break;
             case "persona_user":
-                $sql = "SELECT u.userID as id, CONCAT(u.firstName, ' ', u.lastName) as Title FROM userPersonae up
+                $sql = "SELECT u.userID as id, CONCAT(u.firstName, ' ', u.lastName) as Title FROM userPersona up
                         join user u on u.userID = up.userID
                         join persona p on p.personaID = up.personaID
                         where up.personaID = " . $trigger;

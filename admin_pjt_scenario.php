@@ -29,14 +29,14 @@
 			<tbody>
 
 				<?php
-					$pre_result = $dbq->prepare("select scenarioName, scenarioDescription, scenarioLanguageID from scenario");
+					$pre_result = $dbq->prepare("SELECT scenarioName, scenarioDescription, languageName from scenario JOIN language ON language.languageID = scenario.languageID");
 					$pre_result->execute();
 					while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
 						// print_r($row);
 						// $languageID = $row['scenarioLanguageID'];
 						// $lan_re = mysql_query("select languageTitle from languages where languageID = ".(string)$row['scenarioLanguageID']);
 						// print($lan_re);
-						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['scenarioName'],$row['scenarioDescription'] ? $row['scenarioDescription'] : "No information provided", "placeholder");
+						printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['scenarioName'],$row['scenarioDescription'] ? $row['scenarioDescription'] : "No information provided", $row['languageName']);
 					}
 				?>
 			</tbody>

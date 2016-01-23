@@ -30,8 +30,8 @@ try {
 
     // set up simple SQL statements for grabbing some intermediate combination IDs to use in the addUserRating SPROC below
 
-    $sql['psid'] = 'SELECT psID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
-    $sql['upid'] = 'SELECT userPersonaeID from userPersonae WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
+    $sql['psid'] = 'SELECT personaScenarioID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
+    $sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
     $sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID=' . $ids['project'] . ' AND artifactID=' . $ids['artifact'];
 
     // run queries set up above, put values in to $ids array

@@ -16,7 +16,7 @@
                                      ass.ratingUrl as ratingUrl
                                      FROM assessment ass
                                      join user u on ass.userID = u.userID
-                                     join userPersonae uper on uper.userID = u.userID
+                                     join userPersona uper on uper.userID = u.userID
                                      join persona p on uper.personaID = p.personaID
                                      join personaScenario ps on p.personaID = ps.personaID
                                      join scenario s on ps.scenarioID = s.scenarioID
@@ -27,7 +27,7 @@
                                      and p.personaID = ass.personaID
                                      and s.scenarioID = ass.scenarioID order by completionDate DESC");
         $pre_result->execute();
-        while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $pre_result->fetch()) {
             array_push($arrayToSend, $row);
         }
         header('Content-Type: application/json');

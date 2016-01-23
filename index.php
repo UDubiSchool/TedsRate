@@ -90,9 +90,6 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
 
 	<!-- Included JS Files -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="js/modernizr.foundation.js"></script>
-	<script src="js/foundation.js"></script>
-	<script src="js/app.js"></script>
     <script src="js/main.js"></script>
     <script src="js/notice.js"></script>
     <?php

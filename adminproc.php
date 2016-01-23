@@ -140,7 +140,7 @@ if ($_POST) {
                 $AuthorityLevel = 1;
                 $userPersonas   = $_POST['userPersona'];
                 $userID         = null;
-                $the_query      = "INSERT INTO `user`(`email`, `firstName`, `lastName`, `preferredLanguage`, `passwordValue`, `AuthorityLevel`)
+                $the_query      = "INSERT INTO `user`(`email`, `firstName`, `lastName`, `languageID`, `passwordValue`, `AuthorityLevel`)
                                             VALUES ('" . (string) $email . "','" . (string) $firstName . "','" . (string) $lastName . "','" . (string) $languageID . "','placeholder','" . (string) $AuthorityLevel . "')";
 
                 $stmt = $dbq->prepare($the_query);
@@ -149,7 +149,7 @@ if ($_POST) {
 
                 // update userPersonae
                 for ($i = 0; $i < count($userPersonas); $i++) {
-                    $the_query = "INSERT INTO `userPersonae`(`userID`, `personaID`) VALUES (" . (string) $userID . "," . (string) $userPersonas[$i] . ")";
+                    $the_query = "INSERT INTO `userPersona`(`userID`, `personaID`) VALUES (" . (string) $userID . "," . (string) $userPersonas[$i] . ")";
                     $stmt      = $dbq->prepare($the_query);
                     $stmt->execute();
                 }
