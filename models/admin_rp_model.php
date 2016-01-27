@@ -4,28 +4,30 @@
     try {
         $arrayToSend = [];
         $dbq = db_connect();
-        $pre_result = $dbq->prepare("SELECT pjt.projectName as project,
-                                     a.artifactName as artifact,
-                                     p.personaName as persona,
-                                      s.scenarioName as scenario,
-                                     CONCAT(u.firstName, ' ', u.lastName) as name,
-                                     ass.isComplete as complete,
-                                     ass.completionDate as completionDate,
-                                     u.email as email,
-                                     ass.assessmentID as assessmentID,
-                                     ass.ratingUrl as ratingUrl
+        $pre_result = $dbq->prepare("SELECT pjt.projectName AS project,
+                                     a.artifactName AS artifact,
+                                     p.personaName AS persona,
+                                      s.scenarioName AS scenario,
+                                     CONCAT(u.firstName, ' ', u.lastName) AS name,
+                                     ass.isComplete AS complete,
+                                     ass.completionDate AS completionDate,
+                                     u.email AS email,
+                                     ass.assessmentID AS assessmentID,
+                                     ass.ratingUrl AS ratingUrl,
+                                     con.configurationName AS configurationName
                                      FROM assessment ass
-                                     join user u on ass.userID = u.userID
-                                     join userPersona uper on uper.userID = u.userID
-                                     join persona p on uper.personaID = p.personaID
-                                     join personaScenario ps on p.personaID = ps.personaID
-                                     join scenario s on ps.scenarioID = s.scenarioID
-                                     join projectArtifact pa on ass.projectArtifactID = pa.projectArtifactID
-                                     join project pjt on pjt.projectID = pa.projectID
-                                     join artifact a on a.artifactID = pa.artifactID
-                                     where u.userID = ass.userID
-                                     and p.personaID = ass.personaID
-                                     and s.scenarioID = ass.scenarioID order by completionDate DESC");
+                                     JOIN user u ON ass.userID = u.userID
+                                     JOIN userPersona uper ON uper.userID = u.userID
+                                     JOIN persona p ON uper.personaID = p.personaID
+                                     JOIN personaScenario ps ON p.personaID = ps.personaID
+                                     JOIN scenario s ON ps.scenarioID = s.scenarioID
+                                     JOIN projectArtifact pa ON ass.projectArtifactID = pa.projectArtifactID
+                                     JOIN project pjt ON pjt.projectID = pa.projectID
+                                     JOIN artifact a ON a.artifactID = pa.artifactID
+                                     JOIN configuration con ON con.configurationID = ass.configurationID
+                                     WHERE u.userID = ass.userID
+                                     AND p.personaID = ass.personaID
+                                     AND s.scenarioID = ass.scenarioID ORDER BY completionDate DESC");
         $pre_result->execute();
         while ($row = $pre_result->fetch()) {
             array_push($arrayToSend, $row);

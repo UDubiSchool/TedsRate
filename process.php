@@ -33,6 +33,12 @@ try {
     $sql['psid'] = 'SELECT personaScenarioID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
     $sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
     $sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID=' . $ids['project'] . ' AND artifactID=' . $ids['artifact'];
+    // $sql['configurationTypeName'] = "SELECT configurationTypeName FROM configurationType ct
+    //                                                     LEFT JOIN configuration c ON c.configurationTypeID = ct.configurationTypeID
+    //                                                     LEFT JOIN assessment a ON a.configurationID = c.configurationID
+    //                                                     WHERE assessmentID = $ids[assessmentID]";
+
+
 
     // run queries set up above, put values in to $ids array
 
@@ -55,7 +61,7 @@ try {
             if (is_numeric($v) && $v != 0) { // if input is a number and not 0
                 $categoryID = intval(str_replace("'", "", $k));
                 // get scenarioCategoryID
-                $sql = 'SELECT scenarioCategoryID from scenarioCategory WHERE scenarioID=' . $ids['scenario'] . ' AND categoryID=' . $k;
+                $sql = 'SELECT scenarioAttributeID from scenarioAttribute WHERE scenarioID=' . $ids['scenario'] . ' AND attributeID=' . $k;
                 foreach($dbq->query($sql) as $row) {
                     $scid = $row[0];
                 }
@@ -65,10 +71,9 @@ try {
                 // exit;
                 // echo "value: $v";
                 // echo "category: $categoryID";
-
-                $stmt = $dbq->prepare("CALL addRating(:ratingValue, :categoryID, :assessmentID, @ratingID)");
+                $stmt = $dbq->prepare("CALL addRating(:ratingValue, :attributeID, :assessmentID, @ratingID)");
                 $stmt->bindValue(':ratingValue', $v, PDO::PARAM_STR);
-                $stmt->bindValue(':categoryID', $categoryID, PDO::PARAM_INT);
+                $stmt->bindValue(':attributeID', $categoryID, PDO::PARAM_INT);
                 $stmt->bindValue(':assessmentID', $ids['assessmentID'], PDO::PARAM_INT);
                 $stmt->execute();
 

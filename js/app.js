@@ -6,6 +6,7 @@ var app = angular.module('ratingsApp', [])
       $scope.personaOptions = [];
       $scope.scenarioOptions = [];
       $scope.userOptions = [];
+      $scope.configOptions = [];
 
       $http.get("models/admin_rp_model.php").then(function(response) {
         // var temp = JSON.parse(response.data);
@@ -25,6 +26,9 @@ var app = angular.module('ratingsApp', [])
           }
           if($scope.userOptions.indexOf(value.name) === -1) {
             $scope.userOptions.push(value.name);
+          }
+          if($scope.configOptions.indexOf(value.configurationName) === -1) {
+            $scope.configOptions.push(value.configurationName);
           }
         });
         // console.log(response.data);

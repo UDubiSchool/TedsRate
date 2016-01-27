@@ -112,12 +112,6 @@ div.error_container, div.info_container {
     width: 49%;
 }
 
-#sidenav_separate {
-    /*text-align: center;*/
-    border-bottom: 3px #999 solid;
-}
-
-
 .row-control {
     position: absolute;
     right: 50px;

@@ -43,11 +43,11 @@ if ($_POST) {
                     array_push($scenarioIDs, $scenarioID);
                 }
                 //update scenarioCategory
-                $sql["categoryID"] = 'SELECT * from category where categoryID > 6';
-                foreach ($dbq->query($sql["categoryID"]) as $cID) {
+                $sql["attributeID"] = 'SELECT * from attribute';
+                foreach ($dbq->query($sql["attributeID"]) as $aID) {
 
                     for ($i = 0; $i < count($scenarioIDs); $i++) {
-                        $sql["sceCate"] = 'INSERT INTO scenarioCategory (scenarioID, categoryID) VALUES (' . $scenarioIDs[$i] . ', ' . $cID['categoryID'] . ')';
+                        $sql["sceCate"] = 'INSERT INTO scenarioAttribute (scenarioID, attributeID) VALUES (' . $scenarioIDs[$i] . ', ' . $aID['attributeID'] . ')';
                         $dbq->query($sql["sceCate"]);
                     }
 
@@ -156,7 +156,7 @@ if ($_POST) {
 
                 break;
 
-            case "user_rating_progress":
+            case "assessment":
 
                 $url = $_SERVER['REQUEST_URI']; //returns the current URL
                 $parts = explode('/',$url);
@@ -170,6 +170,7 @@ if ($_POST) {
                 $persona  = $_POST['persona'];
                 $scenario = $_POST['scenario'];
                 $user     = $_POST['user'];
+                $configuration = $_POST['configuration'];
 
                 $project_artifactID = $dbq->query('select * from projectArtifact pa
                                                    join project p on pa.projectID = p.projectID
@@ -177,8 +178,8 @@ if ($_POST) {
                                                    where p.projectID = ' . $project . '
                                                    and a.artifactID = ' . $artifact)->fetchColumn();
 
-                $the_query = "INSERT INTO `assessment`(`userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
-                              VALUES (" . $user . "," . $persona . "," . $scenario . "," . $project_artifactID . ",null,null)";
+                $the_query = "INSERT INTO `assessment`(`configurationID`, `userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
+                              VALUES ($configuration, $user, $persona, $scenario, $project_artifactID, null, null)";
                 $stmt      = $dbq->prepare($the_query);
                 $stmt->execute();
 
@@ -242,7 +243,7 @@ if ($_POST) {
 }
 // redirect based on source param
 
-if ($source == "user_rating_progress") {
+if ($source == "assessment") {
     $source_url = "admin_rp.php";
 } elseif ($source == "index") {
     if ($authenticated) {

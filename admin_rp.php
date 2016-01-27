@@ -4,11 +4,12 @@
     require_once "dbconnect.php";
 
 //set up some SQL statements
-$sql["project"] = 'SELECT * from project';
+$sql["project"] = 'SELECT * FROM project';
 $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
-                        join project p on p.projectID = pa.projectID
-                        join artifact a on a.artifactID = pa.artifactID';
-$sql["persona"] = 'select personaID, personaName from persona';
+                        LEFT JOIN project p ON p.projectID = pa.projectID
+                        LEFT JOIN artifact a ON a.artifactID = pa.artifactID';
+$sql["persona"] = 'SELECT personaID, personaName FROM persona';
+$sql["configuration"] = 'SELECT configurationID, configurationName FROM configuration';
 
 try {
     $dbq = db_connect();
@@ -28,8 +29,8 @@ try {
           <div id="noticeInfo"></div>
 
         <!-- container -->
-        <div id="sitecontainer" style="width:75%;">
-            <h1>User Rating Progress Information</h1>
+        <div id="sitecontainer">
+            <h1>Issued Assessments</h1>
             <dl class="clearfix">
                 <div class="col-xs-6">
                     <dt>Project</dt>
@@ -41,14 +42,14 @@ try {
                     </dd>
                     <dt>Artifact</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.artifact" id="">
+                        <select class="form-control pull-left" name="artifact" ng-model="ratingOptions.artifact" id="">
                             <option value=""></option>
                             <option ng-repeat="option in artifactOptions" value="{{option}}">{{option}}</option>
                         </select>
                     </dd>
                     <dt>Persona</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.persona" id="">
+                        <select class="form-control pull-left" name="persona" ng-model="ratingOptions.persona" id="">
                             <option value=""></option>
                             <option ng-repeat="option in personaOptions" value="{{option}}">{{option}}</option>
                         </select>
@@ -57,60 +58,64 @@ try {
                 <div class="col-xs-6">
                     <dt>Scenario</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.scenario" id="">
+                        <select class="form-control pull-left" name="scenario" ng-model="ratingOptions.scenario" id="">
                             <option value=""></option>
                             <option ng-repeat="option in scenarioOptions" value="{{option}}">{{option}}</option>
                         </select>
                     </dd>
                     <dt>User</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.name" id="">
+                        <select class="form-control pull-left" name="name" ng-model="ratingOptions.name" id="">
                             <option value=""></option>
                             <option ng-repeat="option in userOptions" value="{{option}}">{{option}}</option>
                         </select>
                     </dd>
-<!--                     <dt>Complete</dt>
+                    <dt>Configuration</dt>
                     <dd>
-                        <select class="form-control pull-left" name="project" ng-model="ratingOptions.complete" id="">
-                            <option value="null"></option>
-                            <option value="true">True</option>
+                        <select class="form-control pull-left" name="config" ng-model="ratingOptions.configurationName" id="">
+                            <option value=""></option>
+                            <option ng-repeat="option in configOptions" value="{{option}}">{{option}}</option>
                         </select>
-                    </dd> -->
+                    </dd>
                 </div>
             </dl>
+            <div id="assessment_table_wrapper">
+                <table ng-show="ratings" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Artifact</th>
+                            <th>Persona</th>
+                            <th>Scenario</th>
+                            <th>User</th>
+                            <th>Configuration</th>
+                            <th>Status</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="rating in ratings | filter:ratingOptions">
+                            <td>{{rating.project}}</td>
+                            <td>{{rating.artifact}}</td>
+                            <td>{{rating.persona}}</td>
+                            <td>{{rating.scenario}}</td>
+                            <td>{{rating.name}}</td>
+                            <td>{{rating.configurationName}}</td>
+                            <td>
+                                <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
+                                <div ng-if="rating.complete !== 'true'">
+                                    <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.assessmentID}}" onclick="readyModal($(this))">Send Invitation</button>
+                                </div>
+                            </td>
+                            <td><div ng-show="rating.ratingUrl"><a ng-href="http://{{rating.ratingUrl}}" class="btn btn-primary" target="_blank"><i class="fa fa-pencil"></i></a></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <table ng-show="ratings" id="user_rating_progress_tbl" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Project</th>
-                        <th>Artifact</th>
-                        <th>Persona</th>
-                        <th>Scenario</th>
-                        <th>User</th>
-                        <th>Status</th>
-                        <th>Rating</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="rating in ratings | filter:ratingOptions">
-                        <td>{{rating.project}}</td>
-                        <td>{{rating.artifact}}</td>
-                        <td>{{rating.persona}}</td>
-                        <td>{{rating.scenario}}</td>
-                        <td>{{rating.name}}</td>
-                        <td>
-                            <div ng-if="rating.complete === 'true'">Completed at {{rating.completionDate}}</div>
-                            <div ng-if="rating.complete !== 'true'">
-                                <button class="email_sender btn btn-primary btn-sm" data-toggle="modal" data-target="#emailModal" data-email="{{rating.email}}" data-urpid="{{rating.assessmentID}}" onclick="readyModal($(this))">Send Invitation</button>
-                            </div>
-                        </td>
-                        <td><div ng-show="rating.ratingUrl"><a ng-href="http://{{rating.ratingUrl}}" class="btn btn-primary" target="_blank"><i class="fa fa-pencil"></i></a></div></td>
-                    </tr>
-                </tbody>
-            </table>
 
 
-            <h1>Admin Form</h1>
+            <h1>New Assessment</h1>
 
             <form id="addProject" name="addProject" action="adminproc.php" method="post">
 
@@ -151,7 +156,7 @@ try {
                     }
                     ?>
                 </select>
-                <a href="admin_pjt_p    ersona.php">Add New Persona</a>
+                <a href="admin_pjt_persona.php">Add New Persona</a>
 
                 <div id="persona_based_wrapper" style="display: none;" class="dependWrapper">
                     <h3>2.1 Choose Scenario</h3>
@@ -166,8 +171,21 @@ try {
                     </select>
                     <a href="admin_pjt_user.php">Add New User</a>
                 </div>
-                <!-- user rating progress / user rating process -->
-                <input type="hidden" value="user_rating_progress" name="source" class="notEmpty">
+
+                <!-- Add persona-based params -->
+                <h2>2. Choose a Configuration</h2>
+                <select id="configurationID" class="form-control notEmpty" name="configuration">
+                    <option value="" disabled selected>Select your option</option>
+                    <?php
+                    //make persona options
+                    foreach ($dbq->query($sql["configuration"]) as $row) {
+                        printf('<option value="' . $row['configurationID'] . '">' . $row['configurationName'] . '</option>');
+                    }
+                    ?>
+                </select>
+
+                <!-- switch parameter for adminproc -->
+                <input type="hidden" value="assessment" name="source" class="notEmpty">
                 <!--==========================================================================================-->
                 <div class="form-group">
                     <input type="submit" class="btn btn-success form-control form-button">

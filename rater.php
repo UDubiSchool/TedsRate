@@ -30,11 +30,6 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
         $dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-        $pid = '';
-        $aid = '';
-        $lanID = '';
-        $personaID = '';
-        $scenarioID = '';
         $hashedID = $_GET['asid'];
 
         $authenticate_query = $dbq->prepare("SELECT * FROM assessment
@@ -118,6 +113,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
             }
             $sth->closeCursor();
 
+
             //populate categories the "language" value (1) is hard coded!
             try {
                 // echo "started retieval";
@@ -125,14 +121,14 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                 $current = "SELECT
                 rating.ratingID,
                 rating.ratingValue,
-                rating.categoryID,
-                category.categoryName,
+                attribute.attributeID,
+                attribute.attributeName,
                 screenshot.screenshotPath,
                 screenshot.screenshotDesc,
                 comment.comment
                 FROM assessment
-                JOIN rating ON assessment.assessmentID = rating.assessmentID
-                JOIN category ON rating.categoryID = category.categoryID
+                LEFT JOIN rating ON assessment.assessmentID = rating.assessmentID
+                LEFT JOIN attribute ON attribute.attributeID = rating.attributeID
                 LEFT JOIN rating_screenshot ON rating.ratingID = rating_screenshot.ratingID
                 LEFT JOIN screenshot ON rating_screenshot.screenshotID = screenshot.screenshotID
                 LEFT JOIN rating_comment ON rating.ratingID = rating_comment.ratingID
@@ -164,7 +160,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                     $attributes = [];
 
                     //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
-                    foreach($dbq->query('CALL getCategories('. $prow['criterionID'] .',@cid,@ctitle,@description)') as $row) {
+                    foreach($dbq->query("CALL getConfigurationCriterionAttributes($assessmentID, $prow[criterionID])") as $row) {
                         $ratingValue = '';
                         $hasScreenshot = false;
                         $hasComment = false;
@@ -176,7 +172,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                             // echo "not empty!";
                             foreach ($data['ratingsData'] as $key => $value) {
 
-                                if ($value['categoryID'] == $row['categoryID']) {
+                                if ($value['attributeID'] == $row['attributeID']) {
 
                                     $ratingValue = intval($value['ratingValue']);
 
@@ -197,9 +193,9 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                         }
 
                         $attribute = [
-                            'categoryID' => $row['categoryID'],
-                            'categoryName' => $row['categoryName'],
-                            'categoryDesc' => $row['categoryDesc'],
+                            'attributeID' => $row['attributeID'],
+                            'attributeName' => $row['attributeName'],
+                            'attributeDesc' => $row['attributeDesc'],
                             'ratingValue' => $ratingValue,
                             'hasScreenshot' => $hasScreenshot,
                             'hasComment' => $hasComment,
@@ -296,15 +292,15 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                                         ?>
                                         <li>
                                             <div>
-                                                <h5><?php echo $attribute['categoryName']; ?></h5>
-                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['categoryID']; ?>']" type="text" value="<?php echo $attribute['ratingValue']; ?>"/>
+                                                <h5><?php echo $attribute['attributeName']; ?></h5>
+                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['attributeID']; ?>']" type="text" value="<?php echo $attribute['ratingValue']; ?>"/>
                                                 <b class="toggle" data-target="definition">Show Definition</b>
                                                 <b class="toggle" data-target="screenshot">Add Screenshot</b>
                                                 <b class="toggle" data-target="comment">Add Comment</b>
                                             </div>
                                             <div>
                                                 <div class="definition toggle-target">
-                                                    <p><?php echo $attribute['categoryDesc']; ?></p>
+                                                    <p><?php echo $attribute['attributeDesc']; ?></p>
                                                 </div>
                                                 <div class="screenshot toggle-target">
                                                     <?php
@@ -312,10 +308,10 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                                                         echo '<p><a href="' . $value . '" target="_blank">Screenshot ' . $key . '</a></p>';
                                                     }
                                                     ?>
-                                                    <input type="file" class="form-control" name="screenshot['<?php echo $attribute['categoryID']; ?>']">
+                                                    <input type="file" class="form-control" name="screenshot['<?php echo $attribute['attributeID']; ?>']">
                                                 </div>
                                                 <div class="comment toggle-target">
-                                                    <textarea class="form-control" name="comment['<?php echo $attribute['categoryID']; ?>']"><?php echo $attribute['comment']; ?></textarea>
+                                                    <textarea class="form-control" name="comment['<?php echo $attribute['attributeID']; ?>']"><?php echo $attribute['comment']; ?></textarea>
                                                 </div>
                                             </div>
                                         </li>

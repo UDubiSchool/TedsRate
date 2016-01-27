@@ -30,14 +30,15 @@
             <tbody>
 
             <?php
-            $pre_result = $dbq->prepare("select categoryName, categoryDesc, criterionName, languageName
-                FROM category
-                JOIN criterion ON criterion.criterionID = category.criterionID
-                JOIN language ON language.languageID = category.languageID");
+            $pre_result = $dbq->prepare("SELECT attributeName, attributeDesc, criterionName, languageName
+                FROM category c
+                LEFT JOIN attribute a ON a.attributeID = c.attributeID
+                LEFT JOIN criterion ON criterion.criterionID = a.criterionID
+                LEFT JOIN language ON language.languageID = a.languageID");
             $pre_result->execute();
             while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
             // print_r($row);
-            echo "<tr><td>$row[categoryName]</td><td>$row[categoryDesc]</td><td>$row[criterionName]</td><td>$row[languageName]</td></tr>";
+            echo "<tr><td>$row[attributeName]</td><td>$row[attributeDesc]</td><td>$row[criterionName]</td><td>$row[languageName]</td></tr>";
             }
             ?>
             </tbody>
@@ -63,6 +64,6 @@
 <!-- include js files -->
 
 <?php
-     	$active = "Category";
+     	$active = "Categories";
      	include "footer.inc.php";
 ?>

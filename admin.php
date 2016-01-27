@@ -43,7 +43,7 @@
 
         <div class="row">
           <div class="col-lg-12">
-            <h1>Dashboard <small>Completed Rating Progress</small></h1>
+            <h1>Dashboard <small>Completed Assessments</small></h1>
             <ol class="breadcrumb">
               <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
             </ol>
@@ -52,21 +52,21 @@
 
 <?php
     // outer level query
-    $query = "select CONCAT(u.firstName, ' ', u.lastName) as userName,
-                u.email as email,
-                ass.completionDate as completeDate,
-                pjt.projectName as projectName,
-                a.artifactName as artifactName,
+    $query = "SELECT CONCAT(u.firstName, ' ', u.lastName) AS userName,
+                u.email AS email,
+                ass.completionDate AS completeDate,
+                pjt.projectName AS projectName,
+                a.artifactName AS artifactName,
                 ass.assessmentID
 
-                from assessment ass
-                join user u on ass.userID = u.userID
-                join persona p on ass.personaID = p.personaID
-                join scenario s on ass.scenarioID = s.scenarioID
-                join projectArtifact pa on ass.projectArtifactID = pa.projectArtifactID
-                join project pjt on pjt.projectID = pa.projectID
-                join artifact a on a.artifactID = pa.artifactID
-                where ass.isComplete = 'true'
+                FROM assessment ass
+                LEFT JOIN user u ON ass.userID = u.userID
+                LEFT JOIN persona p ON ass.personaID = p.personaID
+                LEFT JOIN scenario s ON ass.scenarioID = s.scenarioID
+                LEFT JOIN projectArtifact pa ON ass.projectArtifactID = pa.projectArtifactID
+                LEFT JOIN project pjt ON pjt.projectID = pa.projectID
+                LEFT JOIN artifact a ON a.artifactID = pa.artifactID
+                WHERE ass.isComplete = 'true'
                 ORDER BY completeDate DESC
                 LIMIT 25
                 ";
@@ -78,11 +78,12 @@
 
 <?php
     // inner level query
-        $inner_query = "select c.categoryName as cName,
+        $inner_query = "SELECT a.attributeName AS cName,
                         r.ratingValue
-                        from assessment ass
-                        join rating r on ass.assessmentID = r.assessmentID
-                        join category c on c.categoryID = r.categoryID
+                        FROM assessment ass
+                        LEFT JOIN rating r ON ass.assessmentID = r.assessmentID
+                        LEFT JOIN attribute a ON a.attributeID = r.attributeID
+                        LEFT JOIN category c ON c.attributeID = a.attributeID
                         where ass.assessmentID = " . $row['assessmentID'];
         $stmt = $dbq->prepare($inner_query);
         $stmt->execute();
