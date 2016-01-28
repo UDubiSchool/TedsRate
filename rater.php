@@ -33,9 +33,10 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
         $hashedID = $_GET['asid'];
 
         $authenticate_query = $dbq->prepare("SELECT * FROM assessment
-                                join projectArtifact pa on assessment.projectArtifactID = pa.projectArtifactID
-                                join user u on u.userID = assessment.userID
-                                where assessment.`assessmentIDHashed` = :hashedID");
+                                LEFT JOIN configuration ON configuration.configurationID = assessment.configurationID
+                                LEFT JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
+                                LEFT JOIN user ON user.userID = assessment.userID
+                                WHERE assessment.assessmentIDHashed = :hashedID");
         $authenticate_query->bindValue(':hashedID', $hashedID, PDO::PARAM_STR);
         $authenticate_query->execute();
 
@@ -233,8 +234,8 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                         <form action="process.php" id="rateForm" method="post" enctype="multipart/form-data">
 
 
-                            <input type="hidden" name="actProject" value="<?php echo $pid;?>" class="notEmpty">
-                            <input type="hidden" name="actArtifact" value="<?php echo $aid;?>" class="notEmpty">
+                            <input type="hidden" name="projectID" value="<?php echo $pid;?>" class="notEmpty">
+                            <input type="hidden" name="artifactID" value="<?php echo $aid;?>" class="notEmpty">
                             <input type="hidden" name="userID" value="<?php echo $uid ?>" class="notEmpty">
                             <input type="hidden" name="personaID" value="<?php echo $personaID ?>" class="notEmpty">
                             <input type="hidden" name="scenarioID" value="<?php echo $scenarioID ?>" class="notEmpty">

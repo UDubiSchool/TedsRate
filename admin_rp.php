@@ -9,7 +9,7 @@ $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
                         LEFT JOIN project p ON p.projectID = pa.projectID
                         LEFT JOIN artifact a ON a.artifactID = pa.artifactID';
 $sql["persona"] = 'SELECT personaID, personaName FROM persona';
-$sql["configuration"] = 'SELECT configurationID, configurationName FROM configuration';
+$sql["attributeConfiguration"] = 'SELECT attributeConfigurationID, attributeConfigurationName FROM attributeConfiguration';
 
 try {
     $dbq = db_connect();
@@ -174,12 +174,12 @@ try {
 
                 <!-- Add persona-based params -->
                 <h2>2. Choose a Configuration</h2>
-                <select id="configurationID" class="form-control notEmpty" name="configuration">
+                <select id="attributeConfigurationID" class="form-control notEmpty" name="attributeConfiguration">
                     <option value="" disabled selected>Select your option</option>
                     <?php
                     //make persona options
-                    foreach ($dbq->query($sql["configuration"]) as $row) {
-                        printf('<option value="' . $row['configurationID'] . '">' . $row['configurationName'] . '</option>');
+                    foreach ($dbq->query($sql["attributeConfiguration"]) as $row) {
+                        printf('<option value="' . $row['attributeConfigurationID'] . '">' . $row['attributeConfigurationName'] . '</option>');
                     }
                     ?>
                 </select>

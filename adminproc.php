@@ -8,6 +8,7 @@ require_once "dbconnect.php";
 if ($_POST) {
     $source        = $_POST['source']; // source param
     $authenticated = false;
+    $userID = '';
     try {
         $dbq = db_connect();
 
@@ -165,29 +166,40 @@ if ($_POST) {
                     $root_url .= $parts[$i] . "/";
                 }
 
-                $project  = $_POST['project'];
-                $artifact = $_POST['artifact'];
-                $persona  = $_POST['persona'];
-                $scenario = $_POST['scenario'];
-                $user     = $_POST['user'];
-                $configuration = $_POST['configuration'];
+                $projectID  = $_POST['project'];
+                $artifactID = $_POST['artifact'];
+                $personaID  = $_POST['persona'];
+                $scenarioID = $_POST['scenario'];
+                $userID     = $_POST['user'];
+                $attributeConfigurationID = $_POST['attributeConfiguration'];
 
-                $project_artifactID = $dbq->query('select * from projectArtifact pa
-                                                   join project p on pa.projectID = p.projectID
-                                                   join artifact a on pa.artifactID = a.artifactID
-                                                   where p.projectID = ' . $project . '
-                                                   and a.artifactID = ' . $artifact)->fetchColumn();
+
+                $addAssessmentConfiguration = $dbq->prepare("CALL addAssessmentConfiguration(:projectID, :artifactID, :scenarioID, :personaID, @assessmentConfID)");
+                $addAssessmentConfiguration->bindValue(':projectID', $projectID, PDO::PARAM_INT);
+                $addAssessmentConfiguration->bindValue(':artifactID', $artifactID, PDO::PARAM_INT);
+                $addAssessmentConfiguration->bindValue(':scenarioID', $scenarioID, PDO::PARAM_INT);
+                $addAssessmentConfiguration->bindValue(':personaID', $personaID, PDO::PARAM_INT);
+                $addAssessmentConfiguration->execute();
+                $addAssessmentConfiguration->closeCursor();
+
+                $assessmentConfigurationID = $dbq->query('SELECT @assessmentConfID')->fetchColumn();
+
+                $addConfiguration = $dbq->prepare("CALL addConfiguration(:atrConfID, :assConfID, @confID)");
+                $addConfiguration->bindValue(':atrConfID', $attributeConfigurationID, PDO::PARAM_INT);
+                $addConfiguration->bindValue(':assConfID', $assessmentConfigurationID, PDO::PARAM_INT);
+                $addConfiguration->execute();
+                $addConfiguration->closeCursor();
+
+                $configurationID = $dbq->query('SELECT @confID')->fetchColumn();
 
                 $the_query = "INSERT INTO `assessment`(`configurationID`, `userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
-                              VALUES ($configuration, $user, $persona, $scenario, $project_artifactID, null, null)";
+                              VALUES ($configurationID, $userID, $personaID, $scenarioID, $project_artifactID, null, null)";
                 $stmt      = $dbq->prepare($the_query);
                 $stmt->execute();
 
                 $assessmentID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
 
                 $hash = hash('sha256', $assessmentID);
-                // $addHash = $dbq->query("UPDATE assessment SET assessmentIDHashed = $hash");
-
 
                 $language = 5;
 
@@ -217,6 +229,7 @@ if ($_POST) {
                             if ($password == $result[0]['passwordValue']) {
                                 $authenticated = true;
                             }
+                            $userID = $result[0]['userID'];
                         }
                     }
                 }
@@ -253,6 +266,7 @@ if ($source == "assessment") {
         }
         // auth okay, setup session
         $_SESSION['user_email'] = $_POST['user_email'];
+        $_SESSION['teds.userID'] = $userID;
         $source_url             = "admin.php?notice=success";
 
 

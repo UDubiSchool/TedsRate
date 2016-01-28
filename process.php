@@ -12,8 +12,8 @@ All variables will be stored in associate array in $ids
 $ids['user'] = $_POST['userID']; //user id - get from session
 $ids['persona'] = $_POST['personaID']; //persona id, get from rater.php form submit
 $ids['scenario'] = $_POST['scenarioID']; //scenario id, get from rater.php form submit
-$ids['project'] = $_POST['actProject']; //project id, get from rater.php form submit
-$ids['artifact'] = $_POST['actArtifact']; //artifact id, get from rater.php form submit
+$ids['project'] = $_POST['projectID']; //project id, get from rater.php form submit
+$ids['artifact'] = $_POST['artifactID']; //artifact id, get from rater.php form submit
 $ids['assessmentID'] = $_POST['assessmentID'];
 $screenshots = array();
 $userRating_ID;
@@ -60,11 +60,6 @@ try {
         foreach($_POST['rate'] as $k => $v) {
             if (is_numeric($v) && $v != 0) { // if input is a number and not 0
                 $categoryID = intval(str_replace("'", "", $k));
-                // get scenarioCategoryID
-                $sql = 'SELECT scenarioAttributeID from scenarioAttribute WHERE scenarioID=' . $ids['scenario'] . ' AND attributeID=' . $k;
-                foreach($dbq->query($sql) as $row) {
-                    $scid = $row[0];
-                }
 
                 // prepare PDO statement, addUserRating SPROC is now an INSERT OR UPDATE ON UNIQUE KEY
                 // echo $ids['assessmentID'];
