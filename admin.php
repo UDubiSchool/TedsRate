@@ -61,11 +61,12 @@
 
                 FROM assessment ass
                 LEFT JOIN user u ON ass.userID = u.userID
-                LEFT JOIN persona p ON ass.personaID = p.personaID
-                LEFT JOIN scenario s ON ass.scenarioID = s.scenarioID
-                LEFT JOIN projectArtifact pa ON ass.projectArtifactID = pa.projectArtifactID
-                LEFT JOIN project pjt ON pjt.projectID = pa.projectID
-                LEFT JOIN artifact a ON a.artifactID = pa.artifactID
+                LEFT JOIN configuration con ON con.configurationID = ass.configurationID
+                LEFT JOIN assessmentConfiguration ascon ON ascon.assessmentConfigurationID = con.assessmentConfigurationID
+                LEFT JOIN persona p ON ascon.personaID = p.personaID
+                LEFT JOIN scenario s ON ascon.scenarioID = s.scenarioID
+                LEFT JOIN project pjt ON pjt.projectID = ascon.projectID
+                LEFT JOIN artifact a ON a.artifactID = ascon.artifactID
                 WHERE ass.isComplete = 'true'
                 ORDER BY completeDate DESC
                 LIMIT 25

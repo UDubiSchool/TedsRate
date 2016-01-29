@@ -21,3 +21,4 @@ CREATE TABLE configuration (
 );
 
 ALTER TABLE attributeConfiguration_attribute ADD CONSTRAINT uc_attributeConfig UNIQUE (attributeConfigurationID, attributeID);
+ALTER TABLE assessment ADD CONSTRAINT uc_assessment UNIQUE (userID, configurationID);
