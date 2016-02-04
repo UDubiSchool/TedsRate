@@ -8,7 +8,9 @@ try {
     session_start();
 
     if (isset($_GET['c'])) {
-        $configurationID = $_GET['c'];
+        $configurationIDHashed = $_GET['c'];
+        $getConfID = $dbq->query("SELECT configurationID FROM configuration WHERE configurationIDHashed = '$configurationIDHashed'");
+        $configurationID = $getConfID->fetchColumn();
 
         if (isset($_SESSION['teds.userID'])) {
             $userID = $_SESSION['teds.userID'];

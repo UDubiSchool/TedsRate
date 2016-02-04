@@ -172,6 +172,8 @@ if ($_POST) {
                 $scenarioID = $_POST['scenario'];
                 $userID     = $_POST['user'];
                 $attributeConfigurationID = $_POST['attributeConfiguration'];
+                $questionConfigurationID = $_POST['questionConfiguration'];
+                $uiConfigurationID = $_POST['uiConfiguration'];
 
 
                 $addAssessmentConfiguration = $dbq->prepare("CALL addAssessmentConfiguration(:projectID, :artifactID, :scenarioID, :personaID, @assessmentConfID)");
@@ -184,16 +186,20 @@ if ($_POST) {
 
                 $assessmentConfigurationID = $dbq->query('SELECT @assessmentConfID')->fetchColumn();
 
-                $addConfiguration = $dbq->prepare("CALL addConfiguration(:atrConfID, :assConfID, @confID)");
+                $addConfiguration = $dbq->prepare("CALL addConfiguration(:atrConfID, :assConfID, :questConfID, :uiConfID, @confID)");
                 $addConfiguration->bindValue(':atrConfID', $attributeConfigurationID, PDO::PARAM_INT);
                 $addConfiguration->bindValue(':assConfID', $assessmentConfigurationID, PDO::PARAM_INT);
+                $addConfiguration->bindValue(':questConfID', $questionConfigurationID, PDO::PARAM_INT);
+                $addConfiguration->bindValue(':uiConfID', $uiConfigurationID, PDO::PARAM_INT);
                 $addConfiguration->execute();
                 $addConfiguration->closeCursor();
 
                 $configurationID = $dbq->query('SELECT @confID')->fetchColumn();
 
-                $the_query = "INSERT INTO `assessment`(`configurationID`, `userID`, `personaID`, `scenarioID`, `projectArtifactID`, `isComplete`, `completionDate`)
-                              VALUES ($configurationID, $userID, $personaID, $scenarioID, $project_artifactID, null, null)";
+                $confHash = hash('sha256', $configurationID);
+
+                $the_query = "INSERT INTO `assessment`(`configurationID`, `userID`,`isComplete`, `completionDate`)
+                              VALUES ($configurationID, $userID, null, null)";
                 $stmt      = $dbq->prepare($the_query);
                 $stmt->execute();
 
@@ -211,6 +217,11 @@ if ($_POST) {
                 $addHash->bindValue(':hash', $hash, PDO::PARAM_STR);
                 $addHash->bindValue(':url', $fullUrl, PDO::PARAM_STR);
                 $addHash->bindValue(':assessmentID', $assessmentID, PDO::PARAM_INT);
+                $addHash->execute();
+
+                $addHash = $dbq->prepare("UPDATE configuration SET configurationIDHashed = :hash where configurationID = :configurationID");
+                $addHash->bindValue(':hash', $confHash, PDO::PARAM_STR);
+                $addHash->bindValue(':configurationID', $configurationID, PDO::PARAM_INT);
                 $addHash->execute();
 
                 break;

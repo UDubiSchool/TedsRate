@@ -5,6 +5,7 @@ require_once "header.no_session.inc.php";
 $pid = null; //project id
 $aid = null; //artifact id
 
+
 require_once "dbconnect.php";
 
 // selLanguage=5&selProject=26&selArtifact=60&selScenario=27&selPersona=20
@@ -35,6 +36,8 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
         $authenticate_query = $dbq->prepare("SELECT * FROM assessment
                                 LEFT JOIN configuration ON configuration.configurationID = assessment.configurationID
                                 LEFT JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
+                                LEFT JOIN questionConfiguration ON questionConfiguration.questionConfigurationID = configuration.questionConfigurationID
+                                LEFT JOIN uiConfiguration ON uiConfiguration.uiConfigurationID = configuration.uiConfigurationID
                                 LEFT JOIN user ON user.userID = assessment.userID
                                 WHERE assessment.assessmentIDHashed = :hashedID");
         $authenticate_query->bindValue(':hashedID', $hashedID, PDO::PARAM_STR);
@@ -47,6 +50,14 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
         $personaID = $flag[0]['personaID'];
         $scenarioID = $flag[0]['scenarioID'];
         $assessmentID = $flag[0]['assessmentID'];
+
+        $questionConfigurationID = $flag[0]['questionConfigurationID'];
+        $configurationID = $flag[0]['configurationID'];
+        $uiConfigurationID = $flag[0]['uiConfigurationID'];
+
+        $fName = $flag[0]['firstName'];
+        $lName = $flag[0]['lastName'];
+        $userID = $flag[0]['userID'];
 
         if (!$flag) {
             // authentication failed: user identity mismatch
@@ -64,7 +75,8 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
             $uid = $flag[0]['userID'];
             $assessmentID = $flag[0]['assessmentID'];
             $data = [
-                'assessmentID' => $assessmentID
+                'assessmentID' => $assessmentID,
+                'questions' => []
             ];
 
 
@@ -94,7 +106,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
 
 
             //populate personas the "language" value (5) is hard coded!
-            $sth = $dbq->query('select * from persona where persona.personaID = ' . $personaID);
+            $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
             while ($row = $sth->fetch()){
                 $tmp = [
                     'personaName' => $row['personaName'],
@@ -105,12 +117,31 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
 
 
             //populate scenarios the "language" value (5) is hard coded!
-            $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
+            $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
             while ($row = $sth->fetch()){
                 $tmp = [
                     'scenarioName' => $row['scenarioName'],
                 ];
                 $data['scenario'] = $tmp;
+            }
+            $sth->closeCursor();
+
+            // get the question types
+            $sth = $dbq->query("SELECT * FROM question q
+                                            INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
+                                            INNER JOIN questionConfiguration qc ON qc.questionConfigurationID = qqc.questionConfigurationID
+                                            INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
+                                            LEFT JOIN question_project qp ON qp.questionID = q.questionID
+                                            LEFT JOIN question_scenario qs ON qs.questionID = q.questionID
+                                            LEFT JOIN question_attribute qatt ON qatt.questionID = q.questionID
+                                            LEFT JOIN question_artifact qart ON qart.questionID = q.questionID
+                                            WHERE qc.questionConfigurationID = $questionConfigurationID
+                                            AND (qp.projectID = $pid
+                                            OR qs.scenarioID = $scenarioID
+                                            OR qart.artifactID = $aid)
+                                            ");
+            while ($row = $sth->fetch()){
+                array_push($data['questions'], $row);
             }
             $sth->closeCursor();
 
@@ -259,6 +290,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                         </div>
                         <div id="ratePane" class="four columns">
                             <h2><?php echo $data['project']['name']; ?></h2><p><?php echo $data['project']['description']; ?></p>
+                            <h4>Welcome Back <?php echo "$fName $lName";?></h4>
                             <table width="100%">
                                 <tr>
                                     <td>
@@ -270,6 +302,7 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                                         <p id="scenario"><?php echo $data['scenario']['scenarioName']; ?></p>
                                     </td>
                                 </tr>
+
                             </table>
                             <h4>Select User Agent</h4>
                             <select class="form-control" name="userAgentPicker" id="userAgentPicker">

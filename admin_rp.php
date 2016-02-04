@@ -10,6 +10,8 @@ $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
                         LEFT JOIN artifact a ON a.artifactID = pa.artifactID';
 $sql["persona"] = 'SELECT personaID, personaName FROM persona';
 $sql["attributeConfiguration"] = 'SELECT attributeConfigurationID, attributeConfigurationName FROM attributeConfiguration';
+$sql["questionConfiguration"] = 'SELECT questionConfigurationID, questionConfigurationName FROM questionConfiguration';
+$sql["uiConfiguration"] = 'SELECT uiConfigurationID, uiConfigurationName FROM uiConfiguration';
 
 try {
     $dbq = db_connect();
@@ -120,7 +122,7 @@ try {
             <form id="addProject" name="addProject" action="adminproc.php" method="post">
 
                 <!--- Add Project -->
-                <h2>1. Choose a Project</h2>
+                <h2>1. Project</h2>
                 <div id="project">
                     <select name="project" id="projectID" class="form-control notEmpty">
                         <option value="" disabled selected>Select your option</option>
@@ -136,7 +138,7 @@ try {
                     <a href="admin_pjt_project.php">Add New Project</a>
                 </div>
                 <div id="project_based_wrapper" style="display: none;" class="dependWrapper">
-                    <h3>1.1 Choose Project Artifact</h3>
+                    <h3>1.1 Artifact</h3>
                     <select id="projectArtifactReceiver" class="form-control notEmpty" name="artifact">
                         <option value="" disabled selected>Select your option</option>
                     </select>
@@ -146,7 +148,7 @@ try {
                 </div>
 
                 <!-- Add persona-based params -->
-                <h2>2. Choose a Persona</h2>
+                <h2>2. Persona</h2>
                 <select id="personaID" class="form-control notEmpty" name="persona">
                     <option value="" disabled selected>Select your option</option>
                     <?php
@@ -159,13 +161,13 @@ try {
                 <a href="admin_pjt_persona.php">Add New Persona</a>
 
                 <div id="persona_based_wrapper" style="display: none;" class="dependWrapper">
-                    <h3>2.1 Choose Scenario</h3>
+                    <h3>2.1 Scenario</h3>
                     <select id="personaScenarioReceiver" class="form-control notEmpty" name="scenario">
                         <option value="" disabled selected>Select your option</option>
                     </select>
                     <a href="admin_pjt_scenario.php">Add New Scenario</a>
                     <!-- seperate line -->
-                    <h3>2.2 Choose User</h3>
+                    <h3>2.2 User</h3>
                     <select id="personaUserReceiver" class="form-control notEmpty" name="user">
                         <option value="" disabled selected>Select your option</option>
                     </select>
@@ -173,13 +175,35 @@ try {
                 </div>
 
                 <!-- Add persona-based params -->
-                <h2>2. Choose a Configuration</h2>
+                <h2>3. Attribute Configuration</h2>
                 <select id="attributeConfigurationID" class="form-control notEmpty" name="attributeConfiguration">
                     <option value="" disabled selected>Select your option</option>
                     <?php
                     //make persona options
                     foreach ($dbq->query($sql["attributeConfiguration"]) as $row) {
                         printf('<option value="' . $row['attributeConfigurationID'] . '">' . $row['attributeConfigurationName'] . '</option>');
+                    }
+                    ?>
+                </select>
+
+                <h2>4. Question Configuration</h2>
+                <select id="questionConfigurationID" class="form-control notEmpty" name="questionConfiguration">
+                    <option value="" disabled selected>Select your option</option>
+                    <?php
+                    //make persona options
+                    foreach ($dbq->query($sql["questionConfiguration"]) as $row) {
+                        printf('<option value="' . $row['questionConfigurationID'] . '">' . $row['questionConfigurationName'] . '</option>');
+                    }
+                    ?>
+                </select>
+
+                <h2>5. UI Configuration</h2>
+                <select id="uiConfigurationID" class="form-control notEmpty" name="uiConfiguration">
+                    <option value="" disabled selected>Select your option</option>
+                    <?php
+                    //make persona options
+                    foreach ($dbq->query($sql["uiConfiguration"]) as $row) {
+                        printf('<option value="' . $row['uiConfigurationID'] . '">' . $row['uiConfigurationName'] . '</option>');
                     }
                     ?>
                 </select>
