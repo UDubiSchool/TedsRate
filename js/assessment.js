@@ -13,7 +13,7 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
             $scope.panel++;
             thisPanel.addClass('hidden');
             nextPanel.addClass('active');
-        }, 450);
+        }, 425);
       }
       $scope.prev = function () {
         var thisPanel = angular.element( document.getElementsByClassName( 'panel' )[$scope.panel] );
@@ -24,7 +24,7 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
             $scope.panel--;
             thisPanel.addClass('hidden');
             prevPanel.addClass('active');
-        }, 500);
+        }, 425);
       }
 
       $scope.questionTypes = ['demographic', 'project', 'artifact', 'scenario', 'attribute'];
@@ -33,7 +33,6 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
         $scope.assessment = response.data;
         $scope.panel = 0;
         console.log(response.data);
-        console.log($scope.assessment.questions);
         angular.forEach($scope.assessment.questions, function(value, key) {
             if(Object.keys(value).length > 0) {
                 if ($scope.questionTypes.indexOf(key) !== -1) {
@@ -41,9 +40,8 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
                         var data = value.questionData;
                         value.questionData = JSON.parse(data);
                         if(value.questionData.questionType == 'Check') {
-                            var response = value.response;
-                            console.log(response);
-                            value.response = JSON.parse(response);
+                            var res = value.response;
+                            value.response = JSON.parse(res);
                         }
                     });
                 } else {

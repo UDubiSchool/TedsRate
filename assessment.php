@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/assessment.css">
     <script src="js/angular.min.js" type="text/javascript"/></script>
     <script src="js/angular-animate.js" type="text/javascript"/></script>
-    <script src="js/ui-bootstrap-1.1.2.min.js" type="text/javascript"/></script>
+    <script src="js/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/assessment.js"></script>
 </head>
@@ -29,17 +29,26 @@
 
                     <div ng-if="!signin" id="signup">
                         <p>Please provide us with an email and password so that we may track you across individual ratings.</p>
-                        <input class="form-control" type="text" ng-model="signup.email" placeholder="email">
-                        <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="password">
-                        <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="confirm">
+                        <div class="form-group">
+                            <input class="form-control" type="text" ng-model="signup.email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password">
+                            <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm">
+                        </div>
                     </div>
                     <div ng-if="signin" id="signin" >
-                        <input class="form-control" type="text" ng-model="signin.email" placeholder="email">
-                        <input class="form-control" type="password" name="password" ng-model="signin.password" placeholder="password">
+                        <div class="form-group">
+                            <input class="form-control" type="text" ng-model="signin.email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="password" ng-model="signin.password" placeholder="Password">
+                        </div>
                     </div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
 
+                <!-- BEGIN QUESTION PANELS -->
                 <div ng-if="assessment.questions.demographic" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 demographic-panel">
                     <h3>User Questions</h3>
                     <div  ng-repeat="question in assessment.questions.demographic" class="question" question-template></div>
@@ -65,13 +74,20 @@
                     <div  ng-repeat="question in assessment.questions.scenario" class="question" question-template></div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
+                <!-- END QUESTION PANELS -->
 
+                <!-- BEGIN ATTRIBUTE PANELS -->
                 <div ng-repeat="criterion in assessment.criteria" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
                     <h3>{{criterion.criterionName}}</h3>
                     <p>{{criterion.criterionDesc}}</p>
                     <div ng-repeat="attribute in criterion.attributes"class="attribute clearfix">
                         <h4>{{attribute.attributeName}}</h4>
                         <p>{{attribute.attributeDesc}}</p>
+                        <p ng-if="attribute.attributeTypeName == 'Cluster'">
+                            This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
+                            <span ng-repeat="category in attribute.categories"> <a uib-popover="{{category.attributeDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}</span>
+                        </p>
+
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12">
 
                             <div class="col-xs-11 center-block clearfix likert">
@@ -106,17 +122,15 @@
                                     {{attribute.postface}}
                                 </div>
                             </div>
-
-
-
-
                         </div>
+
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Text'">
                             Text Box
                         </div>
                     </div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
+                <!-- END ATTRIBUTE PANELS -->
 
             </div> <!-- END PANEL WRAPPER -->
 

@@ -2,6 +2,8 @@ body {
     background-color: #eaeaea;
 }
 
+.nav, .pagination, .carousel, .panel-title, a { cursor: pointer; }
+
 .header {
     margin:0px -15px;
     padding:5px 15px;

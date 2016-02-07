@@ -152,18 +152,6 @@
                                              WHERE qt.questionTypeName = 'Demographic'
                                              ");
              while ($row = $sth->fetch()){
-                $tmp = [
-                    'questionID' => $row['questionID'],
-                    'questionTypeID' => $row['questionTypeID'],
-                    'responseID' => $row['responseID'],
-                    // 'projectID' => $row['projectID'],
-                    'assessmentID' => $row['assessmentID'],
-                    'questionName' => $row['questionName'],
-                    'questionDesc' => $row['questionDesc'],
-                    'questionTypeName' => $row['questionTypeName'],
-                    'questionTypeDesc' => $row['questionTypeDesc'],
-                    'response' => $row['responseAnswer']
-                ];
                  if($row['projectID']) {
                      $questions['project'][intval($row['questionID'])] = $row;
                  }
@@ -234,16 +222,9 @@
                         $question['responseID'] = $row['responseID'];
                         $question['response'] = $row['responseAnswer'];
                     }
-                    // echo '<pre>';
-                    // print_r($question);
-                    // echo '</pre>';
                     $sth->closeCursor();
                 }
             }
-            // echo '<pre>';
-            // print_r($questions);
-            // echo '</pre>';
-            // exit;
             $data['questions'] = $questions;
 
 
@@ -301,7 +282,7 @@
 
                         if ($value['attributeID'] == $row['attributeID']) {
 
-                            $ratingValue = intval($value['ratingValue']);
+                            $ratingValue = strval(intval($value['ratingValue']));
 
                             if(isset($value['screenshotPath'])) {
                                 $hasScreenshot = true;
@@ -323,6 +304,8 @@
                     'attributeID' => $row['attributeID'],
                     'attributeName' => $row['attributeName'],
                     'attributeDesc' => $row['attributeDesc'],
+                    'attributeTypeName' => $row['attributeTypeName'],
+                    'attributeTypeDesc' => $row['attributeTypeDesc'],
                     'ratingValue' => $ratingValue,
                     'preface' => $row['attributePreface'],
                     'postface' => $row['attributePostface'],
@@ -332,6 +315,11 @@
                     'comment' => $comment
                 ];
 
+
+
+
+
+
                 array_push($attributes, $attribute);
             }
             array_reverse($attributes);
@@ -340,10 +328,31 @@
 
         }
         array_reverse($criteria);
-        $data['criteria'] = $criteria;
-        $sth->closeCursor();
 
         unset($data['ratingsData']);
+        $sth->closeCursor();
+
+
+        foreach ($criteria as $criterionKey => $criterion) {
+            foreach ($criterion['attributes'] as $attributeKey => $attribute) {
+                if($attribute['attributeTypeName'] == 'Cluster') {
+                    $criteria[$criterionKey]['attributes'][$attributeKey]['categories'] = [];
+
+                    $sth = $dbq->query("SELECT attr.attributeID, attr.attributeName, attr.attributeDesc FROM attribute a
+                                                    INNER JOIN cluster cl ON a.attributeID = cl.attributeID
+                                                    INNER JOIN cluster_category cc ON cc.clusterID = cl.attributeID
+                                                    INNER JOIN category ca ON cc.categoryID = ca.attributeID
+                                                    INNER JOIN attribute attr ON attr.attributeID = ca.attributeID
+                                                    WHERE cl.attributeID = $attribute[attributeID]
+                                                    ");
+                    while ($row = $sth->fetch()){
+                        array_push($criteria[$criterionKey]['attributes'][$attributeKey]['categories'], $row);
+                    }
+                    $sth->closeCursor();
+                }
+            }
+        }
+        $data['criteria'] = $criteria;
 
 
         header('Content-Type: application/json');
