@@ -12,22 +12,22 @@ try {
         $getConfID = $dbq->query("SELECT configurationID FROM configuration WHERE configurationIDHashed = '$configurationIDHashed'");
         $configurationID = $getConfID->fetchColumn();
 
-        if (isset($_SESSION['teds.userID'])) {
-            $userID = $_SESSION['teds.userID'];
+        if (isset($_COOKIE['teds.userID'])) {
+            $userID = $_COOKIE['teds.userID'];
 
             if (isValidUser($dbq, $userID)){
                 $redirect = makeAssessment($dbq, $userID, $configurationID);
                 header("Location: $redirect");
 
             } else {
-                session_regenerate_id(true);
+                // session_regenerate_id(true);
 
                 $userID = makeUser($dbq);
                 $redirect = makeAssessment($dbq, $userID, $configurationID);
                 header("Location: $redirect");
             }
         } else {
-            session_regenerate_id(true);
+            // session_regenerate_id(true);
 
             $userID = makeUser($dbq);
             $redirect = makeAssessment($dbq, $userID, $configurationID);
@@ -62,7 +62,9 @@ function makeUser($dbq) {
     $makePartialUser->closeCursor();
 
     $userID = $dbq->query('SELECT @userID')->fetchColumn();
-    $_SESSION['teds.userID'] = $userID;
+
+    $exipirationDate = 86400 * 365 * 1; //cookie expires in one year so there is little likelyhood that they make duplicate temporaries.
+    setcookie('teds.userID', $userID, $exipirationDate);
 
     return $userID;
 }

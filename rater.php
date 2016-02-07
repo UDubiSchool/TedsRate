@@ -28,7 +28,6 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
 
     try {
         $dbq = db_connect();
-        $dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
         $hashedID = $_GET['asid'];

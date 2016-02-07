@@ -1,0 +1,91 @@
+body {
+    background-color: #eaeaea;
+}
+
+.header {
+    margin:0px -15px;
+    padding:5px 15px;
+    box-shadow: 0px 3px 3px #ccc;
+    border-bottom:1px solid #ddd;
+    background: #fff;
+}
+
+.panel {
+    padding: 25px;
+}
+
+.user-panel .form-control{
+    margin:8px 0px;
+}
+
+#panel-wrapper {
+    position: relative;
+    margin:25px 0px;
+}
+
+.panel {
+    position: absolute;
+    top:0px;
+    transition:0.5s linear all;
+    opacity:0;
+}
+
+.active {
+    opacity: 1;
+}
+
+.hidden {
+    /*display: none;*/
+}
+
+.navigation {
+    padding:15px 0px;
+}
+
+.navigation .next {
+    float:right;
+}
+
+.navigation .prev {
+    float:left;
+}
+
+.attribute {
+    padding:25px 0px;
+    border-bottom:1px solid #ddd;
+}
+
+.attribute:last-child {
+    border-bottom:0px;
+}
+
+.checkbox {
+    margin: 5px !important;
+    border: 2px solid #000;
+    border-radius: 3px;
+    padding: 8px;
+}
+
+.checkbox.active {
+    background-color: #c61f1f;
+   -webkit-box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);
+   -moz-box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);
+   box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);
+
+}
+
+.likert div {
+ text-align: center;
+ padding:0px;
+}
+
+.center-block {
+    float:none;
+}
+
+.likert > div:first-child, .boolean > div:first-child {
+    text-align: right;
+}
+.likert > div:last-child, .boolean > div:last-child {
+    text-align: left;
+}

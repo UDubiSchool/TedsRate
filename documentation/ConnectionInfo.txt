@@ -1,0 +1,31 @@
+The php code and the mysql database are located on Ovid which is a Linux server at UW.
+-- --
+To connect to TEDSRate server on Ovid
+You need a tool to connect with a terminal server: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+
+Once you have this installed, run the putty
+
+Ssh to the linux tedsrate server:
+
+ssh tedsrate@ovid.u.washington.edu
+
+password is: 444t3dsrat3+++
+
+-- --
+
+Filezilla access is how we have been editing the files
+
+To use FTP to upload php code if you need. The goal is to move to git instead, but for now this works.
+
+FTP Host : homer.u.washington.edu
+Username: tedsrate (I am accessing all the code in the teds folder within it)
+Password: 444t3dsrat3+++
+
+Database Link: https://depts.washington.edu/tedsrate/phpmyadmin/
+Account: tedsrate
+Password: 444t3dsrat3+++
+
+dongh3d3long
+Source code path: /nfs/bronfs/uwfs/hw00/d97/tedsrate/teds
+
+Port 22
