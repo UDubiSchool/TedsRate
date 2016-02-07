@@ -33,17 +33,25 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
         $scope.assessment = response.data;
         $scope.panel = 0;
         console.log(response.data);
+        console.log($scope.assessment.questions);
         angular.forEach($scope.assessment.questions, function(value, key) {
             if(Object.keys(value).length > 0) {
                 if ($scope.questionTypes.indexOf(key) !== -1) {
                     angular.forEach(value, function(value, key) {
                         var data = value.questionData;
                         value.questionData = JSON.parse(data);
+                        if(value.questionData.questionType == 'Check') {
+                            var response = value.response;
+                            console.log(response);
+                            value.response = JSON.parse(response);
+                        }
                     });
                 } else {
                     var data = value.questionData;
                     value.questionData = JSON.parse(data);
                 }
+            } else {
+                $scope.assessment.questions[key] = null;
             }
         });
 
@@ -52,6 +60,12 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
       // console.log($scope.ratings);
 
    }]);
+
+app.directive('questionTemplate', function() {
+  return {
+    templateUrl: 'partials/question.html'
+  };
+});
 // app.animation('.panel', [function() {
 //   return {
 //     addClass: function(element, className, doneFn) {

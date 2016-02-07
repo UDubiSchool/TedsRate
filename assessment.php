@@ -40,120 +40,29 @@
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
 
-                <div ng-if="assessment.questions.demograpic " class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 demographic-panel">
+                <div ng-if="assessment.questions.demographic" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 demographic-panel">
                     <h3>User Questions</h3>
-                    <div  ng-repeat="question in assessment.questions.demographic" class="question">
-                        <h4>{{question.questionName}}</h4>
-                        <p>{{question.questionDesc}}</p>
-                        <div ng-if="question.questionData.questionType == 'Boolean'">
-                            <div class="col-xs-8 center-block clearfix">
-                                <div class="col-xs-3">
-                                    {{question.Boolean.false}}
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'false'"></label>
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'true'"></label>
-                                </div>
-                                <div class="col-xs-3">
-                                    {{question.Boolean.true}}
-                                </div>
-                            </div>
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Radio'">
-
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Text'">
-
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Select'">
-
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Check'">
-
-                        </div>
-                    </div>
+                    <div  ng-repeat="question in assessment.questions.demographic" class="question" question-template></div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
 
-                <div ng-if="assessment.questions.project " class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 project-panel">
+                <div ng-if="assessment.questions.project" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 project-panel">
                     <h3>Project Questions</h3>
+                    <div  ng-repeat="question in assessment.questions.project" class="question" question-template></div>
+                    <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
+                </div>
 
+                <div ng-if="assessment.questions.artifact" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 artifact-panel">
+                    {{assessment.questions.artifact}}
+                    <h3>Artifact Questions</h3>
+                    <div  ng-repeat="question in assessment.questions.artifact" class="question" question-template></div>
+                    <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
+                </div>
 
-                    <div  ng-repeat="question in assessment.questions.project" class="question">
-                        <h4>{{question.questionName}}</h4>
-                        <p>{{question.questionDesc}}</p>
-                        <div ng-if="question.questionData.questionType == 'Boolean'" class="clearfix">
-                            <div class="col-xs-3 col-xs-offset-2 clearfix Boolean">
-                                <div class="col-xs-3">
-                                    {{question.questionData.Boolean.false}}
-                                </div>
-                                <div class="col-xs-3">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'false'"></label>
-                                </div>
-                                <div class="col-xs-3">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'true'"></label>
-                                </div>
-                                <div class="col-xs-3">
-                                    {{question.questionData.Boolean.true}}
-                                </div>
-                            </div>
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Radio'" class="clearfix">
-                            <div class="col-xs-11 center-block clearfix likert">
-                                <div class="col-xs-3"></div>
-                                <div class="col-xs-1">1</div>
-                                <div class="col-xs-1">2</div>
-                                <div class="col-xs-1">3</div>
-                                <div class="col-xs-1">4</div>
-                                <div class="col-xs-1">5</div>
-                                <div class="col-xs-3"></div>
-                            </div>
-                            <div class="col-xs-11 center-block clearfix likert">
-                                <div class="col-xs-3">
-                                    {{question.questionData.Radio.preface}}
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'1'"></label>
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'2'"></label>
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'3'"></label>
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'4'"></label>
-                                </div>
-                                <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'5'"></label>
-                                </div>
-                                <div class="col-xs-3">
-                                    {{question.questionData.Radio.postface}}
-                                </div>
-                            </div>
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Text'" class="clearfix">
-                            <input class="form-control" type="text" ng-model="question.response" placeholder="{{question.questionData.Text.placeholder}}" ng-value="{{question.response}}">
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Select'" class="clearfix">
-                            <select class="form-control col-sm-6" ng-model="question.response">
-                                <option value=""></option>
-                                <option ng-repeat="option in question.questionData.Select.options" ng-value="option">{{option}}</option>
-                            </select>
-                        </div>
-                        <div ng-if="question.questionData.questionType == 'Check'" class="clearfix">
-                            <p>Check all that apply</p>
-                            <div ng-repeat="check in question.questionData.Check.options" class="col-md-6">
-                                {{check}}
-                                <label class="btn checkbox" ng-model="question.response[check]" uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0"></label>
-                            </div>
-                        </div>
-                    </div>
-
-
-
+                <div ng-if="assessment.questions.scenario" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 scenario-panel">
+                    {{assessment.questions.scenario}}
+                    <h3>Scenario Questions</h3>
+                    <div  ng-repeat="question in assessment.questions.scenario" class="question" question-template></div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
                 </div>
 
@@ -165,7 +74,7 @@
                         <p>{{attribute.attributeDesc}}</p>
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12">
 
-                            <div class="col-xs-11 center-block clearfix">
+                            <div class="col-xs-11 center-block clearfix likert">
                                 <div class="col-xs-3"></div>
                                 <div class="col-xs-1">1</div>
                                 <div class="col-xs-1">2</div>
@@ -174,7 +83,7 @@
                                 <div class="col-xs-1">5</div>
                                 <div class="col-xs-3"></div>
                             </div>
-                            <div class="col-xs-11 center-block clearfix">
+                            <div class="col-xs-11 center-block clearfix likert">
                                 <div class="col-xs-3">
                                     {{attribute.preface}}
                                 </div>

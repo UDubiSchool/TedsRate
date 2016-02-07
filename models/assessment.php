@@ -152,10 +152,23 @@
                                              WHERE qt.questionTypeName = 'Demographic'
                                              ");
              while ($row = $sth->fetch()){
+                $tmp = [
+                    'questionID' => $row['questionID'],
+                    'questionTypeID' => $row['questionTypeID'],
+                    'responseID' => $row['responseID'],
+                    // 'projectID' => $row['projectID'],
+                    'assessmentID' => $row['assessmentID'],
+                    'questionName' => $row['questionName'],
+                    'questionDesc' => $row['questionDesc'],
+                    'questionTypeName' => $row['questionTypeName'],
+                    'questionTypeDesc' => $row['questionTypeDesc'],
+                    'response' => $row['responseAnswer']
+                ];
                  if($row['projectID']) {
                      $questions['project'][intval($row['questionID'])] = $row;
                  }
-                 $questions[intval($row['questionID'])] = $row;
+                 //push question to the generic question array
+                 // $questions[intval($row['questionID'])] = $row;
              }
              $sth->closeCursor();
 
@@ -169,7 +182,7 @@
                 if($row['projectID']) {
                     $questions['project'][intval($row['questionID'])] = $row;
                 }
-                $questions[intval($row['questionID'])] = $row;
+                // $questions[intval($row['questionID'])] = $row;
             }
             $sth->closeCursor();
 
@@ -182,10 +195,9 @@
                 if($row['scenarioID']) {
                     $questions['scenario'][intval($row['questionID'])] = $row;
                 }
-                $questions[intval($row['questionID'])] = $row;
+                // $questions[intval($row['questionID'])] = $row;
             }
             $sth->closeCursor();
-            $data['questions'] = $questions;
 
             $sth = $dbq->query("SELECT * FROM question q
                                             INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
@@ -196,7 +208,7 @@
                 if($row['artifactID']) {
                     $questions['artifact'][intval($row['questionID'])] = $row;
                 }
-                $questions[intval($row['questionID'])] = $row;
+                // $questions[intval($row['questionID'])] = $row;
             }
             $sth->closeCursor();
 
@@ -208,9 +220,31 @@
                 if($row['artifactID']) {
                     $questions['artifact'][intval($row['questionID'])] = $row;
                 }
-                $questions[intval($row['questionID'])] = $row;
+                // $questions[intval($row['questionID'])] = $row;
             }
             $sth->closeCursor();
+
+            foreach ($questions as &$cat) {
+                foreach ($cat as &$question) {
+                    $sth = $dbq->query("SELECT * FROM response r
+                                                WHERE r.assessmentID = $assessmentID
+                                                AND r.questionID = $question[questionID]
+                                                ");
+                    while ($row = $sth->fetch()){
+                        $question['responseID'] = $row['responseID'];
+                        $question['response'] = $row['responseAnswer'];
+                    }
+                    // echo '<pre>';
+                    // print_r($question);
+                    // echo '</pre>';
+                    $sth->closeCursor();
+                }
+            }
+            // echo '<pre>';
+            // print_r($questions);
+            // echo '</pre>';
+            // exit;
+            $data['questions'] = $questions;
 
 
         } //end add questions
