@@ -131,7 +131,7 @@
 
                         <div class="comment">
                             <h4>Notes</h4>
-                            <textarea name="" id="" ng-model="attribute.comment" cols="" rows="1" placeholder="Place any explanation here" msd-elastic></textarea>
+                            <textarea name="" id="" ng-model="attribute.comment" cols="" rows="1" placeholder="Place any explanation here" msd-elastic>{{attribute.comment}}</textarea>
                         </div>
                     </div>
                     <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="($last && save()) || next()">{{$last ? "Finish": "Continue"}}</a></div>
