@@ -7,6 +7,7 @@
     <script src="js/angular-animate.js" type="text/javascript"/></script>
     <script src="js/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
     <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/elastic.js"></script>
     <script src="js/assessment.js"></script>
 </head>
 <body>
@@ -127,10 +128,20 @@
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Text'">
                             Text Box
                         </div>
+
+                        <div class="comment">
+                            <h4>Notes</h4>
+                            <textarea name="" id="" ng-model="attribute.comment" cols="" rows="1" placeholder="Place any explanation here" msd-elastic></textarea>
+                        </div>
                     </div>
-                    <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="next()">Continue</a></div>
+                    <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a><a class="btn btn-primary next" ng-click="($last && save()) || next()">{{$last ? "Finish": "Continue"}}</a></div>
                 </div>
                 <!-- END ATTRIBUTE PANELS -->
+
+                <div class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 finished-panel">
+                    <h3>Thank you for completing our survey</h3>
+                    <div class="navigation"><a class="btn btn-primary prev" ng-click="prev()">Back</a></div>
+                </div>
 
             </div> <!-- END PANEL WRAPPER -->
 

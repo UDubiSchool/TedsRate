@@ -54,7 +54,7 @@ body {
 
 .attribute {
     padding:25px 0px;
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid #bbb;
 }
 
 .attribute:last-child {
@@ -90,4 +90,19 @@ body {
 }
 .likert > div:last-child, .boolean > div:last-child {
     text-align: left;
+}
+
+.comment textarea {
+    width: 100%;
+    padding: 15px 5px 5px 5px;
+    border:none;
+    border-bottom:1px solid #ccc;
+    border-radius:3px;
+    font-size:1.1em;
+}
+
+.comment textarea:focus {
+    /*border:none;*/
+    background-color: #f8f8f8;
+    outline: none !important;
 }

@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
+var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic'])
    .controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', function($scope, $http, $animate, $timeout) {
       $scope.asid = document.getElementById("asid").value;
       // var jsonStuff = {'questionType': 'Boolean','Boolean': {'true': 'Yes','false': 'No',0: 'No',1: 'Yes'}};
@@ -25,6 +25,10 @@ var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap'])
             thisPanel.addClass('hidden');
             prevPanel.addClass('active');
         }, 425);
+      }
+
+      $scope.save = function () {
+          console.log("saving");
       }
 
       $scope.questionTypes = ['demographic', 'project', 'artifact', 'scenario', 'attribute'];
