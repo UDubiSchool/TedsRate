@@ -94,15 +94,32 @@ body {
 
 .comment textarea {
     width: 100%;
-    padding: 15px 5px 5px 5px;
+    padding: 15px 10px 5px 10px;
     border:none;
     border-bottom:1px solid #ccc;
     border-radius:3px;
     font-size:1.1em;
+    background-color: #f9f9f9;
+
 }
 
 .comment textarea:focus {
     /*border:none;*/
-    background-color: #f8f8f8;
+    background-color: #f3f3f3;
     outline: none !important;
+}
+
+.screenshotUpload {
+    padding:5px 0px;
+    /*float:left;*/
+}
+
+.lightbox-modal .modal-content {
+    border:0px;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.lightbox-modal .modal-body {
+    padding:0px;
 }

@@ -160,10 +160,8 @@ if (isset($_GET['asid']) || isset($_GET['urpId'])) {
                 FROM assessment
                 LEFT JOIN rating ON assessment.assessmentID = rating.assessmentID
                 LEFT JOIN attribute ON attribute.attributeID = rating.attributeID
-                LEFT JOIN rating_screenshot ON rating.ratingID = rating_screenshot.ratingID
-                LEFT JOIN screenshot ON rating_screenshot.screenshotID = screenshot.screenshotID
-                LEFT JOIN rating_comment ON rating.ratingID = rating_comment.ratingID
-                LEFT JOIN comment ON rating_comment.commentID = comment.commentID
+                LEFT JOIN screenshot ON rating.ratingID = screenshot.ratingID
+                LEFT JOIN comment ON rating.ratingID = comment.ratingID
                 WHERE assessment.assessmentID = $assessmentID;";
                 $current = $dbq->query($current);
                 while ($currentResult = $current->fetch()){

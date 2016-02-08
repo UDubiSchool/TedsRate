@@ -30,9 +30,9 @@ try {
 
     // set up simple SQL statements for grabbing some intermediate combination IDs to use in the addUserRating SPROC below
 
-    $sql['psid'] = 'SELECT personaScenarioID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
-    $sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
-    $sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID=' . $ids['project'] . ' AND artifactID=' . $ids['artifact'];
+    // $sql['psid'] = 'SELECT personaScenarioID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
+    // $sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
+    // $sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID=' . $ids['project'] . ' AND artifactID=' . $ids['artifact'];
     // $sql['configurationTypeName'] = "SELECT configurationTypeName FROM configurationType ct
     //                                                     LEFT JOIN configuration c ON c.configurationTypeID = ct.configurationTypeID
     //                                                     LEFT JOIN assessment a ON a.configurationID = c.configurationID
@@ -42,11 +42,11 @@ try {
 
     // run queries set up above, put values in to $ids array
 
-    foreach($sql as $k => $v) {
-        foreach($dbq->query($v) as $row) {
-            $ids[$k] = $row[0];
-        }
-    }
+    // foreach($sql as $k => $v) {
+    //     foreach($dbq->query($v) as $row) {
+    //         $ids[$k] = $row[0];
+    //     }
+    // }
 
     // debug statements
     //  print_r($ids);
@@ -99,12 +99,12 @@ try {
                       if(empty($errors)==true){
                         $path = "upload/screenshots/".$file_name;
                         if(move_uploaded_file($file_tmp, $path)) {
-                          $screen_sql = "INSERT INTO screenshot (screenshotPath, userCreated) VALUES ('$path' , " . $ids['user'] . ")";
+                          $screen_sql = "INSERT INTO screenshot (screenshotPath, ratingID) VALUES ('$path' , $ratingID)";
 
                           $dbq->query($screen_sql);
-                          $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
-                          $userRating_screen_sql = "INSERT INTO rating_screenshot (ratingID, screenshotID) VALUES ($ratingID , $screenshot_ID)";
-                          $dbq->query($userRating_screen_sql);
+                          // $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
+                          // $userRating_screen_sql = "INSERT INTO rating_screenshot (ratingID, screenshotID) VALUES ($ratingID , $screenshot_ID)";
+                          // $dbq->query($userRating_screen_sql);
                         } else {
                           // echo "could not upload file at " . $file_tmp;
                           exit;
@@ -120,7 +120,7 @@ try {
                    if(!empty($_POST['comment'][$k])){
                     // echo "found one";
                     // exit;
-                    $oldCom = $dbq->prepare("SELECT commentID FROM rating_comment WHERE ratingID = :ratingID");
+                    $oldCom = $dbq->prepare("SELECT commentID FROM comment WHERE ratingID = :ratingID");
                     $oldCom->execute(array(':ratingID' => $ratingID));
                     $commentID = $oldCom->fetchColumn();
                     // echo $comID;
@@ -130,12 +130,12 @@ try {
                       $updateCom->execute(array(':comment' => $_POST['comment'][$k], ':commentID' => $commentID));
                     } else {
                       // echo "inserting";
-                      $addComment = $dbq->prepare("INSERT INTO comment (comment, userCreated) VALUES ( :comment , :userID)");
-                      $addComment->execute(array(':comment' => $_POST['comment'][$k], ':userID' => $ids['user'] ));
-                      $comment_id = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
+                      $addComment = $dbq->prepare("INSERT INTO comment (comment, ratingID) VALUES ( :comment , :ratingID)");
+                      $addComment->execute(array(':comment' => $_POST['comment'][$k], ':ratingID' => $ratingID ));
+                      // $comment_id = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
 
-                      $add_comment_assoc_sql = "INSERT INTO rating_comment (ratingID, commentID) VALUES ($ratingID, $comment_id)";
-                      $dbq->query($add_comment_assoc_sql);
+                      // $add_comment_assoc_sql = "INSERT INTO rating_comment (ratingID, commentID) VALUES ($ratingID, $comment_id)";
+                      // $dbq->query($add_comment_assoc_sql);
                     }
                    }
 

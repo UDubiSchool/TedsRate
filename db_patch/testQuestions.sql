@@ -33,3 +33,6 @@ INSERT INTO question_project (questionID, projectID) VALUES (@qid, 38);
 
 
 INSERT INTO questionConfiguration (questionConfigurationName, questionConfigurationDesc) VALUES ('All question subsets', 'All subsets of questions, Demographic, artifact, project, scenario, attribute');
+
+
+INSERT INTO screenshot (screenshotPath, ratingID) VALUES ("upload/screenshots/cat1.jpg", 4422) , ("upload/screenshots/cat2.jpg", 4422), ("upload/screenshots/cat3.jpg", 4422);
