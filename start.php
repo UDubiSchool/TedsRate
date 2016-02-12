@@ -12,9 +12,8 @@ try {
         $getConfID = $dbq->query("SELECT configurationID FROM configuration WHERE configurationIDHashed = '$configurationIDHashed'");
         $configurationID = $getConfID->fetchColumn();
 
-        if (isset($_COOKIE['teds.userID'])) {
-            $userID = $_COOKIE['teds.userID'];
-
+        if (isset($_COOKIE['teds_userID'])) {
+            $userID = $_COOKIE['teds_userID'];
             if (isValidUser($dbq, $userID)){
                 $redirect = makeAssessment($dbq, $userID, $configurationID);
                 header("Location: $redirect");
@@ -28,7 +27,6 @@ try {
             }
         } else {
             // session_regenerate_id(true);
-
             $userID = makeUser($dbq);
             $redirect = makeAssessment($dbq, $userID, $configurationID);
             header("Location: $redirect");
@@ -63,8 +61,8 @@ function makeUser($dbq) {
 
     $userID = $dbq->query('SELECT @userID')->fetchColumn();
 
-    $exipirationDate = 86400 * 365 * 1; //cookie expires in one year so there is little likelyhood that they make duplicate temporaries.
-    setcookie('teds.userID', $userID, $exipirationDate);
+    $exipirationDate = time() + 86400 * 365 * 1; //cookie expires in one year so there is little likelyhood that they make duplicate temporaries.
+    setcookie('teds_userID', $userID, $exipirationDate);
 
     return $userID;
 }
@@ -91,7 +89,7 @@ function makeAssessment($dbq, $userID, $configurationID) {
 
     $hash = hash('sha256', $assessmentID);
 
-    $targetURL = "rater.php?&asid=" . $hash;
+    $targetURL = "assessment.php?&asid=" . $hash;
     $fullUrl = $root_url;
     $fullUrl .= $targetURL;
 
