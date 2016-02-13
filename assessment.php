@@ -118,32 +118,6 @@
                     <div  ng-repeat="question in group" class="question" question-template></div>
                     <div class="navigation" panel-navigation></div>
                 </div>
-                <!--
-                <div ng-if="assessment.questions.demographic" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 demographic-panel">
-                    <h2>User Questions</h2>
-                    <div  ng-repeat="question in assessment.questions.demographic" class="question" question-template></div>
-                    <div class="navigation" panel-navigation></div>
-                </div>
-
-                <div ng-if="assessment.questions.project" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 project-panel">
-                    <h2>Project Questions</h2>
-                    <div  ng-repeat="question in assessment.questions.project" class="question" question-template></div>
-                    <div class="navigation" panel-navigation></div>
-                </div>
-
-                <div ng-if="assessment.questions.artifact" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 artifact-panel">
-                    {{assessment.questions.artifact}}
-                    <h2>Artifact Questions</h2>
-                    <div  ng-repeat="question in assessment.questions.artifact" class="question" question-template></div>
-                    <div class="navigation" panel-navigation></div>
-                </div>
-
-                <div ng-if="assessment.questions.scenario" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 scenario-panel">
-                    {{assessment.questions.scenario}}
-                    <h2>Scenario Questions</h2>
-                    <div  ng-repeat="question in assessment.questions.scenario" class="question" question-template></div>
-                    <div class="navigation" panel-navigation></div>
-                </div> -->
                 <!-- END QUESTION PANELS -->
 
                 <!-- BEGIN ATTRIBUTE PANELS -->
@@ -174,19 +148,19 @@
                                     {{attribute.preface}}
                                 </div>
                                 <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'1'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true)"></label>
+                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'1'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
                                 <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'2'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true)"></label>
+                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'2'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
                                 <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'3'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true)"></label>
+                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'3'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
                                 <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'4'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true)"></label>
+                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'4'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
                                 <div class="col-xs-1">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'5'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true)"></label>
+                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'5'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
                                 <div class="col-xs-3">
                                     {{attribute.postface}}
@@ -200,7 +174,7 @@
 
                         <div class="comment form-group clearfix">
                             <h3>Notes</h3>
-                            <textarea name="" id="" ng-model="attribute.comment" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
+                            <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
                         </div>
                         <div class="screenshots form-group clearfix">
                             <h3>Screenshots</h3>
@@ -222,11 +196,11 @@
                         <div ng-class="{'col-xs-6': requiredItems - completedItems == 0 && !$last}" class="col-xs-8">
                             <uib-progressbar max="requiredItems" value="completedItems"><span style="color:white; white-space:nowrap;">{{completedItems}} / {{requiredItems}}</span></uib-progressbar>
                         </div>
-                        <div  class="col-xs-2">
-                            <a class="btn btn-block next" ng-class="$last ? 'btn-success' : 'btn-primary'" ng-disabled="$last && requiredItems - completedItems !== 0 " ng-click="(($last && save()) || (!$last || (requiredItems - completedItems == 0)) && next())" scroll scroll-target="#header">{{$last ? "Finish": "Continue"}}</a>
+                        <div ng-if="!$last" class="col-xs-2">
+                            <a class="btn btn-block next btn-primary" ng-click="next()" scroll scroll-target="#header">Continue</a>
                         </div>
-                        <div ng-if="requiredItems - completedItems == 0 && !$last" class="col-xs-2">
-                            <a class="btn btn-block btn-success next" ng-click="save(); last()" scroll scroll-target="#header">Finish</a>
+                        <div ng-if="requiredItems - completedItems == 0 || $last" class="col-xs-2">
+                            <a class="btn btn-block btn-success next" ng-disabled="requiredItems - completedItems !== 0 "  ng-click="save.finish(); last()" scroll scroll-target="#header">Finish</a>
                         </div>
                     </div>
                 </div>
@@ -234,6 +208,7 @@
 
                 <div class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 finished-panel">
                     <h2>Thank you for completing our survey</h2>
+                    <p>{{finished ? "Your assessment has been saved. You may safely close this page." : "Your assessment is being saved. Please do not close this page."}}</p>
                     <div class="navigation">
                         <div class="col-xs-2">
                             <a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a>

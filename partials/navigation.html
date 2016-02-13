@@ -1,0 +1,14 @@
+<div class="col-xs-2">
+    <a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a>
+</div>
+<div ng-class="{'col-xs-6': requiredItems - completedItems == 0}" class="col-xs-8">
+    <uib-progressbar max="requiredItems" value="completedItems">
+        <span style="color:white; white-space:nowrap;">{{completedItems}} / {{requiredItems}}</span>
+    </uib-progressbar>
+</div>
+<div class="col-xs-2">
+    <a class="btn btn-block next btn-primary" ng-click="next()" scroll scroll-target="#header">Continue</a>
+</div>
+<div ng-if="requiredItems - completedItems == 0" class="col-xs-2">
+    <a class="btn btn-block btn-success next" ng-disabled="requiredItems - completedItems !== 0 "  ng-click="save.finish(); last()" scroll scroll-target="#header">Finish</a>
+</div>

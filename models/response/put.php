@@ -9,11 +9,15 @@
 
     $questionID = intval($question['questionID']);
     $assessmentID = intval($_POST['assessmentID']);
+    $response = $question['response'];
+    if(is_array($response)) {
+        $response = json_encode($response, true);
+    }
 
 
 
     $stmt = $dbq->prepare("CALL addResponse(:responseAnswer, :questionID, :assessmentID, @responseID)");
-    $stmt->bindValue(':ratingValue', $question['response'], PDO::PARAM_STR);
+    $stmt->bindValue(':responseAnswer', $response, PDO::PARAM_STR);
     $stmt->bindValue(':questionID', $questionID, PDO::PARAM_INT);
     $stmt->bindValue(':assessmentID', $assessmentID, PDO::PARAM_INT);
     $stmt->execute();

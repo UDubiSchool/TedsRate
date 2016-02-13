@@ -138,6 +138,21 @@ app.service('assessmentService', ['$http', '$q', function ($http, $q) {
         });
         return deferred.promise;
     }
+
+    // saves the assessment
+    this.finish = function(data){
+        var deferred = $q.defer();
+        var target = "models/assessment.php?f=finish";
+        // var data = data;
+        $http.post(target, data, {
+        }).success(function(response){
+            deferred.resolve(response);
+        }).error(function(response){
+            deferred.reject(response);
+        });
+        return deferred.promise;
+    }
+
 }]);
 
 app.service('ratingService', ['$http', '$q', function ($http, $q) {
@@ -234,11 +249,12 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
-app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'fileUpload', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', function($scope, $http, $animate, $timeout, $fileUpload, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q) {
+app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'fileUpload', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', function($scope, $http, $animate, $timeout, $fileUpload, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService) {
     $scope.asid = document.getElementById("asid").value;
     $scope.files = {};
     $scope.panel = 0;
     $scope.ready = false;
+    $scope.finished = false;
 
     var panels = getPanels();
     // $scope.hasChanges = false;
@@ -276,57 +292,81 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         assessment: function() {
 
         },
+        finish: function() {
+            var data = {
+                assessmentID: $scope.assessment.assessmentID
+            }
+            assessmentService.finish(data).then(function(response) {
+                $scope.finished = true;
+            });
+        },
         rating: function(attribute) {
+            var deferred = $q.defer();
             var data = {
                 attribute: attribute,
                 assessmentID: $scope.assessment.assessmentID
             };
-            ratingService.put(data).then(function(response) {
+            return ratingService.put(data).then(function(response) {
                 attribute.ratingID = response.ratingID;
+                deferred.resolve(response.ratingID);
+                return deferred.promise;
             });
         },
         response: function(question) {
+            var deferred = $q.defer();
             var data = {
                 question: question,
                 assessmentID: $scope.assessment.assessmentID
             };
-            responseService.put(data).then(function(response) {
+            return responseService.put(data).then(function(response) {
                 question.responseID = response.responseID;
+                deferred.resolve(response.responseID);
+                return deferred.promise;
             });
         },
         comment: function(attribute) {
-            if(attribute.ratingID == undefined) {
-                var data = {
-                    attribute: attribute,
-                    assessmentID: $scope.assessment.assessmentID
-                };
-                ratingService.put(data).then(function(response) {
-                    attribute.ratingID = response.ratingID;
-                });
-            }
+            var deferred = $q.defer();
             var data = {
                 attribute: attribute,
             };
-            commentService.put(data).then(function(response) {
-                attribute.commentID = response.commentID;
-            });
+            if(attribute.ratingID == undefined) {
+                return $scope.save.rating(attribute).then(function() {
+                    return commentService.put(data).then(function(response) {
+                        attribute.commentID = response.commentID;
+                        deferred.resolve(response.commentID);
+                        return deferred.promise;
+                    });
+                });
+            } else {
+                return commentService.put(data).then(function(response) {
+                    attribute.commentID = response.commentID;
+                    deferred.resolve(response.commentID);
+                    return deferred.promise;
+                });
+            }
+
+
 
         },
+        // unfinished
         screenshot: function(attribute) {
-            if(attribute.ratingID == undefined) {
-                var data = {
-                    attribute: attribute,
-                    assessmentID: $scope.assessment.assessmentID
-                };
-                ratingService.put(data).then(function(response) {
-                    attribute.ratingID = response.ratingID;
-                });
-            }
+            var deferred = $q.defer();
             var data = {
                 attribute: attribute,
             };
-            screenshotService.put(data).then(function(response) {
-            });
+            if(attribute.ratingID == undefined) {
+                return $scope.save.rating(attribute).then(function() {
+                    return screenshotService.put(data).then(function(response) {
+                        deferred.resolve(response);
+                        return deferred.promise;
+                    });
+                });
+            } else {
+                return screenshotService.put(data).then(function(response) {
+                    deferred.resolve(response);
+                    return deferred.promise;
+                });
+            }
         }
     };
 
@@ -567,9 +607,13 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
             // calculate completed attributes
             angular.forEach(assessment.criteria, function(criterion, criterionKey) {
-                angular.forEach(criterion.attributes, function(attribute, attributeKey) {
-                    if(attribute.ratingValue !== '' && attribute.ratingValue) {
+                angular.forEach(criterion['attributes'], function(attribute, attributeKey) {
+
+                    if(attribute.ratingValue !== '' && attribute.ratingValue && attribute.ratingValue !== "0") {
                         $scope.completedItems++;
+                    }
+                    if(attribute.ratingValue == "0") {
+                        attribute.ratingValue = '';
                     }
                     $scope.requiredItems++;
                 });
@@ -603,7 +647,7 @@ app.directive('questionTemplate', function() {
 
 app.directive('panelNavigation', function() {
   return {
-    template: '<div class="col-xs-2"><a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a></div><div class="col-xs-8"><uib-progressbar max="requiredItems" value="completedItems"><span style="color:white; white-space:nowrap;">{{completedItems}} / {{requiredItems}}</span></uib-progressbar></div><div class="col-xs-2"><a class="btn btn-block btn-primary next" ng-click="next()" scroll scroll-target="#header">Continue</a></div>'
+    templateUrl: 'partials/navigation.html'
   };
 });
 
