@@ -257,13 +257,10 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.finished = false;
 
     var panels = getPanels();
-    // $scope.hasChanges = false;
     var authCookie = $cookies.get('teds_userIDAuthed');
 
-
-
     // starts the save timer and gets the assessment of the url
-    var savePromise = $interval(save, 30000);
+    // var savePromise = $interval(save, 30000);
 
     getAssessment($scope.asid).then(function(response){
         $scope.assessment = response;
@@ -285,9 +282,9 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         return true;
     }
 
-    function save() {
-        console.log('saving');
-    }
+    // function save() {
+    //     console.log('saving');
+    // }
     $scope.save = {
         assessment: function() {
 
@@ -348,6 +345,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
 
         },
+
         // unfinished
         screenshot: function(attribute) {
             var deferred = $q.defer();
@@ -398,6 +396,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         }, 425);
     }
 
+    // go to the last panel 'finshed'
     $scope.last = function  () {
         var thisPanel = angular.element(panels[$scope.panel]);
         var lastPanel = angular.element(panels[panels.length - 1]);
@@ -410,6 +409,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         }, 425);
     }
 
+    // return all the current panels
     function getPanels () {
         return angular.element( document.getElementsByClassName( 'panel' ));
     }
@@ -536,6 +536,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
     }
 
+    // converts a temp user into a full user
     $scope.addUser = function(form) {
         if(form.$valid && form.$dirty) {
             console.log("adding user");
@@ -562,7 +563,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
 
 
-
+    //gets the data for an assessment and formats it correctly
     function getAssessment (asid) {
         $scope.questionTypes = ['demographic', 'project', 'artifact', 'scenario', 'attribute'];
 
@@ -624,7 +625,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     } // end get assessment function
 
 
-
+    // tracks progress for the progress bar
     $scope.trackProgress = function (newValue, oldValue, required) {
         if(required) {
             if(oldValue == '') {
@@ -651,6 +652,7 @@ app.directive('panelNavigation', function() {
   };
 });
 
+// scrolls the user to the target
 app.directive('scroll', function() {
     return {
         restrict: 'A',
@@ -665,6 +667,7 @@ app.directive('scroll', function() {
     }
 });
 
+// sets up the light box and changes the $location to allow us to rewrite the url
 app.config(['LightboxProvider', '$locationProvider', function (LightboxProvider, $locationProvider) {
     LightboxProvider.templateUrl = 'partials/lightbox.html';
     LightboxProvider.fullScreenMode = true;

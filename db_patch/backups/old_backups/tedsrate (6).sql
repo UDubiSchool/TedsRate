@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 14, 2016 at 11:37 AM
+-- Generation Time: Feb 08, 2016 at 11:32 AM
 -- Server version: 5.6.27-0ubuntu1
 -- PHP Version: 5.6.11-1ubuntu3.1
 
@@ -124,29 +124,6 @@ IF (SELECT 1 = 1
 	END;
 END IF$$
 
-DROP PROCEDURE IF EXISTS `addComment`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addComment`(IN `comment` VARCHAR(5000), IN `ratingID` INT, OUT `newCommentID` INT)
-    NO SQL
-IF (SELECT 1 = 1 
-    FROM comment  
-    WHERE comment.ratingID = ratingID) 
-    THEN
-		BEGIN
-        	UPDATE comment 
-        	SET comment = comment, 
-        	comment.commentID = LAST_INSERT_ID(comment.commentID)
-        	WHERE comment.ratingID= ratingID;
-        	SELECT LAST_INSERT_ID() INTO newCommentID;
-	END;
-	ELSE
-		BEGIN
-    	INSERT INTO comment 
-        (comment, ratingID)
-		VALUES (comment, ratingID);
-		SELECT LAST_INSERT_ID() INTO newCommentID;
-	END;
-END IF$$
-
 DROP PROCEDURE IF EXISTS `addConfiguration`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `addConfiguration`(IN `attributeConfigurationID` INT, IN `assessmentConfigurationID` INT, IN `questionConfigurationID` INT, IN `uiConfigurationID` INT, OUT `configurationID` INT)
     NO SQL
@@ -260,31 +237,6 @@ IF (SELECT 1 = 1
 	END;
 END IF$$
 
-DROP PROCEDURE IF EXISTS `addResponse`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addResponse`(IN `responseAnswer` VARCHAR(20000), IN `questionID` INT, IN `assessmentID` INT, OUT `newResponseID` INT)
-    NO SQL
-IF (SELECT 1 = 1 
-    FROM response  
-    WHERE response.assessmentID= assessmentID 
-    AND response.questionID = questionID) 
-    THEN
-		BEGIN
-        	UPDATE response 
-        	SET responseAnswer = responseAnswer, 
-        	response.responseID = LAST_INSERT_ID(response.responseID)
-        	WHERE response.assessmentID= assessmentID 
-            AND response.questionID = questionID;
-        	SELECT LAST_INSERT_ID() INTO newResponseID;
-	END;
-	ELSE
-		BEGIN
-    	INSERT INTO response 
-        (responseAnswer, questionID, assessmentID)
-		VALUES (responseAnswer, questionID, assessmentID);
-		SELECT LAST_INSERT_ID() INTO newResponseID;
-	END;
-END IF$$
-
 DROP PROCEDURE IF EXISTS `addScenario`$$
 CREATE DEFINER=`root`@`%.washington.edu` PROCEDURE `addScenario`(IN `scenarioName` VARCHAR(45), IN `scenarioDescription` VARCHAR(255), IN `languageID` INT, OUT `newScenarioID` INT)
 BEGIN
@@ -295,16 +247,6 @@ VALUES
 (scenarioName, scenarioDescription, languageID);
 COMMIT;
 select last_insert_ID() Into newScenarioID;
-END$$
-
-DROP PROCEDURE IF EXISTS `addScreenshot`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addScreenshot`(IN `screenshotPath` VARCHAR(1000), IN `ratingID` INT, OUT `newScreenshotID` INT)
-    NO SQL
-BEGIN
-INSERT INTO screenshot 
-(screenshotPath, ratingID)
-VALUES (screenshotPath, ratingID);
-SELECT LAST_INSERT_ID() INTO newScreenshotID;
 END$$
 
 DROP PROCEDURE IF EXISTS `addUser`$$
@@ -617,7 +559,7 @@ CREATE TABLE IF NOT EXISTS `assessment` (
   `isComplete` varchar(11) DEFAULT NULL,
   `completionDate` datetime DEFAULT NULL,
   `ratingUrl` varchar(2083) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `assessment`
@@ -781,10 +723,7 @@ INSERT INTO `assessment` (`assessmentID`, `assessmentIDHashed`, `configurationID
 (207, '968076be2e38cf897d4d6cea3faca9c037e1a4e3b4b7744fb2533e07751bd30a', 120, 54, NULL, NULL, 'tedsrate.rep/rater.php?&asid=968076be2e38cf897d4d6cea3faca9c037e1a4e3b4b7744fb2533e07751bd30a'),
 (224, '84a5092e4a5b6fe968fd523fb2fc917dbffae44105f82b6b94c8ed5b9a800223', 120, 57, NULL, NULL, 'tedsrate.rep/rater.php?&asid=84a5092e4a5b6fe968fd523fb2fc917dbffae44105f82b6b94c8ed5b9a800223'),
 (225, '0e6523810856a138a75dec70a9cf3778a5c70b83ac915f22c33f05db97cb3e68', 333, 54, NULL, NULL, 'tedsrate.rep/rater.php?&asid=0e6523810856a138a75dec70a9cf3778a5c70b83ac915f22c33f05db97cb3e68'),
-(226, '8f1f64db81c40ea10e1e9080c9ae60a7acb8925968c431ee16784dea9841c66f', 334, 54, NULL, NULL, 'tedsrate.rep/rater.php?&asid=8f1f64db81c40ea10e1e9080c9ae60a7acb8925968c431ee16784dea9841c66f'),
-(241, '749fc650cacb0f06547520d53c31505c8156e0a3be07073eddb2ef3ad9e383ba', 334, 72, NULL, NULL, 'tedsrate.rep/assessment.php?&asid=749fc650cacb0f06547520d53c31505c8156e0a3be07073eddb2ef3ad9e383ba'),
-(243, '72440a20f54075ac43f51a2cf0dbb2a14366b38a5c01b110ae174abc1cb44238', 334, 56, NULL, NULL, 'tedsrate.rep/assessment.php?&asid=72440a20f54075ac43f51a2cf0dbb2a14366b38a5c01b110ae174abc1cb44238'),
-(245, '011af72a910ac4acf367eef9e6b761e0980842c30d4e9809840f4141d5163ede', 334, 55, NULL, NULL, 'tedsrate.rep/assessment.php?&asid=011af72a910ac4acf367eef9e6b761e0980842c30d4e9809840f4141d5163ede');
+(226, '8f1f64db81c40ea10e1e9080c9ae60a7acb8925968c431ee16784dea9841c66f', 334, 54, NULL, NULL, 'tedsrate.rep/rater.php?&asid=8f1f64db81c40ea10e1e9080c9ae60a7acb8925968c431ee16784dea9841c66f');
 
 -- --------------------------------------------------------
 
@@ -1452,7 +1391,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `comment` varchar(5000) NOT NULL,
   `ratingID` int(11) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `comment`
@@ -1460,11 +1399,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
 
 INSERT INTO `comment` (`commentID`, `comment`, `ratingID`, `dateCreated`) VALUES
 (91, 'test comment 1', 4420, '2016-01-28 05:26:41'),
-(92, 'Test Comment 12', 4422, '2016-02-08 04:57:52'),
-(94, 'testing comment updated', 4423, '2016-02-13 00:14:05'),
-(95, 'comment with no rating', 4425, '2016-02-13 00:20:14'),
-(96, 'test no rating 2', 4426, '2016-02-13 00:24:25'),
-(97, '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111', 4430, '2016-02-14 06:05:16');
+(92, 'Test Comment 12', 4422, '2016-02-08 04:57:52');
 
 -- --------------------------------------------------------
 
@@ -1775,23 +1710,22 @@ CREATE TABLE IF NOT EXISTS `question` (
   `questionName` varchar(1000) NOT NULL,
   `questionDesc` varchar(2000) DEFAULT NULL,
   `questionData` varchar(17000) NOT NULL,
-  `questionTypeID` int(11) NOT NULL,
-  `questionRequired` tinyint(1) NOT NULL
+  `questionTypeID` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `question`
 --
 
-INSERT INTO `question` (`questionID`, `questionName`, `questionDesc`, `questionData`, `questionTypeID`, `questionRequired`) VALUES
-(1, 'Boolean Question 1', 'A Sample of yes no questioning', '{"questionType":"Boolean","Boolean":{"0":"No","1":"Yes","true":"Yes","false":"No"}}', 2, 1),
-(2, 'Boolean Question 2', 'Another Sample of yes no questioning', '{"questionType": "Boolean","Boolean": {"true": "Yes","false": "No","0": "No","1": "Yes"}}', 2, 1),
-(3, 'Likert Question 1', 'A Sample of Likert questioning', '{"questionType": "Radio","Radio": {"preface": "Not very often","postface": "Very often"}}', 2, 1),
-(4, 'Likert Question 2', 'Another Sample of likert questioning', '{"questionType": "Radio","Radio": {"preface": "Strongly Disagree","postface": "Strongly Agree"}}', 2, 1),
-(5, 'Text Question 1', 'A Sample of text questioning', '{"questionType": "Text","Text": {"placeholder": "Answer Here"}}', 2, 1),
-(6, 'Text Question 2', 'Another Sample of text questioning', '{"questionType": "Text","Text": {"placeholder": "Answer Here"}}', 2, 1),
-(7, 'Select Question 1', 'A Sample of select questioning', '{"questionType": "Select","Select": {"options": ["Option 1", "Option 2", "Option 3", "Option 4"]}}', 2, 1),
-(8, 'Check Question 1', 'A Sample of check questioning', '{"questionType": "Check","Check": {"options": ["Option 1", "Option 2", "Option 3", "Option 4"]}}', 2, 0);
+INSERT INTO `question` (`questionID`, `questionName`, `questionDesc`, `questionData`, `questionTypeID`) VALUES
+(1, 'Boolean Question 1', 'A Sample of yes no questioning', '{"questionType":"Boolean","Boolean":{"0":"No","1":"Yes","true":"Yes","false":"No"}}', 2),
+(2, 'Boolean Question 2', 'Another Sample of yes no questioning', '{"questionType": "Boolean","Boolean": {"true": "Yes","false": "No","0": "No","1": "Yes"}}', 2),
+(3, 'Likert Question 1', 'A Sample of Likert questioning', '{"questionType": "Radio","Radio": {"preface": "Not very often","postface": "Very often"}}', 2),
+(4, 'Likert Question 2', 'Another Sample of likert questioning', '{"questionType": "Radio","Radio": {"preface": "Strongly Disagree","postface": "Strongly Agree"}}', 2),
+(5, 'Text Question 1', 'A Sample of text questioning', '{"questionType": "Text","Text": {"placeholder": "Answer Here"}}', 2),
+(6, 'Text Question 2', 'Another Sample of text questioning', '{"questionType": "Text","Text": {"placeholder": "Answer Here"}}', 2),
+(7, 'Select Question 1', 'A Sample of select questioning', '{"questionType": "Select","Select": {"options": ["Option 1", "Option 2", "Option 3", "Option 4"]}}', 2),
+(8, 'Check Question 1', 'A Sample of check questioning', '{"questionType": "Check","Check": {"options": ["Option 1", "Option 2", "Option 3", "Option 4"]}}', 2);
 
 -- --------------------------------------------------------
 
@@ -1929,7 +1863,7 @@ CREATE TABLE IF NOT EXISTS `rating` (
   `assessmentID` int(11) NOT NULL,
   `ratingValue` decimal(11,1) DEFAULT NULL,
   `attributeID` int(11) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4434 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4423 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `rating`
@@ -5206,18 +5140,7 @@ INSERT INTO `rating` (`ratingID`, `assessmentID`, `ratingValue`, `attributeID`) 
 (4419, 204, 2.0, 7),
 (4420, 200, 2.0, 7),
 (4421, 200, 5.0, 37),
-(4422, 226, 4.0, 59),
-(4423, 226, 2.0, 60),
-(4424, 226, 4.0, 61),
-(4425, 226, 1.0, 62),
-(4426, 226, 4.0, 63),
-(4427, 226, 3.0, 64),
-(4428, 226, 5.0, 65),
-(4429, 226, 4.0, 66),
-(4430, 226, 4.0, 67),
-(4431, 226, 5.0, 68),
-(4432, 226, 4.0, 69),
-(4433, 226, 5.0, 70);
+(4422, 226, 4.0, 59);
 
 -- --------------------------------------------------------
 
@@ -5264,7 +5187,7 @@ CREATE TABLE IF NOT EXISTS `response` (
   `questionID` int(11) NOT NULL,
   `assessmentID` int(11) NOT NULL,
   `responseAnswer` varchar(20000) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `response`
@@ -5275,10 +5198,7 @@ INSERT INTO `response` (`responseID`, `questionID`, `assessmentID`, `responseAns
 (2, 3, 226, '3'),
 (3, 5, 226, 'Test response'),
 (4, 7, 226, 'Option 2'),
-(6, 2, 226, '0'),
-(7, 4, 226, '2'),
-(8, 6, 226, 'Test Saving text'),
-(9, 8, 226, '{"Option 1":1,"Option 4":1}');
+(5, 8, 226, '{"Option 1": 1, "Option 2": 0, "Option 3": 0, "Option 4": 1}');
 
 -- --------------------------------------------------------
 
@@ -5964,7 +5884,7 @@ DROP TABLE IF EXISTS `screenshot`;
 CREATE TABLE IF NOT EXISTS `screenshot` (
   `screenshotID` int(11) NOT NULL,
   `screenshotDesc` text,
-  `screenshotPath` varchar(1000) NOT NULL,
+  `screenshotPath` varchar(255) NOT NULL,
   `ratingID` int(11) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -6016,7 +5936,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `languageID` int(11) DEFAULT '5',
   `passwordValue` varchar(100) DEFAULT NULL,
   `AuthorityLevel` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `user`
@@ -6047,8 +5967,7 @@ INSERT INTO `user` (`userID`, `email`, `firstName`, `lastName`, `languageID`, `p
 (54, 'wtmenten@gmail.com', 'William', 'Menten-Weil', 5, 'placeholder', 1),
 (55, 'test@gmail.com', 'Test', 'User', 5, 'placeholder', 1),
 (56, 'test2@gmail.com', 'Test', 'User2', 5, 'placeholder', 1),
-(57, NULL, NULL, NULL, 5, NULL, 3),
-(72, 'testing@gmail.com', NULL, NULL, 5, 'placeholder', 3);
+(57, NULL, NULL, NULL, 5, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -6487,7 +6406,7 @@ ALTER TABLE `artifactTypes`
 -- AUTO_INCREMENT for table `assessment`
 --
 ALTER TABLE `assessment`
-  MODIFY `assessmentID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=246;
+  MODIFY `assessmentID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=227;
 --
 -- AUTO_INCREMENT for table `assessmentConfiguration`
 --
@@ -6547,7 +6466,7 @@ ALTER TABLE `cluster_category`
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `commentID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=98;
+  MODIFY `commentID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=93;
 --
 -- AUTO_INCREMENT for table `configuration`
 --
@@ -6652,7 +6571,7 @@ ALTER TABLE `question_scenario`
 -- AUTO_INCREMENT for table `rating`
 --
 ALTER TABLE `rating`
-  MODIFY `ratingID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4434;
+  MODIFY `ratingID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4423;
 --
 -- AUTO_INCREMENT for table `rating_comment`
 --
@@ -6667,7 +6586,7 @@ ALTER TABLE `rating_screenshot`
 -- AUTO_INCREMENT for table `response`
 --
 ALTER TABLE `response`
-  MODIFY `responseID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+  MODIFY `responseID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `role`
 --
@@ -6697,7 +6616,7 @@ ALTER TABLE `uiConfiguration`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=74;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=58;
 --
 -- AUTO_INCREMENT for table `userPersona`
 --
