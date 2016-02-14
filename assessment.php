@@ -180,7 +180,7 @@
                             <h3>Screenshots</h3>
                             <div class="col-sm-3">
                                 <input type="file" class="screenshotUpload col-xs-12" name="myfile" file-model="files[attribute.attributeID]"/>
-                                <button class="btn btn-success" ng-click="uploadFile(attribute.attributeID)">upload me</button>
+                                <button class="btn btn-success" ng-click="save.screenshot(attribute)">upload me</button>
                             </div>
                             <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
                                 <a ng-click="openLightboxModal(attribute.screenshots, $index)">

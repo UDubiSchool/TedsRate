@@ -64,6 +64,22 @@ CREATE TABLE question_attribute (
     FOREIGN KEY (attributeID) REFERENCES attribute(attributeID)
 );
 
+CREATE TABLE question_persona (
+    question_personaID INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    questionID INT(11) NOT NULL,
+    personaID INT(11) NOT NULL,
+    FOREIGN KEY (questionID) REFERENCES question(questionID),
+    FOREIGN KEY (personaID) REFERENCES persona(personaID)
+);
+
+CREATE TABLE question_role (
+    question_roleID INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    questionID INT(11) NOT NULL,
+    roleID INT(11) NOT NULL,
+    FOREIGN KEY (questionID) REFERENCES question(questionID),
+    FOREIGN KEY (roleID) REFERENCES role(roleID)
+);
+
 
 
 INSERT INTO questionType (questionTypeName) VALUES
@@ -71,7 +87,9 @@ INSERT INTO questionType (questionTypeName) VALUES
 ('Project'),
 ('Artifact'),
 ('Scenario'),
-('Attribute');
+('Attribute'),
+('Role'),
+('Persona');
 
 INSERT INTO questionConfiguration (questionConfigurationName, questionConfigurationDesc) VALUES ('No additional questions', 'used for backward compatibility with old & expert ratings');
 
@@ -85,3 +103,4 @@ ALTER TABLE configuration ADD CONSTRAINT FOREIGN KEY (questionConfigurationID) R
 ALTER TABLE configuration ADD CONSTRAINT FOREIGN KEY (uiConfigurationID) REFERENCES uiConfiguration(uiConfigxurationID);
 
 ALTER TABLE configuration ADD COLUMN configurationIDHashed INT(11);
+

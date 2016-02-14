@@ -16,22 +16,22 @@ app.directive('fileModel', ['$parse', function ($parse) {
     };
  }]);
 
-app.service('fileUpload', ['$http', function ($http) {
-   this.uploadFileToUrl = function(file, uploadUrl){
-      var fd = new FormData();
-      fd.append('file', file);
+app.service('uploadService', ['$http', '$q', function ($http, $q) {
+    this.uploadFileToUrl = function(file, uploadUrl){
+        var deferred = $q.defer();
+        var fd = new FormData();
+        fd.append('file', file);
 
-      $http.post(uploadUrl, fd, {
-         transformRequest: angular.identity,
-         headers: {'Content-Type': undefined}
-      })
-
-      .success(function(){
-      })
-
-      .error(function(){
-      });
-   }
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        }).success(function(response){
+            deferred.resolve(response);
+        }).error(function(response){
+            deferred.reject(response);
+        });
+        return deferred.promise;
+    }
 }]);
 
 app.service('userService', ['$http', '$q', function ($http, $q) {
@@ -226,7 +226,7 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
         var deferred = $q.defer();
         var target = "models/screenshot.php?f=put";
 
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
             deferred.resolve(response);
         }).error(function(response){
@@ -239,7 +239,7 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
         var deferred = $q.defer();
         var target = "models/screenshot.php?f=delete";
 
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
             deferred.resolve(response);
         }).error(function(response){
@@ -249,7 +249,7 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
-app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'fileUpload', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', function($scope, $http, $animate, $timeout, $fileUpload, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService) {
+app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'uploadService', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', function($scope, $http, $animate, $timeout, uploadService, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService) {
     $scope.asid = document.getElementById("asid").value;
     $scope.files = {};
     $scope.panel = 0;
@@ -349,22 +349,39 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         // unfinished
         screenshot: function(attribute) {
             var deferred = $q.defer();
-            var data = {
-                attribute: attribute,
-            };
-            if(attribute.ratingID == undefined) {
-                return $scope.save.rating(attribute).then(function() {
+
+            $scope.uploadFile(attribute.attributeID).then(function(path) {
+                var filePath = path;
+                console.log(filePath);
+                if(attribute.ratingID == undefined) {
+                    return $scope.save.rating(attribute).then(function(ratingID) {
+                        var data = {
+                            path: filePath,
+                            ratingID: attribute.ratingID
+                        };
+                        console.log(data);
+
+                        return screenshotService.put(data).then(function(response) {
+                            attribute.screenshots.push(filePath);
+                            deferred.resolve(response);
+                            return deferred.promise;
+                        });
+                    });
+                } else {
+                    var data = {
+                        path: filePath,
+                        ratingID: attribute.ratingID
+                    };
+                    console.log(data);
+
                     return screenshotService.put(data).then(function(response) {
+                        attribute.screenshots.push(filePath);
                         deferred.resolve(response);
                         return deferred.promise;
                     });
-                });
-            } else {
-                return screenshotService.put(data).then(function(response) {
-                    deferred.resolve(response);
-                    return deferred.promise;
-                });
-            }
+                }
+            });
+
         }
     };
 
@@ -414,21 +431,35 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         return angular.element( document.getElementsByClassName( 'panel' ));
     }
 
+    //uploads a file
+    $scope.uploadFile = function(attribute){
+        // console.log(fileKey);
+        var deferred = $q.defer();
+         var filePath;
+         var file = $scope.files[attribute.attributeID];
+         var ids = {
+            assessmentID: $scope.assessment.assessmentID,
+            attributeID: fileKey
+         };
 
-    $scope.uploadFile = function(fileKey){
-    console.log(fileKey);
-     var file = $scope.files[fileKey];
-     var ids = {
-        assessmentID: $assessment.assessmentID,
-        attributeID: fileKey
-     };
+         // console.log('file is ' );
+         console.dir(file);
+         if(file.size <= 2097152) {
+            var uploadUrl = "upload.php?t=screenshot";
+            return uploadService.uploadFileToUrl(file, uploadUrl).then(function(response){
+               if(response.res){
+                   deferred.resolve(response.path);
+               } else {
+                   deferred.reject(response.errors);
+               }
+               return deferred.promise;
+            });
+         } else {
 
-     console.log('file is ' );
-     console.dir(file);
+         }
 
-     var uploadUrl = "uploadScreenshot.php";
-     fileUpload.uploadFileToUrl(file, uploadUrl, ids);
-    };
+
+    }
 
     $scope.openLightboxModal = function (images, index) {
         Lightbox.openModal(images, index);
@@ -579,28 +610,23 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             // assemble question data and calculate completed and required questions
             angular.forEach(assessment.questions, function(questionCategory, questionCategoryKey) {
                 if(Object.keys(questionCategory).length > 0) {
-                    if ($scope.questionTypes.indexOf(questionCategoryKey) !== -1) {
-                        angular.forEach(questionCategory, function(question, questionKey) {
-                            var data = question.questionData;
-                            question.questionData = JSON.parse(data);
-                            if(question.questionData.questionType == 'Check') {
-                                var res = question.response;
-                                if(res) {
-                                    question.response = JSON.parse(res);
-                                }
+                    angular.forEach(questionCategory, function(question, questionKey) {
+                        var data = question.questionData;
+                        question.questionData = JSON.parse(data);
+                        if(question.questionData.questionType == 'Check') {
+                            var res = question.response;
+                            if(res) {
+                                question.response = JSON.parse(res);
                             }
-                            if(question.questionRequired == 1) {
-                                $scope.requiredItems++;
-                                if(question.response !=='' && question.response) {
-                                    $scope.completedItems++;
-                                }
+                        }
+                        if(question.questionRequired == 1) {
+                            $scope.requiredItems++;
+                            if(question.response !=='' && question.response) {
+                                $scope.completedItems++;
                             }
+                        }
 
-                        });
-                    } else {
-                        var data = questionCategory.questionData;
-                        questionCategory.questionData = JSON.parse(data);
-                    }
+                    });
                 } else {
                     assessment.questions[questionCategoryKey] = null;
                 }
