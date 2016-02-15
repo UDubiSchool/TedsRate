@@ -255,12 +255,11 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.panel = 0;
     $scope.ready = false;
     $scope.finished = false;
+    $scope.alerts = [];
 
     var panels = getPanels();
     var authCookie = $cookies.get('teds_userIDAuthed');
 
-    // starts the save timer and gets the assessment of the url
-    // var savePromise = $interval(save, 30000);
 
     getAssessment($scope.asid).then(function(response){
         $scope.assessment = response;
@@ -282,9 +281,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         return true;
     }
 
-    // function save() {
-    //     console.log('saving');
-    // }
+
     $scope.save = {
         assessment: function() {
 
@@ -346,11 +343,10 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
         },
 
-        // unfinished
         screenshot: function(attribute) {
             var deferred = $q.defer();
 
-            $scope.uploadFile(attribute.attributeID).then(function(path) {
+            $scope.uploadFile(attribute).then(function(path) {
                 var filePath = path;
                 console.log(filePath);
                 if(attribute.ratingID == undefined) {
@@ -433,17 +429,16 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
     //uploads a file
     $scope.uploadFile = function(attribute){
-        // console.log(fileKey);
         var deferred = $q.defer();
          var filePath;
          var file = $scope.files[attribute.attributeID];
          var ids = {
             assessmentID: $scope.assessment.assessmentID,
-            attributeID: fileKey
+            attributeID: attribute.attributeID
          };
 
          // console.log('file is ' );
-         console.dir(file);
+         // console.dir(file);
          if(file.size <= 2097152) {
             var uploadUrl = "upload.php?t=screenshot";
             return uploadService.uploadFileToUrl(file, uploadUrl).then(function(response){
@@ -455,7 +450,9 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                return deferred.promise;
             });
          } else {
-
+            $scope.alerts.push({type: 'danger', msg: 'Files must be less than 2mb in size!'});
+            deferred.reject("too large");
+            return deferred.promise;
          }
 
 
@@ -662,6 +659,14 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             }
         }
     }
+
+    $scope.addAlert = function() {
+        $scope.alerts.push({msg: 'Another alert!'});
+    };
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
 
 
 }]);

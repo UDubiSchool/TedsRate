@@ -19,8 +19,10 @@
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
-            <div id="header" class="header"><h1>{{assessment.project.name}}</h1></div>
-
+            <div id="header" class="header"><h1>{{assessment.project.name}} - {{assessment.scenario.name}}</h1></div>
+            <div id="alert-wrapper">
+                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            </div>
             <div id="panel-wrapper" class="clearfix">
 
                 <div class="panel active col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
@@ -115,6 +117,7 @@
                 <!-- BEGIN QUESTION PANELS -->
                 <div ng-repeat="(key, group) in assessment.questions" ng-if="group" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 {{key}}-panel">
                     <h2>{{key | capitalize}} Questions</h2>
+                    <h4>{{assessment[key].description}}</h4>
                     <div  ng-repeat="question in group" class="question" question-template></div>
                     <div class="navigation" panel-navigation></div>
                 </div>

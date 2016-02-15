@@ -70,6 +70,7 @@
     while ($row = $sth->fetch()){
     $tmp = [
         'name' => $row['name'],
+        'description' => $row['artifactDescription'],
         'url' => $row['URL']
     ];
     $data['artifact'] = $tmp;
@@ -93,8 +94,8 @@
     $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'personaName' => $row['personaName'],
-            'personaDesc' => $row['personaDesc']
+            'name' => $row['personaName'],
+            'description' => $row['personaDesc']
         ];
         $data['persona'] = $tmp;
     }
@@ -104,8 +105,8 @@
     $sth = $dbq->query('SELECT * FROM role where role.roleID = ' . $roleID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'roleName' => $row['roleName'],
-            'roleDesc' => $row['roleDesc']
+            'name' => $row['roleName'],
+            'description' => $row['roleDesc']
         ];
         $data['role'] = $tmp;
     }
@@ -116,8 +117,8 @@
     $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'scenarioName' => $row['scenarioName'],
-            'scenarioDesc' => $row['scenarioDescription']
+            'name' => $row['scenarioName'],
+            'description' => $row['scenarioDescription']
         ];
         $data['scenario'] = $tmp;
     }
@@ -157,10 +158,10 @@
                                     ORDER BY qt.questionTypeID ASC
                                     ");
     while ($row = $sth->fetch()){
-        if(!array_key_exists($row['questionTypeName'], $questions)) {
-            $questions[$row['questionTypeName']] = [];
+        if(!array_key_exists(strtolower($row['questionTypeName']), $questions)) {
+            $questions[strtolower($row['questionTypeName'])] = [];
         }
-        array_push($questions[$row['questionTypeName']], $row);
+        array_push($questions[strtolower($row['questionTypeName'])], $row);
     }
     $sth->closeCursor();
 
