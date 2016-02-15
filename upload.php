@@ -15,10 +15,13 @@
            $data['file'] = $file;
 
             $errors= array();
-            $file_name = $file['name'];
+            $file_fullName = $file['name'];
+            $file_name = current((explode('.',$file['name']));
+            $file_ext = end(explode('.',$file['name']));
             $file_size =$file['size'];
             $file_tmp =$file['tmp_name'];
             $file_type=$file['type'];
+
             $file_ext=strtolower(end(explode('.',$file['name'])));
 
             $extensions= array("jpeg","jpg","png");
@@ -33,7 +36,12 @@
             }
 
             if(empty($errors)==true){
-              $path = "upload/screenshots/".$file_name;
+              $path = "upload/screenshots/$file_name.$file_ext";
+              $counter = 1;
+              while(file_exists($path)){
+                $path = "upload/screenshots/$file_name_$counter.$file_ext";
+                $counter++;
+              }
               if(move_uploaded_file($file_tmp, $path)) {
                 $data['res'] = true;
                 $data['path'] = $path;
