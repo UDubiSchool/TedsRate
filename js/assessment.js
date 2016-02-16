@@ -488,6 +488,9 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                     // set their authed cookie
                     var tenHours = new Date(new Date().setHours(new Date().getHours() + 10));
                     $cookies.put('teds_userIDAuthed', user.userID, {'expires': tenHours});
+                    // assume that this user has lost their persistant cookie
+                    var oneYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+                    $cookies.put('teds_userID', user.userID, {'expires': oneYear});
 
                     //check if the assessments user is the same as the one from signin
                     if (user.userID !== $scope.assessment.user.userID) {
@@ -502,9 +505,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                 if($scope.assessment.user.email == null || $scope.assessment.user.email == undefined) {
                                     // this form belonged to a temp user it is takeable
 
-                                    // assume that this user was the temp and has lost their persistant cookie
-                                    var oneYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-                                    $cookies.put('teds_userID', user.userID, {'expires': oneYear});
+
 
                                     console.log('this is a temp user. transfering assessment and deleting.');
                                     $http.post("models/assessment.php?f=updateUser", {userID: user.userID, assessmentID: $scope.assessment.assessmentID}).then(function(response) {
