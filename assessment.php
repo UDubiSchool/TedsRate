@@ -14,7 +14,7 @@
         <script src="js/angular-cookies.js"></script>
         <script src="js/angular-bootstrap-lightbox.js"></script>
         <script src="js/assessment.js"></script>
-        <!-- <base href="/"> -->
+      <!-- <base href="/"> -->
         <base href="/tedsrate/tedsrate/">
     </head>
     <body>

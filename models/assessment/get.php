@@ -134,7 +134,7 @@
 
     // get the question types
     $questions = [];
-    $sth = $dbq->query("SELECT q.questionID, q.questionName, q.questionDesc, q.questionData, q.questionRequired, qt.questionTypeName, r.responseID, r.responseAnswer, u.userID, qp.projectID, qs.scenarioID, qart.artifactID, qper.personaID, qrol.roleID, a.assessmentID
+    $sth = $dbq->query("SELECT q.questionID, q.questionName, q.questionDesc, q.questionData, q.questionRequired, qt.questionTypeName, qp.projectID, qs.scenarioID, qart.artifactID, qper.personaID, qrol.roleID
                                     FROM question q
                                     INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
                                     INNER JOIN questionConfiguration qc ON qc.questionConfigurationID = qqc.questionConfigurationID
@@ -151,17 +151,24 @@
                                     AND qper.personaID = $personaID
                                     LEFT JOIN question_role qrol ON q.questionID = qrol.questionID
                                     AND qrol.roleID = $roleID
-                                    LEFT JOIN response r ON q.questionID = r.questionID
-                                    LEFT JOIN assessment a ON r.assessmentID = a.assessmentID
-                                    LEFT JOIN user u ON a.userID = u.userID
-                                    WHERE u.userID = $userID
-                                    OR u.userID IS NULL
-                                    ORDER BY qt.questionTypeID ASC
+                                    ORDER BY qt.questionTypeID ASC, q.questionID ASC
                                     ");
     while ($row = $sth->fetch()){
         if(!array_key_exists(strtolower($row['questionTypeName']), $questions)) {
             $questions[strtolower($row['questionTypeName'])] = [];
         }
+        $inner = $dbq->query("SELECT r.responseAnswer, r.responseID, a.assessmentID
+                                FROM question q
+                                INNER JOIN response r ON q.questionID = r.questionID
+                                INNER JOIN assessment a ON r.assessmentID = a.assessmentID
+                                INNER JOIN user u ON a.userID = u.userID
+                                WHERE u.userID = $userID
+                                AND q.questionID = $row[questionID]
+                                ");
+        $inner = $inner->fetch();
+        $row['responseID'] = $inner['responseID'];
+        $row['responseAnswer'] = $inner['responseAnswer'];
+        $row['assessmentID'] = $inner['assessmentID'];
         array_push($questions[strtolower($row['questionTypeName'])], $row);
     }
     $sth->closeCursor();
