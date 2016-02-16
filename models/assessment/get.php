@@ -152,9 +152,10 @@
                                     LEFT JOIN question_role qrol ON q.questionID = qrol.questionID
                                     AND qrol.roleID = $roleID
                                     LEFT JOIN response r ON q.questionID = r.questionID
-                                    INNER JOIN assessment a ON r.assessmentID = a.assessmentID
-                                    INNER JOIN user u ON a.userID = u.userID
-                                    AND u.userID = $userID
+                                    LEFT JOIN assessment a ON r.assessmentID = a.assessmentID
+                                    LEFT JOIN user u ON a.userID = u.userID
+                                    WHERE u.userID = $userID
+                                    OR u.userID IS NULL
                                     ORDER BY qt.questionTypeID ASC
                                     ");
     while ($row = $sth->fetch()){
