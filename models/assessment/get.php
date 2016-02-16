@@ -154,7 +154,7 @@
                                     LEFT JOIN response r ON q.questionID = r.questionID
                                     INNER JOIN assessment a ON r.assessmentID = a.assessmentID
                                     INNER JOIN user u ON a.userID = u.userID
-                                    WHERE u.userID = $userID
+                                    AND u.userID = $userID
                                     ORDER BY qt.questionTypeID ASC
                                     ");
     while ($row = $sth->fetch()){
