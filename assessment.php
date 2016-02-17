@@ -16,8 +16,8 @@
         <script src="js/angular/ng-file-upload-shim.min.js"></script>
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/assessment.js"></script>
-      <base href="/">
-        <!-- <base href="/tedsrate/tedsrate"> -->
+      <!-- <base href="/"> -->
+        <base href="/tedsrate/tedsrate">
     </head>
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
