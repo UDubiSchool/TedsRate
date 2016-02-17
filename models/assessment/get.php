@@ -70,7 +70,7 @@
     while ($row = $sth->fetch()){
     $tmp = [
         'name' => $row['name'],
-        'description' => $row['artifactDescription'],
+        'description' => $row['description'],
         'url' => $row['URL']
     ];
     $data['artifact'] = $tmp;

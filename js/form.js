@@ -19,8 +19,6 @@ var Form = (function() {
                 if (!flag) {
                     return false;
                 }
-//                e.preventDefault();
-//                    window.history.back();
 
             })
         },
@@ -45,25 +43,3 @@ var Form = (function() {
         }
     }
 })();
-//
-//var Formm = {
-//    init: function() {
-//        Formm.validate();
-//    },
-//
-//    validate: function() {
-//        $('form').submit(function(evt) {
-//            var flag = true;
-//            for (var i = 0; i < $('.notEmpty').length; i++) {
-//                if (('.notEmpty')[i].val() == "") {
-//                    flag = false;
-//                }
-//            }
-//            if (!flag) {
-//                evt.preventDefault();
-////                    window.history.back();
-//                Notice.init("Invalid input found, please try again!");
-//            }
-//        })
-//    }
-//}

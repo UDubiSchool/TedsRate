@@ -6,13 +6,15 @@
         <link rel="stylesheet" href="css/angular-bootstrap-lightbox.css">
         <link rel="stylesheet" href="css/assessment.css">
         <script src="js/jquery-1.11.0.min.js" type="text/javascript"/></script>
-        <script src="js/angular.min.js" type="text/javascript"/></script>
-        <script src="js/angular-animate.js" type="text/javascript"/></script>
-        <script src="js/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
-        <script src="js/elastic.js" type="text/javascript" /></script>
-        <script src="js/validate.js" type="text/javascript" /></script>
-        <script src="js/angular-cookies.js"></script>
-        <script src="js/angular-bootstrap-lightbox.js"></script>
+        <script src="js/angular/angular.min.js" type="text/javascript"/></script>
+        <script src="js/angular/angular-animate.js" type="text/javascript"/></script>
+        <script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
+        <script src="js/angular/elastic.js" type="text/javascript" /></script>
+        <script src="js/angular/validate.js" type="text/javascript" /></script>
+        <script src="js/angular/angular-cookies.js"></script>
+        <script src="js/angular/angular-bootstrap-lightbox.js"></script>
+        <script src="js/angular/ng-file-upload-shim.min.js"></script>
+        <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/assessment.js"></script>
       <base href="/">
         <!-- <base href="/tedsrate/tedsrate"> -->
@@ -182,14 +184,21 @@
                         </div>
                         <div class="screenshots form-group clearfix">
                             <h3>Screenshots</h3>
-                            <div class="col-sm-3">
-                                <input type="file" class="screenshotUpload col-xs-12" name="myfile" file-model="files[attribute.attributeID]"/>
-                                <button class="btn btn-success" ng-click="save.screenshot(attribute)">upload me</button>
-                            </div>
                             <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
                                 <a ng-click="openLightboxModal(attribute.screenshots, $index)">
                                     <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
                                 </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <div ngf-drop ngf-select ng-model="files[attribute.attributeID]" class="drop-box"
+                                       ngf-change="save.screenshot(attribute)"
+                                       ngf-allow-dir="true"
+                                       accept="image/*"
+                                       ngf-pattern="'image/*'"
+                                       ngf-drag-over-class="{pattern: 'image/*', accept:'acceptFile', reject:'rejectFile', delay:100}"
+                                       >Drop images here or click to upload</div>
+                                <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                                <uib-progressbar ng-if="attribute.progressPercentage" class="progress-striped active" value="attribute.progressPercentage" type="success">uploading</uib-progressbar>
                             </div>
                         </div>
                     </div>

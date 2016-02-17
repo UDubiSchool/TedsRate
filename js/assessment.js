@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic', 'bootstrapLightbox', 'ui.validate', 'ngCookies']);
+var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload']);
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
        restrict: 'A',
@@ -249,7 +249,7 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
-app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'uploadService', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', function($scope, $http, $animate, $timeout, uploadService, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService) {
+app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'uploadService', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', 'Upload', function($scope, $http, $animate, $timeout, uploadService, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService, Upload) {
     $scope.asid = document.getElementById("asid").value;
     $scope.files = {};
     $scope.panel = 0;
@@ -346,38 +346,48 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         screenshot: function(attribute) {
             var deferred = $q.defer();
 
-            $scope.uploadFile(attribute).then(function(path) {
-                var filePath = path;
-                console.log(filePath);
-                if(attribute.ratingID == undefined) {
-                    return $scope.save.rating(attribute).then(function(ratingID) {
-                        var data = {
-                            path: filePath,
-                            ratingID: attribute.ratingID
-                        };
-                        console.log(data);
+            if($scope.files[attribute.attributeID] !== null) {
 
-                        return screenshotService.put(data).then(function(response) {
-                            attribute.screenshots.push(filePath);
-                            deferred.resolve(response);
-                            return deferred.promise;
-                        });
+                if($scope.files[attribute.attributeID].size < 2097152) {
+                    $scope.uploadFile(attribute).then(function(path) {
+                        var filePath = path;
+                        console.log(filePath);
+
+                        if(attribute.ratingID == undefined) {
+                            // create a blank rating to attach screenshot
+                            return $scope.save.rating(attribute).then(function(ratingID) {
+                                var data = {
+                                    path: filePath,
+                                    ratingID: attribute.ratingID
+                                };
+                                console.log(data);
+
+                                return screenshotService.put(data).then(function(response) {
+                                    attribute.screenshots.push(filePath);
+                                    deferred.resolve(response);
+                                    return deferred.promise;
+                                });
+                            });
+                        } else {
+                            var data = {
+                                path: filePath,
+                                ratingID: attribute.ratingID
+                            };
+                            console.log(data);
+
+                            return screenshotService.put(data).then(function(response) {
+                                attribute.screenshots.push(filePath);
+                                deferred.resolve(response);
+                                return deferred.promise;
+                            });
+                        }
                     });
                 } else {
-                    var data = {
-                        path: filePath,
-                        ratingID: attribute.ratingID
-                    };
-                    console.log(data);
-
-                    return screenshotService.put(data).then(function(response) {
-                        attribute.screenshots.push(filePath);
-                        deferred.resolve(response);
-                        return deferred.promise;
-                    });
+                    $scope.alerts.push({type: 'danger', msg: 'Files must be less than 2mb in size!'});
+                    deferred.reject("too large");
+                    return deferred.promise;
                 }
-            });
-
+            }
         }
     };
 
@@ -429,33 +439,25 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
     //uploads a file
     $scope.uploadFile = function(attribute){
-        var deferred = $q.defer();
-         var filePath;
-         var file = $scope.files[attribute.attributeID];
-         var ids = {
-            assessmentID: $scope.assessment.assessmentID,
-            attributeID: attribute.attributeID
-         };
-
-         // console.log('file is ' );
-         // console.dir(file);
-         if(file.size <= 2097152) {
-            var uploadUrl = "upload.php?t=screenshot";
-            return uploadService.uploadFileToUrl(file, uploadUrl).then(function(response){
-               if(response.res){
-                   deferred.resolve(response.path);
-               } else {
-                   deferred.reject(response.errors);
-               }
-               return deferred.promise;
-            });
-         } else {
-            $scope.alerts.push({type: 'danger', msg: 'Files must be less than 2mb in size!'});
-            deferred.reject("too large");
-            return deferred.promise;
-         }
-
-
+        var file = $scope.files[attribute.attributeID];
+        return Upload.upload({
+            url: 'upload.php?t=screenshot',
+            data: {
+                file: file,
+                assessmentID: $scope.assessment.assessmentID,
+                attributeID: attribute.attributeID
+            }
+        }).then(function (resp) {
+            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+            delete attribute.progressPercentage;
+            return resp.data.path;
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+            delete attribute.progressPercentage;
+        }, function (evt) {
+            attribute.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + attribute.progressPercentage + '% ' + evt.config.data.file.name);
+        });
     }
 
     $scope.openLightboxModal = function (images, index) {

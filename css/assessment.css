@@ -172,10 +172,36 @@ body {
     border:1px solid #bbb;
 }
 
+.screenshots > div:nth-of-type(4n+1){
+  clear:both;
+}
+
+.screenshots > div {
+    margin:10px 0px;
+}
+
 .progress {
     margin-top:5px;
 }
 
 .red {
     color:red;
+}
+
+/*FOR FILE Uploading*/
+
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 100%;
+    text-align: center;
+    padding: 50px 10px;
+}
+
+.drop-box.acceptFile {
+    background: rgba(0, 255, 0, .3);
+}
+
+.drop-box.rejectFile {
+    background: rgba(255, 0, 0, .3);
 }
