@@ -12,7 +12,7 @@
         }
         $function = $_GET['f'];
         $toInclude = "assessment/$function.php";
-        $possibleFunctions = ['get', 'getByUserConf', 'updateUser', 'save', 'finish'];
+        $possibleFunctions = ['get', 'getByUserConf', 'updateUser', 'save', 'finish', 'delete'];
 
         if(in_array($function, $possibleFunctions)) {
             require_once $toInclude;

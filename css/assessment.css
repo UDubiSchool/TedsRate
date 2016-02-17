@@ -100,11 +100,11 @@ body {
 }
 
 .checkbox.active:hover {
-    background-color: #c61f1f;
+    background-color: #2980b9;
 }
 
 .checkbox.active {
-    background-color: #c61f1f;
+    background-color: #2980b9;
    -webkit-box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);
    -moz-box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);
    box-shadow: inset 0px 0px 2px 1px rgba(238,238,238,1);

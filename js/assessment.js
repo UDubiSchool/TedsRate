@@ -466,16 +466,12 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.validateUser = function(form) {
         if(form.$valid && form.$dirty) {
             console.log('validating user');
-            console.log("form");
-            console.log(form);
             var email = form.email.$modelValue;
             var password = form.password.$modelValue;
 
             //gets the user
-
             $http.post("models/user.php?f=get", {email: email, password: password}).then(function(response) {
                 var user = response.data.user;
-                console.log(user);
                 if (user == false) {
                     // alert the dom that there was no matching user
                     form.$error.notFound = true;
@@ -497,26 +493,15 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                         //checks if new user has a copy of the form
                         $http.post("models/assessment.php?f=getByUserConf", {userID: user.userID, configurationID: $scope.assessment.configurationID}).then(function(response) {
                             var assessment = response.data.assessment;
-                            console.log(response.data);
-
                             if(assessment == false || assessment == undefined) {
                                 //if no copy
                                 console.log("no assessment");
                                 if($scope.assessment.user.email == null || $scope.assessment.user.email == undefined) {
                                     // this form belonged to a temp user it is takeable
-
-
-
                                     console.log('this is a temp user. transfering assessment and deleting.');
                                     $http.post("models/assessment.php?f=updateUser", {userID: user.userID, assessmentID: $scope.assessment.assessmentID}).then(function(response) {
-
-                                        console.log(response.data);
-
                                         if(response.data.updated) {
                                             $http.post("models/user.php?f=delete", {userID: $scope.assessment.user.userID}).then(function(response) {
-
-                                                console.log(response.data);
-
                                                 if(response.data.deleted) {
                                                     console.log("temp user was deleted.");
                                                     $scope.assessment.user = user;
@@ -534,19 +519,49 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                     console.log('this is a fully registered user. creating a new assessment and transfering.');
                                     window.location = "start.php?c=" + $scope.assessment.configurationIDHashed;
                                 }
-
-
                             } else {
                                 //user has a copy
                                 console.log("yes! this users assessment exists. transfering to new assessment");
-                                getAssessment(assessment.assessmentIDHashed);
-                                $scope.next();
-                                $timeout(function() {
-                                    $scope.userValidated = true;
-                                    $scope.panel--;
-                                }, 500);
-                                $location.search('asid', assessment.assessmentIDHashed);
-                                $location.replace();
+                                console.log($scope.assessment.user.email);
+                                if($scope.assessment.user.email == null || $scope.assessment.user.email == undefined) {
+                                    // this form belonged to a temp user it is deleteable
+                                    //delete assessment
+                                    console.log('this is a temp user. deleting assessment and temp user.');
+                                    $http.post("models/assessment.php?f=delete", {assessmentID: $scope.assessment.assessmentID}).then(function(response) {
+                                        if(response.data.deleted) {
+                                            $http.post("models/user.php?f=delete", {userID: $scope.assessment.user.userID}).then(function(response) {
+                                                if(response.data.deleted) {
+                                                    console.log("temp user was deleted.");
+
+                                                    getAssessment(assessment.assessmentIDHashed).then(function(response){
+                                                        $scope.assessment = response;
+                                                        $scope.next();
+                                                        $timeout(function() {
+                                                            $scope.userValidated = true;
+                                                            $scope.panel--;
+                                                        }, 500);
+                                                        $location.search('asid', assessment.assessmentIDHashed);
+                                                        $location.replace();
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    // this form is owned just retrieve your own
+                                    getAssessment(assessment.assessmentIDHashed).then(function(response){
+                                        $scope.assessment = response;
+                                        $scope.next();
+                                        $timeout(function() {
+                                            $scope.userValidated = true;
+                                            $scope.panel--;
+                                        }, 500);
+                                        $location.search('asid', assessment.assessmentIDHashed);
+                                        $location.replace();
+                                    });
+                                }
+
+
                             }
                         });
                     } else {
