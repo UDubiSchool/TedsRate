@@ -6,7 +6,7 @@ function readyModal(button) {
 
     //        OLD WAY
     // var url = root_url + "/teds/ajax_service.php?" + "email=" + email + "&urpID=" + urpID + "&sendEmail=true";
-    var url = "ajax_service.php?email=" + email + "&urpID=" + urpID + "&sendEmail=true";
+    var url = "ajax_service.php?email=" + email + "&assessmentID=" + urpID + "&sendEmail=true";
 
     var res = email.match(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i);
 

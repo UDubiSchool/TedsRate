@@ -100,20 +100,15 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
 
         if ($flag) {
             $query = $dbq->prepare("SELECT * FROM assessment
-                                    join projectArtifact pa on assessment.projectArtifactID = pa.projectArtifactID
                                     join user u on u.userID = assessment.userID
                                     where assessment.`assessmentID` = " . $assessmentID);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if ($result) {
-                $project = $result['projectID'];
-                $language = $result['preferredLanguage'];
-                $artifact = $result['artifactID'];
-                $persona = $result['personaID'];
-                $scenario = $result['scenarioID'];
+                // $language = $result['preferredLanguage'];
                 $userName = $result['firstName'] . " " . $result['lastName'];
-
-                $targetURL = "rater.php?asid=" . $assessmentID;
+                $assessmentIDHashed = $result['assessmentIDHashed'];
+                $targetURL = "assessment.php?asid=" . $assessmentIDHashed;
 
                 $email_flag = false;
                 $email_message = "Invalid email! Please try again!";
@@ -132,7 +127,7 @@ if (isset($_GET['trigger']) && isset($_GET['type'])) {
                                 </head>
                                 <body>
                                   <p>Dear ' . $userName . ', </p>
-                                  <p>Please help us make better web! Here is the link to access the TEDS evaluation form for you:</p>
+                                  <p>Please help us make a better web! Here is the link to access the TEDS evaluation form for you:</p>
                                   <p><a href="' . $root_url . $targetURL . '" target="blank"><b>Link</b></a></p>
                                   <br />
                                   <br />

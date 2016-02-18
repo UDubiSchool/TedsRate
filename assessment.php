@@ -16,7 +16,7 @@
         <script src="js/angular/ng-file-upload-shim.min.js"></script>
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/assessment.js"></script>
-      <!-- <base href="/"> -->
+        <!-- <base href="/"> -->
         <base href="/tedsrate/tedsrate/">
     </head>
     <body>
