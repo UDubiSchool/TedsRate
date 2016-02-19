@@ -668,6 +668,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
     // tracks progress for the progress bar
     $scope.trackProgress = function (newValue, oldValue, required) {
+        var oldValue = decodeURI(oldValue);
         if(required) {
             if(oldValue == '') {
                 $scope.completedItems++;
