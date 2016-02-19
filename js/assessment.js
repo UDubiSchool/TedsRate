@@ -488,10 +488,10 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
                     // set their authed cookie
                     var tenHours = new Date(new Date().setHours(new Date().getHours() + 10));
-                    $cookies.put('teds_userIDAuthed', user.userID, {'expires': tenHours});
+                    $cookies.put('teds_userIDAuthed', user.userID, {'expires': tenHours, 'path': '/'});
                     // assume that this user has lost their persistant cookie
                     var oneYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-                    $cookies.put('teds_userID', user.userID, {'expires': oneYear});
+                    $cookies.put('teds_userID', user.userID, {'expires': oneYear, 'path': '/'});
 
                     //check if the assessments user is the same as the one from signin
                     if (user.userID !== $scope.assessment.user.userID) {
@@ -596,7 +596,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             userService.post({id: $scope.assessment.user.userID, email: email, password: password}).then(function(response) {
                 if (response.user) {
                     var tenHours = new Date(new Date().setHours(new Date().getHours() + 10));
-                    $cookies.put('teds_userIDAuthed', $scope.assessment.user.userID, {'expires': tenHours});
+                    $cookies.put('teds_userIDAuthed', $scope.assessment.user.userID, {'expires': tenHours, 'path': '/'});
 
                     $scope.next();
                     $timeout(function() {

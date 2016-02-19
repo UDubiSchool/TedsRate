@@ -62,7 +62,7 @@ function makeUser($dbq) {
     $userID = $dbq->query('SELECT @userID')->fetchColumn();
 
     $exipirationDate = time() + 86400 * 365 * 1; //cookie expires in one year so there is little likelyhood that they make duplicate temporaries.
-    setcookie('teds_userID', $userID, $exipirationDate);
+    setcookie('teds_userID', $userID, $exipirationDate, "/");
 
     return $userID;
 }
