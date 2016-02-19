@@ -309,7 +309,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         response: function(question) {
             var deferred = $q.defer();
             var data = {
-                question: question
+                question: question,
                 assessmentID: $scope.assessment.assessmentID
             };
             if(question.assessmentID !== $scope.assessment.assessmentID) {
