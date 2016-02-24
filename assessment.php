@@ -16,8 +16,8 @@
         <script src="js/angular/ng-file-upload-shim.min.js"></script>
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/assessment.js"></script>
-        <!-- <base href="/"> -->
-        <base href="/tedsrate/tedsrate/">
+        <base href="/">
+        <!-- <base href="/tedsrate/tedsrate/"> -->
     </head>
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
@@ -30,7 +30,9 @@
 
                 <div class="panel active col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                     <h2>Welcome</h2>
-                    <p>This assessment is a component of the Purposeful Sampling Research Project at the University of Washington Information School. The work group's aim is to refine a methodology to measure the usability of content and information artifacts in mobile applications, specifically the usability of professional sport team mobile applications, based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework. The next page will provide you an overview of the information usability factors that we are studying. </p>
+                    <p>This assessment is a component of the Purposeful Sampling Research Project at the University of Washington Information School. The work group's aim is to refine a methodology to measure the usability of content and information artifacts in mobile applications, specifically the usability of professional sport team mobile applications, based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework.</p>
+                    <p>Although these assessments are short, you do not need the do them all at once. Your changes are saved so you can take as much time as you need!</p>
+                    <br>
                     <p>Thank you in advance for taking the time to take part in this evaluation!</p>
                     <p>The TEDS Purposeful Sampling Research Group</p>
                     <div class="navigation">
@@ -50,11 +52,13 @@
                             <div class="form-group">
                                 <div role="alert">
                                       <span class="error" ng-show="signupForm.email.$error.required && !signupForm.$pristine">
-                                        An email is required!</span>
+                                        An email is required</span>
                                       <span class="error" ng-show="signupForm.email.$error.email">
-                                        Not valid email!</span>
+                                        Not a valid email</span>
+                                        <span class="error" ng-show="signupForm.email.$error.taken">
+                                        That email has already been registered</span>
                                 </div>
-                                <input class="form-control" type="email" name="email" ng-model="signup.email" placeholder="Email" required ng-model-options="{ debounce: 250 }">
+                                <input class="form-control" type="email" name="email" ng-model="signup.email" placeholder="Email" required ng-change="taken(signupForm)" ng-model-options="{ updateOn: 'blur' }">
                             </div>
 
                             <div class="form-group">
@@ -96,7 +100,7 @@
                                     <span class="error" ng-show="signinForm.$error.notFound">
                                     Invalid email/password combination!</span>
                                 </div>
-                                <input class="form-control" type="email" name="email" ng-model="signin.email" placeholder="Email" required ng-model-options="{ debounce: 200 }">
+                                <input class="form-control" type="email" name="email" ng-model="signin.email" placeholder="Email" required ng-model-options="{ updateOn: 'blur' }">
                             </div>
 
                             <div class="form-group">
@@ -138,7 +142,7 @@
                             <span ng-repeat="category in attribute.categories"> <a uib-popover="{{category.attributeDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}</span>
                         </p>
 
-                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12">
+                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix">
 
                             <div class="col-xs-11 center-block clearfix likert">
                                 <div class="col-xs-3"></div>
@@ -175,32 +179,35 @@
                         </div>
 
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Text'">
-                            Text Box
+                            <input class="form-control" type="text" name="rating" ng-model="attribute.ratingValue" placeholder="Rating eg. 4" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)">
+                        </div>
+                        <div class="optional-section col-xs-12 clearfix">
+                            <h6>We value your perspective. Please feel free to include an optional explanation of your decision below using text, screenshots or both.</h6>
+                            <div class="comment form-group clearfix">
+                                <h4>Notes</h4>
+                                <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
+                            </div>
+                            <div class="screenshots form-group clearfix">
+                                <h4>Screenshots</h4>
+                                <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
+                                    <a ng-click="openLightboxModal(attribute.screenshots, $index)">
+                                        <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div ngf-drop ngf-select ng-model="files[attribute.attributeID]" class="drop-box"
+                                           ngf-change="save.screenshot(attribute)"
+                                           ngf-allow-dir="true"
+                                           accept="image/*"
+                                           ngf-pattern="'image/*'"
+                                           ngf-drag-over-class="{pattern: 'image/*', accept:'acceptFile', reject:'rejectFile', delay:100}"
+                                           >Drop images here or click to upload</div>
+                                    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                                    <uib-progressbar ng-if="attribute.progressPercentage" class="progress-striped active" value="attribute.progressPercentage" type="success">uploading</uib-progressbar>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="comment form-group clearfix">
-                            <h3>Notes</h3>
-                            <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
-                        </div>
-                        <div class="screenshots form-group clearfix">
-                            <h3>Screenshots</h3>
-                            <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
-                                <a ng-click="openLightboxModal(attribute.screenshots, $index)">
-                                    <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
-                                </a>
-                            </div>
-                            <div class="col-sm-3">
-                                <div ngf-drop ngf-select ng-model="files[attribute.attributeID]" class="drop-box"
-                                       ngf-change="save.screenshot(attribute)"
-                                       ngf-allow-dir="true"
-                                       accept="image/*"
-                                       ngf-pattern="'image/*'"
-                                       ngf-drag-over-class="{pattern: 'image/*', accept:'acceptFile', reject:'rejectFile', delay:100}"
-                                       >Drop images here or click to upload</div>
-                                <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-                                <uib-progressbar ng-if="attribute.progressPercentage" class="progress-striped active" value="attribute.progressPercentage" type="success">uploading</uib-progressbar>
-                            </div>
-                        </div>
                     </div>
                     <div class="navigation">
                         <div class="col-xs-2">

@@ -67,7 +67,7 @@
                 LEFT JOIN scenario s ON ascon.scenarioID = s.scenarioID
                 LEFT JOIN project pjt ON pjt.projectID = ascon.projectID
                 LEFT JOIN artifact a ON a.artifactID = ascon.artifactID
-                WHERE ass.isComplete = 'true'
+                WHERE ass.completionDate IS NOT NULL
                 ORDER BY completeDate DESC
                 LIMIT 25
                 ";

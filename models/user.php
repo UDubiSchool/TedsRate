@@ -12,7 +12,7 @@
         }
         $function = $_GET['f'];
         $toInclude = "user/$function.php";
-        $possibleFunctions = ['get', 'getByID', 'delete', 'post'];
+        $possibleFunctions = ['get', 'getByID', 'getEmail', 'delete', 'post'];
 
         if(in_array($function, $possibleFunctions)) {
             require_once $toInclude;

@@ -126,6 +126,10 @@ body {
     text-align: left;
 }
 
+.optional-section {
+    padding-top:50px;
+}
+
 .comment textarea {
     width: 100%;
     padding: 15px 10px 5px 10px;

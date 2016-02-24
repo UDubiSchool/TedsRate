@@ -3,7 +3,7 @@
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$getUser = $dbq->prepare("SELECT * FROM user WHERE email=:email AND passwordValue=:password AND authorityLevel != 2");
+$getUser = $dbq->prepare("SELECT * FROM user u JOIN user_authority ua ON u.userID = ua.userID JOIN authority a ON a.authorityID = ua.authorityID WHERE email=:email AND passwordValue=:password AND a.authorityLevel != 2");
 $getUser->bindValue(':email', $email, PDO::PARAM_STR);
 $getUser->bindValue(':password', $password, PDO::PARAM_STR);
 $getUser->execute();

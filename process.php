@@ -187,7 +187,7 @@ else {
 
         // update userRatingProcess table
 
-        $urp_update_query = "UPDATE `assessment` SET `isComplete`='true',`completionDate`=NOW()
+        $urp_update_query = "UPDATE `assessment` SET `completionDate`=NOW()
                             WHERE `assessmentID` = " . $ids['assessmentID'];
 
         //    echo($urp_update_query);

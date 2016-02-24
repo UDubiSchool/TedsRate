@@ -232,9 +232,11 @@ if ($_POST) {
                     $user_email = $_POST['user_email'];
                     $password   = $_POST['password'];
                     if (!preg_match("/^\s*$/i", $user_email) && !preg_match("/^\s*$/i", $password)) {
-                        $auth_query = "select * from user
-                                       where email = '" . (string) $user_email . "'
-                                        and AuthorityLevel = 2";
+                        $auth_query = "SELECT * FROM user u
+                                                JOIN user_authority ua on ua.userID = u.userID
+                                                JOIN authority a ON a.authorityID = ua.authorityID
+                                                WHERE email = '$user_email'
+                                                AND a.AuthorityLevel = 2";
                         $result     = $dbq->query($auth_query)->fetchAll();
                         if ($result) {
                             if ($password == $result[0]['passwordValue']) {

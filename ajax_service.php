@@ -26,6 +26,9 @@
     for ($i = 0; $i < count($parts) - 1; $i++) {
      $root_url .= $parts[$i] . "/";
     }
+    if ($root_url == 'depts.washington.edu/tedsrate/tedsrate/') {
+        $root_url = 'https://' . $root_url;
+    }
 
 if (isset($_GET['trigger']) && isset($_GET['type'])) {
     try {

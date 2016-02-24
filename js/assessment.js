@@ -53,6 +53,21 @@ app.service('userService', ['$http', '$q', function ($http, $q) {
         return deferred.promise;
     }
 
+    this.findEmail = function(email) {
+        var deferred = $q.defer();
+        var target = "models/user.php?f=getEmail";
+        var data = {
+            email: email
+        };
+        $http.post(target, data, {
+        }).success(function(response){
+            deferred.resolve(response);
+        }).error(function(response){
+            deferred.reject(response);
+        });
+        return deferred.promise;
+    }
+
     //updates a user
     this.post = function(data){
         var deferred = $q.defer();
@@ -608,6 +623,25 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         }
     }
 
+    $scope.taken = function(form) {
+        if(form.$dirty && !form.email.$error.email) {
+            var email = form.email.$modelValue;
+            console.log(email);
+            userService.findEmail(email).then(function(response) {
+                if(response.exists) {
+                    console.log('was taken');
+                    form.email.$error.taken = true;
+                    form.$valid = false;
+                } else {
+                    console.log('was taken');
+                    form.email.$error.taken = false;
+                    // form.$valid = false;
+                }
+
+            });
+        }
+    }
+
 
 
 
@@ -673,10 +707,10 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.trackProgress = function (newValue, oldValue, required) {
         var oldValue = decodeURI(oldValue);
         if(required) {
-            if(oldValue == '') {
+            if(oldValue == '' || oldValue == undefined || oldValue== null) {
                 $scope.completedItems++;
             }
-            if(newValue == '') {
+            if(newValue == '' || newValue == undefined || newValue== null) {
                 $scope.completedItems--;
             }
         }

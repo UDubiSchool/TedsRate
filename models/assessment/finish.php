@@ -7,7 +7,7 @@
     $assessmentID = intval($_POST['assessmentID']);
 
 
-    $updateAssessment = $dbq->prepare("UPDATE assessment SET isComplete =:completed, completionDate=:date WHERE assessmentID =:assessmentID");
+    $updateAssessment = $dbq->prepare("UPDATE assessment SET completionDate=:date WHERE assessmentID =:assessmentID");
     $updateAssessment->bindValue(':completed', 'true', PDO::PARAM_STR);
     $updateAssessment->bindValue(':date', date('Y-m-d H:m:s'), PDO::PARAM_STR);
     $updateAssessment->bindValue(':assessmentID', $assessmentID, PDO::PARAM_INT);
