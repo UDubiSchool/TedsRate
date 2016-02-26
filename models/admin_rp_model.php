@@ -9,7 +9,6 @@
                                      p.personaName AS persona,
                                       s.scenarioName AS scenario,
                                      CONCAT(u.firstName, ' ', u.lastName) AS name,
-                                     ass.isComplete AS complete,
                                      ass.completionDate AS completionDate,
                                      u.email AS email,
                                      ass.assessmentID AS assessmentID,

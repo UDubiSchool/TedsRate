@@ -15,6 +15,7 @@
         <script src="js/angular/angular-bootstrap-lightbox.js"></script>
         <script src="js/angular/ng-file-upload-shim.min.js"></script>
         <script src="js/angular/ng-file-upload.min.js"></script>
+        <script src="js/angular/models/tedsModels.js"></script>
         <script src="js/assessment.js"></script>
         <base href="/">
         <!-- <base href="/tedsrate/tedsrate/"> -->
