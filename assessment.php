@@ -137,10 +137,13 @@
                     <p>{{criterion.criterionDesc}}</p>
                     <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
                         <h3>{{attribute.attributeName}}</h3>
-                        <p>{{attribute.attributeDesc}}</p>
+                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
+                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                         <p ng-if="attribute.attributeTypeName == 'Cluster'">
                             This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
-                            <span ng-repeat="category in attribute.categories"> <a uib-popover="{{category.attributeDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}</span>
+                            <span ng-repeat="category in attribute.categories">
+                                <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
+                            </span>
                         </p>
 
                         <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix">

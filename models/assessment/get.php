@@ -389,7 +389,8 @@
             $attribute = [
                 'attributeID' => $row['attributeID'],
                 'attributeName' => $row['attributeName'],
-                'attributeDesc' => $row['attributeDesc'],
+                'attributeDesc' => json_encode($row['attributeDesc']),
+                'attributeLaymanDesc' => json_encode($row['attributeLaymanDesc']),
                 'attributeTypeName' => $row['attributeTypeName'],
                 'attributeTypeDesc' => $row['attributeTypeDesc'],
                 'ratingValue' => $ratingValue,
@@ -418,28 +419,32 @@
     unset($data['ratingsData']);
     $sth->closeCursor();
 
-
     foreach ($criteria as $criterionKey => $criterion) {
         foreach ($criterion['attributes'] as $attributeKey => $attribute) {
             if($attribute['attributeTypeName'] == 'Cluster') {
                 $criteria[$criterionKey]['attributes'][$attributeKey]['categories'] = [];
 
-                $sth = $dbq->query("SELECT attr.attributeID, attr.attributeName, attr.attributeDesc FROM attribute a
-                                                INNER JOIN cluster cl ON a.attributeID = cl.attributeID
+                $sth = $dbq->query("SELECT attr.attributeID, attr.attributeName, attr.attributeDesc, attr.attributeLaymanDesc
+                                                FROM cluster cl
                                                 INNER JOIN cluster_category cc ON cc.clusterID = cl.attributeID
                                                 INNER JOIN category ca ON cc.categoryID = ca.attributeID
                                                 INNER JOIN attribute attr ON attr.attributeID = ca.attributeID
                                                 WHERE cl.attributeID = $attribute[attributeID]
                                                 ");
                 while ($row = $sth->fetch()){
-                    array_push($criteria[$criterionKey]['attributes'][$attributeKey]['categories'], $row);
+                    $tmp = [
+                        'attributeID' => $row['attributeID'],
+                        'attributeName' => $row['attributeName'],
+                        'attributeDesc' => json_encode($row['attributeDesc']),
+                        'attributeLaymanDesc' => json_encode($row['attributeLaymanDesc']),
+                    ];
+                    array_push($criteria[$criterionKey]['attributes'][$attributeKey]['categories'], $tmp);
                 }
                 $sth->closeCursor();
             }
         }
     }
     $data['criteria'] = $criteria;
-
 
     header('Content-Type: application/json');
     echo json_encode($data, TRUE);

@@ -54,4 +54,5 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 
-$route['api/([a-zA-Z0-9_-]+)/(:num)/([a-zA-Z0-9_-]+)'] = '$1_api/api/id/$2/format/$3'; // Example 8
+$route['api/([a-zA-Z0-9_-]+)/(:num)/([a-zA-Z0-9_-]+)'] = '$1_api/api/id/$2/format/$3';
+$route['api/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)'] = '$1_api/api///format/$3';

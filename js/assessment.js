@@ -447,6 +447,16 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                         attribute.ratingValue = '';
                     }
                     $scope.requiredItems++;
+                    attribute.attributeDesc = JSON.parse(attribute.attributeDesc);
+                    attribute.attributeLaymanDesc = JSON.parse(attribute.attributeLaymanDesc);
+                    if (attribute.attributeTypeName == 'Cluster') {
+                        angular.forEach(attribute.categories, function(category, categoryKey) {
+                            category.attributeDesc = JSON.parse(category.attributeDesc);
+                            category.attributeLaymanDesc = JSON.parse(category.attributeLaymanDesc);
+                        });
+
+                    }
+
                 });
             });
             deferred.resolve(assessment);

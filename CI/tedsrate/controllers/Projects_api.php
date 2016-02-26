@@ -9,8 +9,10 @@ class Projects_api extends REST_Controller {
         $this->load->model('project_model', 'project');
     }
 
-    public function api_get()
+    public function api_get($key = null)
     {
+        // echo $key;
+        // exit;
         $tmp = null;
         $id = $this->get('id');
         if($id === null) {
@@ -43,11 +45,11 @@ class Projects_api extends REST_Controller {
 
     public function api_put($key = null, $xss_clean = NULL)
     {
-        $id = $this->get('id');
     }
 
     public function api_post($key = null, $xss_clean = NULL)
     {
+        $id = $this->get('id');
 
     }
 
