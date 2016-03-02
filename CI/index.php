@@ -64,7 +64,7 @@
 	    // check development word in url
 	    preg_match('#/development#', $_SERVER['REQUEST_URI'], $isDevelopment);
 
-	    $env = $isDevelopment ? 'development' : 'development';
+	    $env = $isDevelopment ? 'development' : 'uw';
 	}
 	define('ENVIRONMENT', $env);
 /*
@@ -77,6 +77,7 @@
  */
 switch (ENVIRONMENT)
 {
+	case 'uw':
 	case 'development':
 	case 'local':
 		error_reporting(-1);
