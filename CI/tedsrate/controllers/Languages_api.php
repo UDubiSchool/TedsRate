@@ -1,24 +1,25 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 require(APPPATH.'libraries/REST_Controller.php');
-class Users_api extends REST_Controller {
+class Languages_api extends REST_Controller {
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('user_model', 'user');
+        $this->load->model('language_model', 'language');
     }
 
+    // gets a record by primary key or retrieves all records
     public function api_get($key = NULL)
     {
         $tmp = null;
         $id = $key;
-        if($id === null) {
-            $tmp = $this->user->getAll();
+        if($id == null) {
+            $tmp = $this->language->getAll();
             if (!$tmp) {
                 $this->response([
                     'status' => FALSE,
-                    'message' => 'No users were found'
+                    'message' => 'No languages were found'
                 ], REST_Controller::HTTP_NOT_FOUND);
             }
         } else {
@@ -26,11 +27,11 @@ class Users_api extends REST_Controller {
             if($id <= 0) {
                 $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
             } else {
-                $tmp = $this->user->get($id);
+                $tmp = $this->language->get($id);
                 if (!$tmp) {
                     $this->response([
                         'status' => FALSE,
-                        'message' => 'user not found'
+                        'message' => 'language not found'
                     ], REST_Controller::HTTP_NOT_FOUND);
                 }
             }
@@ -41,25 +42,27 @@ class Users_api extends REST_Controller {
     // does a full update of a record
     public function api_put($key = NULL, $xss_clean = NULL)
     {
-        $this->response($this->user->put($this->put()));
+        $this->response($this->language->put($this->put()));
     }
 
     // creates a new record
     public function api_post($key = NULL, $xss_clean = NULL)
     {
-        $this->response($this->user->post($this->post()));
+        $this->response($this->language->post($this->post()));
     }
 
     // does a partial update of a record
     public function api_patch($key = NULL, $xss_clean = NULL)
     {
-        // $this->response($this->user->patch($this->patch()));
+        // $this->response($this->language->patch($this->patch()));
     }
 
     // deletes a record
     public function api_delete($key = NULL, $xss_clean = NULL)
     {
-        $this->response($this->user->delete($key));
+        dumpArray($key);
+        // $this->load->helper('url');
+        // echo uri_string();
+        $this->response($this->language->delete($key));
     }
-
 }

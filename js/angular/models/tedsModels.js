@@ -3,198 +3,634 @@ var app = angular.module('teds.models', []);
 
 app.service('uploadService', ['$http', '$q', function ($http, $q) {
     this.uploadFileToUrl = function(file, uploadUrl){
-        var deferred = $q.defer();
         var fd = new FormData();
         fd.append('file', file);
 
-        $http.post(uploadUrl, fd, {
+        return $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);
 
 app.service('projectService', ['$http', '$q', function ($http, $q) {
     this.get = function(id) {
-        var deferred = $q.defer();
-        var target = "CI/index.php/api/project/29/json/";
+        var target = "CI/index.php/api/projects/"+id;
         var data = {};
-        $http.post(target, data, {
+        return $http.get(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     this.getAll = function() {
-        var deferred = $q.defer();
-        var target = "CI/index.php/api/project/json/";
+        var target = "CI/index.php/api/projects/";
         var data = {};
-        $http.post(target, data, {
+        return $http.get(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/projects/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/projects/"+ data.projectID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/projects/"+ data.projectID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
     }
 
     this.delete = function(id) {
-        var deferred = $q.defer();
-        var target = "models/project.php?f=delete";
+        var target = "CI/index.php/api/projects/"+ id;
         var data = {
             id: id
         };
-        $http.post(target, data, {
+        return $http.delete(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
-
 }]);
 
+app.service('artifactService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/artifacts/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/artifacts/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/artifacts/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/artifacts/"+ data.artifactID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/artifacts/"+ data.artifactID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/artifacts/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+app.service('artifactTypeService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/artifact-Types/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/artifact-Types/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/artifact-Types/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/artifact-Types/"+ data.artifactTypeID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/artifact-Types/"+ data.artifactTypeID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/artifact-Types/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+app.service('languageService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/languages/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/languages/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/languages/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/languages/"+ data.languageID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/languages/"+ data.languageID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/languages/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+app.service('scenarioService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/scenarios/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/scenarios/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/scenarios/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/scenarios/"+ data.scenarioID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/scenarios/"+ data.scenarioID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/scenarios/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+
+app.service('personaService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/personas/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/personas/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/personas/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/personas/"+ data.personaID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/personas/"+ data.personaID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/personas/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+app.service('roleService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/roles/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/roles/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/roles/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/roles/"+ data.roleID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/roles/"+ data.roleID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/roles/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+
+// old vanilla services
 app.service('userService', ['$http', '$q', function ($http, $q) {
 
     // validates a email-password pair
     this.validate = function(email, password){
-        var deferred = $q.defer();
         var target = "models/user.php?f=get";
         var data = {
             email: email,
             password: password
         };
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     this.findEmail = function(email) {
-        var deferred = $q.defer();
         var target = "models/user.php?f=getEmail";
         var data = {
             email: email
         };
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     //updates a user
     this.post = function(data){
-        var deferred = $q.defer();
         var target = "models/user.php?f=post";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     // deletes the user corrosponding to the ID
     this.delete = function(userID){
-        var deferred = $q.defer();
         var target = "models/user.php?f=delete";
         // var data = data;
-        $http.post(target, {userID: userID}, {
+        return $http.post(target, {userID: userID}, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);
 
 app.service('assessmentService', ['$http', '$q', function ($http, $q) {
     // gets a single assessment based on the hashed ID
     this.get = function(data){
-        var deferred = $q.defer();
         var target = "models/assessment.php?f=get";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     // gets an assessment based on the unique key (userID, ConfigurationID)
     this.getByUserConf = function(data){
-        var deferred = $q.defer();
         var target = "models/assessment.php?f=getByUserConf";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     // updates an assessments user
     this.updateUser = function(data){
-        var deferred = $q.defer();
         var target = "models/assessment.php?f=updateUser";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     // saves the assessment
     this.save = function(data){
-        var deferred = $q.defer();
         var target = "models/assessment.php?f=save";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     // saves the assessment
     this.finish = function(data){
-        var deferred = $q.defer();
         var target = "models/assessment.php?f=finish";
         // var data = data;
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
+    }
+
+    this.delete = function(id) {
+        var target = "models/assessment.php?f=delete";
+        var data = {
+            assessmentID: id
+        };
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
     }
 
 }]);
@@ -203,16 +639,13 @@ app.service('ratingService', ['$http', '$q', function ($http, $q) {
 
     //adds a rating
     this.put = function(data){
-        var deferred = $q.defer();
         var target = "models/rating.php?f=put";
-
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);
 
@@ -220,16 +653,13 @@ app.service('responseService', ['$http', '$q', function ($http, $q) {
 
     //adds a response
     this.put = function(data){
-        var deferred = $q.defer();
         var target = "models/response.php?f=put";
-
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);
 
@@ -237,29 +667,23 @@ app.service('commentService', ['$http', '$q', function ($http, $q) {
 
     //adds a comment
     this.put = function(data){
-        var deferred = $q.defer();
         var target = "models/comment.php?f=put";
-
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     this.delete = function(data){
-        var deferred = $q.defer();
         var target = "models/comment.php?f=delete";
-
-        $http.post(target, data, {
+        return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);
 
@@ -267,28 +691,22 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
 
     //adds a screenshot
     this.put = function(data){
-        var deferred = $q.defer();
         var target = "models/screenshot.php?f=put";
-
         return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 
     this.delete = function(data){
-        var deferred = $q.defer();
         var target = "models/screenshot.php?f=delete";
-
         return $http.post(target, data, {
         }).success(function(response){
-            deferred.resolve(response);
+            return response;
         }).error(function(response){
-            deferred.reject(response);
+            return response;
         });
-        return deferred.promise;
     }
 }]);

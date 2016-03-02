@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add an Persona to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addPersonaForm" novalidate>
+        <div class="new">
+            <h4>Add a New Persona</h4>
+            <label for="">Persona Name</label>
+            <input type="text" class="form-control" ng-model="persona.personaName" placeholder="Persona Name" required/>
+            <label for="">Persona Description</label>
+            <input type="text" class="form-control" ng-model="persona.personaDesc" placeholder="Persona Description"/>
+            <label for="">Persona Language</label>
+            <select class="form-control" ng-model="persona.languageID" required>
+                <option value=""></option>
+                <option ng-repeat="(languageKey, language) in $parent.languages" ng-value="language.languageID">{{language.languageName}}</option>
+            </select>
+        </div>
+        <div class="existing">
+            <h4>Associate an Existing Persona</h4>
+            <select class="form-control" ng-model="persona.personaID">
+                <option value=""></option>
+                <option ng-repeat="(personaKey, persona) in personas" ng-value="persona.personaID">{{persona.personaName}}</option>
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

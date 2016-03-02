@@ -68,8 +68,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 assessmentID: $scope.assessment.assessmentID
             };
             return ratingService.put(data).then(function(response) {
-                attribute.ratingID = response.ratingID;
-                deferred.resolve(response.ratingID);
+                attribute.ratingID = response.data.ratingID;
+                deferred.resolve(response.data.ratingID);
                 return deferred.promise;
             });
         },
@@ -83,8 +83,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 data.assessmentID = question.assessmentID;
             };
             return responseService.put(data).then(function(response) {
-                question.responseID = response.responseID;
-                deferred.resolve(response.responseID);
+                question.responseID = response.data.responseID;
+                deferred.resolve(response.data.responseID);
                 return deferred.promise;
             });
         },
@@ -94,17 +94,17 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 attribute: attribute,
             };
             if(attribute.ratingID == undefined) {
-                return $scope.save.rating(attribute).then(function() {
+                return $scope.save.rating(attribute).then(function(ratingID) {
                     return commentService.put(data).then(function(response) {
-                        attribute.commentID = response.commentID;
-                        deferred.resolve(response.commentID);
+                        attribute.commentID = response.data.commentID;
+                        deferred.resolve(response.data.commentID);
                         return deferred.promise;
                     });
                 });
             } else {
                 return commentService.put(data).then(function(response) {
-                    attribute.commentID = response.commentID;
-                    deferred.resolve(response.commentID);
+                    attribute.commentID = response.data.commentID;
+                    deferred.resolve(response.data.commentID);
                     return deferred.promise;
                 });
             }
@@ -134,7 +134,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
                                 return screenshotService.put(data).then(function(response) {
                                     attribute.screenshots.push(filePath);
-                                    deferred.resolve(response);
+                                    deferred.resolve(response.data);
                                     return deferred.promise;
                                 });
                             });
@@ -147,7 +147,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
                             return screenshotService.put(data).then(function(response) {
                                 attribute.screenshots.push(filePath);
-                                deferred.resolve(response);
+                                deferred.resolve(response.data);
                                 return deferred.promise;
                             });
                         }
@@ -242,12 +242,12 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             var password = form.password.$modelValue;
 
             //gets the user
-            $http.post("models/user.php?f=get", {email: email, password: password}).then(function(response) {
+            userService.validate(email, password).then(function(response) {
                 var user = response.data.user;
                 if (user == false) {
                     // alert the dom that there was no matching user
                     form.$error.notFound = true;
-                    console.log("That user/password combination did not match any in our database.");
+                    // console.log("That user/password combination did not match any in our database.");
 
                 } else {
                     // there was a match
@@ -263,17 +263,15 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                     //check if the assessments user is the same as the one from signin
                     if (user.userID !== $scope.assessment.user.userID) {
                         //checks if new user has a copy of the form
-                        $http.post("models/assessment.php?f=getByUserConf", {userID: user.userID, configurationID: $scope.assessment.configurationID}).then(function(response) {
+                        assessmentService.getByUserConf({userID: user.userID, configurationID: $scope.assessment.configurationID}).then(function(response) {
                             var assessment = response.data.assessment;
                             if(assessment == false || assessment == undefined) {
                                 //if no copy
-                                console.log("no assessment");
                                 if($scope.assessment.user.email == null || $scope.assessment.user.email == undefined) {
                                     // this form belonged to a temp user it is takeable
-                                    console.log('this is a temp user. transfering assessment and deleting.');
-                                    $http.post("models/assessment.php?f=updateUser", {userID: user.userID, assessmentID: $scope.assessment.assessmentID}).then(function(response) {
+                                    assessmentService.updateUser({userID: user.userID, assessmentID: $scope.assessment.assessmentID}).then(function(response) {
                                         if(response.data.updated) {
-                                            $http.post("models/user.php?f=delete", {userID: $scope.assessment.user.userID}).then(function(response) {
+                                            userService.delete($scope.assessment.user.userID).then(function(response) {
                                                 if(response.data.deleted) {
                                                     console.log("temp user was deleted.");
                                                     $scope.assessment.user = user;
@@ -288,23 +286,17 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                     });
                                 } else {
                                     // you cannot take this form
-                                    console.log('this is a fully registered user. creating a new assessment and transfering.');
                                     window.location = "start.php?c=" + $scope.assessment.configurationIDHashed;
                                 }
                             } else {
                                 //user has a copy
-                                console.log("yes! this users assessment exists. transfering to new assessment");
-                                console.log($scope.assessment.user.email);
                                 if($scope.assessment.user.email == null || $scope.assessment.user.email == undefined) {
                                     // this form belonged to a temp user it is deleteable
                                     //delete assessment
-                                    console.log('this is a temp user. deleting assessment and temp user.');
-                                    $http.post("models/assessment.php?f=delete", {assessmentID: $scope.assessment.assessmentID}).then(function(response) {
+                                    assessmentService.delete($scope.assessment.assessmentID).then(function(response) {
                                         if(response.data.deleted) {
-                                            $http.post("models/user.php?f=delete", {userID: $scope.assessment.user.userID}).then(function(response) {
+                                            userService.delete($scope.assessment.user.userID).then(function(response) {
                                                 if(response.data.deleted) {
-                                                    console.log("temp user was deleted.");
-
                                                     getAssessment(assessment.assessmentIDHashed).then(function(response){
                                                         $scope.assessment = response;
                                                         $scope.next();
@@ -361,7 +353,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             console.log(form);
 
             userService.post({id: $scope.assessment.user.userID, email: email, password: password}).then(function(response) {
-                if (response.user) {
+                if (response.data.user) {
                     var tenHours = new Date(new Date().setHours(new Date().getHours() + 10));
                     $cookies.put('teds_userIDAuthed', $scope.assessment.user.userID, {'expires': tenHours, 'path': '/'});
 
@@ -380,7 +372,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             var email = form.email.$modelValue;
             console.log(email);
             userService.findEmail(email).then(function(response) {
-                if(response.exists) {
+                if(response.data.exists) {
                     console.log('was taken');
                     form.email.$error.taken = true;
                     form.$valid = false;
@@ -405,7 +397,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         var deferred = $q.defer();
         var assessment;
         return assessmentService.get({asid: asid}).then(function(response) {
-            assessment = response;
+            assessment = response.data;
             $scope.showSignin = assessment.user.email ? true : false;
             $scope.requiredItems = 0;
             $scope.completedItems = 0;

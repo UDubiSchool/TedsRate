@@ -17,8 +17,8 @@
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/angular/models/tedsModels.js"></script>
         <script src="js/assessment.js"></script>
-        <!-- <base href="/"> -->
-        <base href="/tedsrate/tedsrate/">
+        <base href="/">
+        <!-- <base href="/tedsrate/tedsrate/"> -->
     </head>
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
@@ -137,48 +137,58 @@
                     <p>{{criterion.criterionDesc}}</p>
                     <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
                         <h3>{{attribute.attributeName}}</h3>
-                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
-                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                         <p ng-if="attribute.attributeTypeName == 'Cluster'">
                             This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
                             <span ng-repeat="category in attribute.categories">
                                 <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
                             </span>
                         </p>
+                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
+                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
 
-                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix">
 
-                            <div class="col-xs-11 center-block clearfix likert">
-                                <div class="col-xs-3"></div>
-                                <div class="col-xs-1">1</div>
-                                <div class="col-xs-1">2</div>
-                                <div class="col-xs-1">3</div>
-                                <div class="col-xs-1">4</div>
-                                <div class="col-xs-1">5</div>
-                                <div class="col-xs-3"></div>
+                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix likert-rater">
+
+                            <div class="center-block clearfix likert">
+                                <!-- <div class="col-xs-3"></div> -->
+                                <div class="">1</div>
+                                <div class="">2</div>
+                                <div class="">3</div>
+                                <div class="">4</div>
+                                <div class="">5</div>
+                                <!-- <div class="col-xs-3"></div> -->
                             </div>
-                            <div class="col-xs-11 center-block clearfix likert">
-                                <div class="col-xs-3">
+                            <div class="center-block clearfix likert">
+                                <!-- <div class="col-xs-3"></div> -->
+                                <div class="">Very Poor</div>
+                                <div class="">Poor</div>
+                                <div class="">Fair</div>
+                                <div class="">Good</div>
+                                <div class="">Very Good</div>
+                                <!-- <div class="col-xs-3"></div> -->
+                            </div>
+                            <div class="center-block clearfix likert">
+                        <!--         <div class="col-xs-3">
                                     {{attribute.preface}}
-                                </div>
-                                <div class="col-xs-1">
+                                </div> -->
+                                <div class="">
                                     <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'1'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
-                                <div class="col-xs-1">
+                                <div class="">
                                     <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'2'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
-                                <div class="col-xs-1">
+                                <div class="">
                                     <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'3'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
-                                <div class="col-xs-1">
+                                <div class="">
                                     <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'4'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
-                                <div class="col-xs-1">
+                                <div class="">
                                     <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'5'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
                                 </div>
-                                <div class="col-xs-3">
+                                <!-- <div class="col-xs-3">
                                     {{attribute.postface}}
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 

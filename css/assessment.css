@@ -112,17 +112,21 @@ body {
 
 .likert div {
  text-align: center;
+ display: inline-block;
  padding:0px;
+ width:12%;
 }
 
 .center-block {
     float:none;
+    margin:auto;
+    text-align: center;
 }
 
-.likert > div:first-child, .boolean > div:first-child {
+.boolean > div:first-child {
     text-align: right;
 }
-.likert > div:last-child, .boolean > div:last-child {
+.boolean > div:last-child {
     text-align: left;
 }
 

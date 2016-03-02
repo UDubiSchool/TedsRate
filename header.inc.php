@@ -20,7 +20,6 @@
     <title>Site Rater</title>
     <!-- Included CSS Files -->
     <link rel="stylesheet" href="css/foundation.css">
-    <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/base.css">
     <!-- <link href='http://fonts.googleapis.com/css?family=Ropa+Sans:400,400italic' rel='stylesheet' type='text/css'>		 -->
 

@@ -9,13 +9,14 @@ class Projects_api extends REST_Controller {
         $this->load->model('project_model', 'project');
     }
 
-    public function api_get($key = null)
+    // gets a record by primary key or retrieves all records
+    public function api_get($key = NULL)
     {
         // echo $key;
         // exit;
         $tmp = null;
-        $id = $this->get('id');
-        if($id === null) {
+        $id = $key;
+        if($id == null) {
             $tmp = $this->project->getAll();
             if (!$tmp) {
                 $this->response([
@@ -43,27 +44,61 @@ class Projects_api extends REST_Controller {
        $this->response($tmp);
     }
 
-    public function api_put($key = null, $xss_clean = NULL)
+    // does a full update of a record
+    public function api_put($key = NULL, $xss_clean = NULL)
     {
+        $this->response($this->project->put($this->put()));
     }
 
-    public function api_post($key = null, $xss_clean = NULL)
+    // creates a new record
+    public function api_post($key = NULL, $xss_clean = NULL)
     {
-        $id = $this->get('id');
-
+        $this->response($this->project->post($this->post()));
     }
 
-    public function api_delete($key = null, $xss_clean = NULL)
+    // does a partial update of a record
+    public function api_patch($key = NULL, $xss_clean = NULL)
     {
+        // $this->response($this->project->patch($this->patch()));
+    }
 
+    // deletes a record
+    public function api_delete($key = NULL, $xss_clean = NULL)
+    {
+        $this->response($this->project->delete($key));
     }
 
     private function getAssoc($project)
     {
-        $project['artifacts'] = $this->project->getArtifacts($project['projectID']);
-        $project['scenarios'] = $this->project->getScenarios($project['projectID']);
-        $project['personas'] = $this->project->getPersonas($project['projectID']);
-        $project['roles'] = $this->project->getRoles($project['projectID']);
+        $this->load->model('artifact_model', 'artifact');
+        $this->load->model('scenario_model', 'scenario');
+        $this->load->model('persona_model', 'persona');
+        $this->load->model('role_model', 'role');
+        $this->load->model('assessment_model', 'assessment');
+        $this->load->model('rating_model', 'rating');
+        $this->load->model('response_model', 'resp');
+        $this->load->model('comment_model', 'comment');
+        $this->load->model('screenshot_model', 'screenshot');
+
+        $project['artifacts'] = $this->artifact->getProject($project['projectID']);
+        foreach ($project['artifacts'] as $key => $artifact) {
+            $project['artifacts'][$key]['artifactURL'] = urldecode($artifact['artifactURL']);
+        }
+        $project['scenarios'] = $this->scenario->getProject($project['projectID']);
+        $project['personas'] = $this->persona->getProject($project['projectID']);
+        $project['roles'] = $this->role->getProject($project['projectID']);
+        $project['completedAssessments'] = $this->assessment->getProjectCompleted($project['projectID']);
+        $project['assessments'] = $this->assessment->getProject($project['projectID']);
+        foreach($project['assessments'] as $key => $assessment) {
+
+            $project['assessments'][$key]['ratings'] = $this->rating->getAssessment($assessment['assessmentID']);
+            $project['assessments'][$key]['responses'] = $this->resp->getAssessment($assessment['assessmentID']);
+
+            foreach($project['assessments'][$key]['ratings'] as $ratingKey => $rating) {
+                $project['assessments'][$key]['ratings'][$ratingKey]['comment'] = $this->comment->getRating($rating['ratingID']);
+                $project['assessments'][$key]['ratings'][$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
+            }
+        }
         return $project;
     }
 }

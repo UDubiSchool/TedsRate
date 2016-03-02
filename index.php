@@ -35,7 +35,6 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
         <title>Site Rater</title>
         <!-- Included CSS Files -->
         <link rel="stylesheet" href="css/foundation.css">
-        <link rel="stylesheet" href="css/app.css">
         <link rel="stylesheet" href="css/base.css">
         <!-- <link href='http://fonts.googleapis.com/css?family=Ropa+Sans:400,400italic' rel='stylesheet' type='text/css'>		 -->
 
@@ -89,7 +88,7 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
 	<!-- sitecontainer -->
 
 	<!-- Included JS Files -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/notice.js"></script>
     <?php
