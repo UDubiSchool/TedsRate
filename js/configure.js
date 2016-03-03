@@ -1,23 +1,31 @@
 'use strict';
-var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router']);
+var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList']);
 
-app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', function($scope, $rootScope, $state, $stateParams){
-    $scope.alerts =[];
-    // $rootScope.$state = $state;
-    // $rootScope.$stateParams = $stateParams;
+app.service('alertService', function(){
+    this.alerts = [];
 
-    $scope.addAlert = function(msg, type) {
-        $scope.alerts.push({
+    this.addAlert = function (msg,type) {
+        this.alerts.push({
             type: type,
             msg: msg
         });
+    }
+
+    this.closeAlert = function(index) {
+        this.alerts.splice(index, 1);
     };
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
+});
+
+app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', 'alertService', function($scope, $rootScope, $state, $stateParams, alertService){
+    $scope.alerts = alertService.alerts;
+    // $rootScope.$state = $state;
+    // $rootScope.$stateParams = $stateParams;
+
+    $scope.addAlert = alertService.addAlert;
+    $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService) {
+app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService) {
     // $scope.alerts =[];
     // $scope.isCollapsed = true;
     projectService.getAll().then(function(response) {
@@ -64,15 +72,80 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                 }
             });
 
-            angular.forEach(project.assessments, function(assessment, assessmentKey){
-                if(project.assessmentFilters.configurations.indexOf(assessment.attributeConfigurationName) === -1) {
-                    project.assessmentFilters.configurations.push(assessment.attributeConfigurationName);
+            project.assessmentsList = [];
+            project.assessmentsStats = {
+                Count: project.assessments.length
+            };
+            angular.forEach(project.assessments, function(assessment, assessmentKey) {
+                if(assessment !== undefined && assessment !== null && assessment !== '') {
+                    var tmp = {
+                        details: assessment,
+                        listData: {
+                            project: assessment.projectName,
+                            artifact: assessment.artifactName,
+                            persona: assessment.personaName,
+                            role: assessment.roleName,
+                            scenario: assessment.scenarioName,
+                            user: assessment.email,
+                            configuration: assessment.attributeConfigurationName,
+                        },
+                        specialFields: {
+                            link: {
+                                value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
+                                type: 'link'
+                            },
+                            issued: {
+                                value: assessment.issuanceDate,
+                                preface: 'Issued on',
+                                type: 'date'
+                            },
+                            completion: {
+                                value: assessment.completionDate,
+                                preface: 'Completed on',
+                                type: 'date'
+                            },
+                            edited: {
+                                value: assessment.lastEditDate,
+                                preface: 'Last Edited on',
+                                type: 'date'
+                            }
+                        }
+                    };
+                    project.assessmentsList.push(tmp);
                 }
-                if(project.assessmentFilters.users.indexOf(assessment.email) === -1) {
-                    project.assessmentFilters.users.push(assessment.email);
-                }
-                assessment.completion = assessment.completionDate !== null;
+
             });
+
+            project.configurationsList = [];
+            project.configurationsStats = {
+                Count: project.configurations.length
+            };
+            angular.forEach(project.configurations, function(configuration, configurationKey) {
+                if(configuration !== undefined && configuration !== null && configuration !== '') {
+                    var tmp = {
+                        details: configuration,
+                        listData: {
+                            // configuration: configuration.configurationName,
+                            attributes: configuration.attributeConfigurationName,
+                            questions: configuration.questionConfigurationName,
+                            interface: configuration.uiConfigurationName,
+                            artifact: configuration.artifactName,
+                            scenario: configuration.scenarioName,
+                            persona: configuration.personaName,
+                            role: configuration.roleName,
+                        },
+                        specialFields: {
+                            link: {
+                                value: 'start.php?c=' + configuration.configurationIDHashed,
+                                type: 'link'
+                            }
+                        }
+                    };
+                    project.configurationsList.push(tmp);
+                }
+
+            });
+
         });
         deferred.resolve(tmp);
         return deferred.promise;
@@ -88,16 +161,9 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         delete project.targetAssessment;
     }
 
-    $scope.addAlert = function(msg, type) {
-        $scope.alerts.push({
-            type: type,
-            msg: msg
-        });
-    };
+    $scope.addAlert = alertService.addAlert;
 
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
+    $scope.closeAlert = alertService.closeAlert;
 
     languageService.getAll().then(function(response){
         $scope.languages = response.data;
@@ -345,4 +411,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
     //     $scope.things = ["A", "Set", "Of", "Things"];
     //   }
     // });
+});
+app.filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
 });

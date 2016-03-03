@@ -1,0 +1,56 @@
+ <div class="details col-xs-12" ng-if="selected">
+    DETAILS
+<!--                    <h4>Configuration {{project.targetConfiguration.configurationID}}</h4>
+   <a class="btn btn-primary" ng-click="unsetTargetAssessment(project)">Back</a>
+   <div class="responses" ng-if="project.targetAssessment.responses.length > 0">
+     <h5>Responses</h5>
+     <dl>
+       <div class="response col-xs-6 col-md-6 col-lg-4" ng-repeat="response in project.targetAssessment.responses">
+         <dt>{{response.questionName}}</dt>
+         <dd>{{response.responseAnswer}}</dd>
+       </div>
+     </dl>
+   </div>
+   <div class="ratings" ng-if="project.targetAssessment.ratings.length > 0">
+     <h5>Ratings</h5>
+     <dl>
+       <div class="rating col-xs-6 col-md-6 col-lg-4" ng-repeat="rating in project.targetAssessment.ratings">
+         <dt>{{rating.attributeName}}</dt>
+         <dd>{{rating.ratingValue}}</dd>
+       </div>
+     </dl>
+   </div> -->
+ </div>
+<div id="" class="col-xs-12">
+    <table ng-if="table.length > 0" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th ng-repeat="(key, value) in options">
+                    {{key | capitalize}}
+                    <select class="form-control pull-left" name="{{key}}" ng-model="filters.listData[key]">
+                        <option value=""></option>
+                        <option ng-repeat="option in options[key]" value="{{option}}">{{option}}</option>
+                    </select>
+                </th>
+
+                <th ng-repeat="(key, value) in specialOptions">
+                    {{key | capitalize}}
+                    <select class="form-control pull-left" name="{{key}}" ng-model="filters.specialFields[key].filterCheck">
+                        <option value=""></option>
+                        <option ng-repeat="option in specialOptions[key]" value="{{option}}">{{option}}</option>
+                    </select>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="clickable" ng-repeat="item in table | filter: filters track by $index" ng-click="select(item)">
+                <td ng-repeat="param in item.listData">{{param}}</td>
+                <td ng-repeat="param in item.specialFields">
+                    <div ng-if="param.type == 'link'"><a ng-href="{{param.value}}">Link</a></div>
+                    <div ng-if="param.type == 'date'">{{param.value ? param.preface : ''}} {{param.value}}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

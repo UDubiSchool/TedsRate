@@ -1,0 +1,114 @@
+<div class="configurations container col-xs-12 clearfix">
+    <div class="section-header clearfix clickable" ng-click="project.configurationsCollapsed = !project.configurationsCollapsed">
+        <h4 class="pull-left" ng-class="{'disabled': {{project.configurations.length == 0}}}" >
+            <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.configurationsCollapsed}"></i></span>
+            Configurations
+        </h4>
+        <h5 class="pull-left">Count: {{project.configurations.length}}</h5>
+    </div>
+    <div class="collapsable clearfix" uib-collapse="project.configurationsCollapsed">
+         <div class="assessment col-xs-12" ng-if="project.targetConfiguration">
+<!--                    <h4>Configuration {{project.targetConfiguration.configurationID}}</h4>
+           <a class="btn btn-primary" ng-click="unsetTargetAssessment(project)">Back</a>
+           <div class="responses" ng-if="project.targetAssessment.responses.length > 0">
+             <h5>Responses</h5>
+             <dl>
+               <div class="response col-xs-6 col-md-6 col-lg-4" ng-repeat="response in project.targetAssessment.responses">
+                 <dt>{{response.questionName}}</dt>
+                 <dd>{{response.responseAnswer}}</dd>
+               </div>
+             </dl>
+           </div>
+           <div class="ratings" ng-if="project.targetAssessment.ratings.length > 0">
+             <h5>Ratings</h5>
+             <dl>
+               <div class="rating col-xs-6 col-md-6 col-lg-4" ng-repeat="rating in project.targetAssessment.ratings">
+                 <dt>{{rating.attributeName}}</dt>
+                 <dd>{{rating.ratingValue}}</dd>
+               </div>
+             </dl>
+           </div> -->
+         </div>
+        <div id=""class="col-xs-12">
+            <table ng-show="project.configurations" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Project
+                        </th>
+                        <th>
+                            Artifact
+                            <select class="form-control pull-left" name="artifact" ng-model="configurationOptions.artifactName" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.artifacts" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            Persona
+                            <select class="form-control pull-left" name="persona" ng-model="configurationOptions.personaName" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.personas" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            Role
+                            <select class="form-control pull-left" name="role" ng-model="configurationOptions.roleName" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.roles" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            Scenario
+                            <select class="form-control pull-left" name="scenario" ng-model="configurationOptions.scenarioName" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.scenarios" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            User
+                            <select class="form-control pull-left" name="name" ng-model="configurationOptions.email" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.users" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            Configuration
+                            <select class="form-control pull-left" name="config" ng-model="configurationOptions.attributeConfigurationName" id="">
+                                <option value=""></option>
+                                <option ng-repeat="option in project.configurationFilters.configurations" value="{{option}}">{{option}}</option>
+                            </select>
+                        </th>
+                        <th>
+                            Status
+                            <select class="form-control pull-left" name="completion" ng-model="configurationOptions.completion" id="">
+                                <option value=""></option>
+                                <option value="true">Complete</option>
+                                <option value="false">Incomplete</option>
+                            </select>
+                        </th>
+                        <th>Last Edited</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="clickable" ng-repeat="assessment in project.assessments | filter:assessmentOptions" ng-click="setTargetAssessment(project, assessment)">
+                        <td>{{assessment.projectName}}</td>
+                        <td>{{assessment.artifactName}}</td>
+                        <td>{{assessment.personaName}}</td>
+                        <td>{{assessment.roleName}}</td>
+                        <td>{{assessment.scenarioName}}</td>
+                        <td>{{assessment.email}}</td>
+                        <td>{{assessment.attributeConfigurationName}}</td>
+                        <td>
+                            <div ng-if="assessment.completionDate !== null">
+                                Completed on {{assessment.completionDate}}
+                            </div>
+                            <div ng-if="assessment.completionDate == null">
+                                Issued on {{assessment.issuanceDate}}
+                            </div>
+                        </td>
+                        <td>{{assessment.lastEditDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+</div>

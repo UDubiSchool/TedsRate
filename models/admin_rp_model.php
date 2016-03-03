@@ -25,7 +25,8 @@
                                      JOIN scenario s ON s.scenarioID = ascon.scenarioID
                                      WHERE u.userID = ass.userID
                                      AND p.personaID = ascon.personaID
-                                     AND s.scenarioID = ascon.scenarioID ORDER BY completionDate DESC");
+                                     AND s.scenarioID = ascon.scenarioID
+                                     ORDER BY completionDate DESC");
         $pre_result->execute();
         while ($row = $pre_result->fetch()) {
             array_push($arrayToSend, $row);

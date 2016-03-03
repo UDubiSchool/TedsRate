@@ -23,6 +23,17 @@ class Question_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getQuestionConfiguration($questionConfigurationID) {
+        return $this->db
+                              ->from('questionConfiguration qc')
+                              ->join('question_questionConfiguration qqc', 'qqc.questionConfigurationID = qc.questionConfigurationID')
+                              ->join('question q', 'q.questionID = qqc.questionID')
+                              ->join('questionType qt', 'qt.questionTypeID = q.questionTypeID')
+                              ->where("qc.questionConfigurationID", $questionConfigurationID)
+                              ->get()
+                              ->result_array();
+    }
+
     public function post ($data)
     {
       $this->db->insert('question', $data);
