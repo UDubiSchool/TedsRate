@@ -165,13 +165,11 @@
                                 WHERE u.userID = $userID
                                 AND q.questionID = $row[questionID]
                                 ");
-        if($inner !== false) {
-            $inner = $inner->fetch();
-            $row['responseID'] = $inner['responseID'];
-            $row['responseAnswer'] = $inner['responseAnswer'];
-            $row['assessmentID'] = $inner['assessmentID'];
-            array_push($questions[strtolower($row['questionTypeName'])], $row);
-        }
+        $inner = $inner->fetch();
+        $row['responseID'] = $inner['responseID'];
+        $row['responseAnswer'] = $inner['responseAnswer'];
+        $row['assessmentID'] = $inner['assessmentID'];
+        array_push($questions[strtolower($row['questionTypeName'])], $row);
     }
     $sth->closeCursor();
 
