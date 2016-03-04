@@ -46,7 +46,7 @@ function isValidUser($dbq, $userID) {
     $makePartialUser->closeCursor();
 
     $rowCount = $dbq->query('SELECT @rowCount')->fetchColumn();
-    if($rowCount = 1) {
+    if($rowCount == 1) {
         return true;
     } else {
         return false;
