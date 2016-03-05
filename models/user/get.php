@@ -12,7 +12,7 @@ $numberOfRows = $numberOfRows->fetchColumn();
 if ($numberOfRows == 1) {
     $data['user'] = $getUser->fetch();
 } else {
-    $data['user'] = false;
+    $data['user'] = $getUser->fetch();
 }
 
 $getUser->closeCursor();
