@@ -67,15 +67,15 @@
 
                             <div class="form-group">
                                 <div role="alert">
-                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && singup.password !== null">
+                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && signupForm.password.$modelValue !== undefined && signupForm.confirm.$modelValue !== undefined">
                                         Passwords do not match.
                                         </span>
                                 </div>
-                                password is not null: {{signupForm.password !== undefined}} - value: {{signupForm.password}} <br>
-                                confirm is not null: {{signupForm.confirm !== undefined}} - value: {{signupForm.confirm}} <br>
-                                they match: {{signupForm.password == signupForm.confirm}} <br>
+                                password is not null: {{signupForm.password.$modelValue !== undefined}} - value: {{signupForm.password.$modelValue}} <br>
+                                confirm is not null: {{signupForm.confirm.$modelValue !== undefined}} - value: {{signupForm.confirm.$modelValue}} <br>
+                                they match: {{signupForm.password.$modelValue == signupForm.confirm.$modelValue}} <br>
                                 <br>
-                                {{signupForm.password}}
+                                <!-- {{signupForm.password}} -->
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
                                 <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value==password' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
