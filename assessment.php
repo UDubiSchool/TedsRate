@@ -68,7 +68,7 @@
                             <div class="form-group">
                                 <div role="alert">
                                       <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && signupForm.password.$viewValue !== undefined && signupForm.confirm.$viewValue !== undefined">
-                                        Passwords do not match.
+                                        Passwords do not match
                                         </span>
                                 </div>
                                 password is not null: {{signupForm.password.$viewValue !== undefined}} - value: {{signupForm.password.$viewValue}} <br>
@@ -78,7 +78,7 @@
                                 <br>
                                 <!-- {{signupForm.password}} -->
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: 'signupForm.confirm.$viewValue == signupForm.password.$viewValue' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: 'signupForm.confirm.$viewValue !== signupForm.password.$viewValue' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
