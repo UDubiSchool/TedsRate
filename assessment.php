@@ -74,10 +74,11 @@
                                 password is not null: {{signupForm.password.$viewValue !== undefined}} - value: {{signupForm.password.$viewValue}} <br>
                                 confirm is not null: {{signupForm.confirm.$viewValue !== undefined}} - value: {{signupForm.confirm.$viewValue}} <br>
                                 they match: {{signupForm.password.$viewValue == signupForm.confirm.$viewValue}} <br>
+                                validator: {{signupForm.confirm.$error.mismatch}}
                                 <br>
                                 <!-- {{signupForm.password}} -->
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value != password' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value == password' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
