@@ -19,6 +19,8 @@ if ($numberOfRows == 1) {
 } else {
     $data['user'] = $getUser->fetch();
     $data['rows'] = $numberOfRows;
+    $data['email'] = $email;
+    $data['password'] = $password;
 }
 
 $getUser->closeCursor();
