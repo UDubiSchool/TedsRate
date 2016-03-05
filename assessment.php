@@ -67,7 +67,7 @@
 
                             <div class="form-group">
                                 <div role="alert">
-                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && singup.password !== undefined">
+                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && singup.password !== null">
                                         Passwords do not match.
                                         </span>
                                 </div>
