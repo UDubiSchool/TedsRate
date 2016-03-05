@@ -8,7 +8,7 @@ $getUser = $dbq->prepare("SELECT * FROM user u
                                                 JOIN authority a ON a.authorityID = ua.authorityID
                                                 WHERE u.email=:email
                                                 AND u.passwordValue=:password
-                                                AND a.authorityLevel  IN  (1,3)");
+                                                AND a.authorityLevel != 2");
 $getUser->bindValue(':email', $email, PDO::PARAM_STR);
 $getUser->bindValue(':password', $password, PDO::PARAM_STR);
 $getUser->execute();
