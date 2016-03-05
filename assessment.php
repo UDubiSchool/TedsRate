@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="col-xs-8"></div>
                                 <div class="col-xs-2">
-                                    <a class="btn btn-block btn-primary next" ng-click="addUser(signupForm)" ng-disabled="signupForm.$pristine || signupForm.$invalid || signupForm.password.$viewValue !== signupForm.confirm.$viewValue" scroll scroll-target="#header">Sign Up</a>
+                                    <a class="btn btn-block btn-primary next" ng-click="addUser(signupForm)" ng-disabled="signupForm.$pristine || signupForm.$invalid || signupForm.password.$viewValue !== signupForm.confirm.$viewValue || signupForm.email.$error.taken" scroll scroll-target="#header">Sign Up</a>
                                 </div>
                             </div>
                         </form>
