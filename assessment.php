@@ -71,12 +71,12 @@
                                         Passwords do not match.
                                         </span>
                                 </div>
-                                password is not null: {{signup.password !== undefined}} - value: {{signup.password}} <br>
-                                confirm is not null: {{signup.confirm !== undefined}} - value: {{signup.confirm}} <br>
-                                they match: {{signup.password == signup.confirm}} <br>
-                                {{signup}}
+                                password is not null: {{signupForm.password !== undefined}} - value: {{signupForm.password}} <br>
+                                confirm is not null: {{signupForm.confirm !== undefined}} - value: {{signupForm.confirm}} <br>
+                                they match: {{signupForm.password == signupForm.confirm}} <br>
+                                {{signupForm}}
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value!==password' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value==password' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
