@@ -72,7 +72,7 @@
                                         </span>
                                 </div>
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 150 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value!==password && $value && password  ' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value!==password  ' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 150 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
