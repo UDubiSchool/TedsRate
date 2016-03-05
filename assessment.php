@@ -71,8 +71,8 @@
                                         Passwords do not match.
                                         </span>
                                 </div>
-                                password is null: {{signup.password !== null}}
-                                confirm is null: {{signup.confirm !== null}}
+                                password is not null: {{signup.password !== ''}}
+                                confirm is not null: {{signup.confirm !== ''}}
                                 they match: {{signup.password == signup.confirm}}
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 150 }">
                                 <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value==password && ($value !== null && password !== null)' }"
