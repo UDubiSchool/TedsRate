@@ -18,6 +18,7 @@ if ($numberOfRows == 1) {
     $data['user'] = $getUser->fetch();
 } else {
     $data['user'] = $getUser->fetch();
+    $data['rows'] = $numberOfRows;
 }
 
 $getUser->closeCursor();
