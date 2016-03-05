@@ -67,19 +67,12 @@
 
                             <div class="form-group">
                                 <div role="alert">
-                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && signupForm.password.$viewValue !== undefined && signupForm.confirm.$viewValue !== undefined">
+                                      <span class="error" ng-show="signupForm.password.$viewValue !== signupForm.confirm.$viewValue && !signupForm.$pristine && signupForm.password.$viewValue !== undefined && signupForm.confirm.$viewValue !== undefined">
                                         Passwords do not match
                                         </span>
                                 </div>
-                                password is not null: {{signupForm.password.$viewValue !== undefined}} - value: {{signupForm.password.$viewValue}} <br>
-                                confirm is not null: {{signupForm.confirm.$viewValue !== undefined}} - value: {{signupForm.confirm.$viewValue}} <br>
-                                they match: {{signupForm.password.$viewValue == signupForm.confirm.$viewValue}} <br>
-                                validator: {{signupForm.confirm.$error.mismatch}}
-                                <br>
-                                <!-- {{signupForm.password}} -->
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: 'signupForm.confirm.$viewValue !== signupForm.password.$viewValue' }"
-                        ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ng-model-options="{ debounce: 500 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
 
@@ -89,7 +82,7 @@
                                 </div>
                                 <div class="col-xs-8"></div>
                                 <div class="col-xs-2">
-                                    <a class="btn btn-block btn-primary next" ng-click="addUser(signupForm)" ng-disabled="signupForm.$pristine || signupForm.$invalid" scroll scroll-target="#header">Sign Up</a>
+                                    <a class="btn btn-block btn-primary next" ng-click="addUser(signupForm)" ng-disabled="signupForm.$pristine || signupForm.$invalid || signupForm.password.$viewValue !== signupForm.confirm.$viewValue" scroll scroll-target="#header">Sign Up</a>
                                 </div>
                             </div>
                         </form>
