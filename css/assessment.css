@@ -74,7 +74,9 @@ body {
     float:left;
 }
 
-
+.bottom-line {
+    border-bottom:1px solid #bbb;
+}
 
 .attribute, .question {
     padding:25px 0px;

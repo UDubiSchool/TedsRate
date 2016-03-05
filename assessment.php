@@ -3,6 +3,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/angular-bootstrap-lightbox.css">
         <link rel="stylesheet" href="css/assessment.css">
         <script src="js/jquery-1.11.0.min.js" type="text/javascript"/></script>
@@ -17,8 +18,8 @@
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/angular/models/tedsModels.js"></script>
         <script src="js/assessment.js"></script>
-        <!-- <base href="/"> -->
-        <base href="/tedsrate/tedsrate/">
+        <base href="/">
+        <!-- <base href="/tedsrate/tedsrate/"> -->
     </head>
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
@@ -71,7 +72,7 @@
                                         </span>
                                 </div>
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 150 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value!==password' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value!==password && $value !== null && password !== null' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 150 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
@@ -100,14 +101,14 @@
                                     An email is required!</span>
                                   <span class="error" ng-show="signinForm.email.$error.email">
                                     Not valid email!</span>
-                                    <span class="error" ng-show="signinForm.$error.notFound">
+                                    <span class="error" ng-show="signinForm.notFound">
                                     Invalid email/password combination!</span>
                                 </div>
-                                <input class="form-control" type="email" name="email" ng-model="signin.email" placeholder="Email" required ng-model-options="{ updateOn: 'blur' }">
+                                <input class="form-control" type="email" name="email" ng-model="signin.email" placeholder="Email" required ng-model-options="{ updateOn: 'blur' }" ng-change="signinForm.notFound = false">
                             </div>
 
                             <div class="form-group">
-                                <input class="form-control" type="password" name="password" ng-model="signin.password" placeholder="Password" required>
+                                <input class="form-control" type="password" name="password" ng-model="signin.password" placeholder="Password" required ng-change="signinForm.notFound = false">
                             </div>
                             <input class="hidden" type="submit" value="Log In">
                             <div class="navigation">
@@ -128,25 +129,42 @@
                 <div ng-repeat="(key, group) in assessment.questions" ng-if="group" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 {{key}}-panel">
                     <h2>{{key | capitalize}} Questions</h2>
                     <h4>{{assessment[key].description}}</h4>
+                    <div ng-if="key == 'demographic'">
+                        <h5>Privacy Policy</h5>
+                        <p>This demographic information won’t be shared.  The gathered data will be destroyed after research is completed. We are gathering this data to ensure that our gathered surveys represent the characteristics of the real user base for the application being evaluted. It will also allow us to do some simple comparisons of the evaluations as grouped by these characteristics.</p>
+                    </div>
                     <div  ng-repeat="question in group" class="question" question-template></div>
                     <div class="navigation" panel-navigation></div>
                 </div>
                 <!-- END QUESTION PANELS -->
 
                 <!-- BEGIN ATTRIBUTE PANELS -->
-                <div ng-repeat="criterion in assessment.criteria" class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
-                    <h4>Scenario</h4>
-                    <p>{{assessment.scenario.description}}</p>
-                    <h2>{{criterion.criterionName}}</h2>
-                    <p>{{criterion.criterionDesc}}</p>
+                <div ng-repeat="criterion in assessment.criteria" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
+                    <div class="clearfix bottom-line">
+                        <div class="pull-right">
+                            <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
+                            <p>{{assessment.scenario.description}}</p>
+                        </div>
+                    </div>
+
+
+                    <!-- <h2>{{criterion.criterionName}}</h2> -->
+                    <!-- <p>{{criterion.criterionDesc}}</p> -->
                     <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
-                        <h3>{{attribute.attributeName}}</h3>
-                        <p ng-if="attribute.attributeTypeName == 'Cluster'">
-                            This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
-                            <span ng-repeat="category in attribute.categories">
-                                <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
-                            </span>
-                        </p>
+                        <div class="clearfix">
+                            <h3 class="pull-left">{{attribute.attributeName}} </h3>
+                            <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
+                        </div>
+
+                        <script type="text/ng-template" id="clusterTemp.html">
+                            <div>
+                                This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
+                                <span ng-repeat="category in attribute.categories">
+                                    <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
+                                </span>
+                            </div>
+                        </script>
+
                         <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
                         <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
 
@@ -200,13 +218,28 @@
                             <input class="form-control" type="text" name="rating" ng-model="attribute.ratingValue" placeholder="Rating eg. 4" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)">
                         </div>
                         <div class="optional-section col-xs-12 clearfix">
-                            <h6>We value your perspective. Please feel free to include an optional explanation of your decision below using text, screenshots or both.</h6>
+                            <h6>Please feel free to explain your perspective on the applications performance for this rating and/or provide screenshots in the 2 sections below.</h6>
                             <div class="comment form-group clearfix">
                                 <h4>Notes</h4>
                                 <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
                             </div>
                             <div class="screenshots form-group clearfix">
-                                <h4>Screenshots</h4>
+                                <div class="clearfix">
+                                    <h4 class="pull-left">Screenshots</h4>
+                                    <a style='margin-top:8px;margin-left:5px' class="pull-left" uib-popover-template="'screenshot.html'" popover-trigger="outsideClick"><i class="fa fa-question-circle"></i></a>
+                                </div>
+                                <script type="text/ng-template" id="screenshot.html">
+                                    <h4>Need Help making a screenshot?</h4>
+                                    <p>Here are some how-to links for various devices.</p>
+                                    <ul class="list-unstyled">
+                                        <li><a href="http://www.imore.com/screenshot-mac" target="_blank">Mac</a></li>
+                                        <li><a href="http://windows.microsoft.com/en-us/windows/take-screen-capture-print-screen" target="_blank">PC</a></li>
+                                        <li><a href="http://www.thegeekstuff.com/2012/08/screenshot-ubuntu/" target="_blank">Linux - Ubuntu</a></li>
+                                        <li><a href="https://support.apple.com/en-us/HT200289" target="_blank">iPhone</a></li>
+                                        <li><a href="http://www.makeuseof.com/tag/6-ways-to-take-screenshots-on-android/" target="_blank">Android</a></li>
+                                        <li><a href="http://www.windowsphone.com/en-us/how-to/wp8/photos/take-a-screenshot" target="_blank">Windows Phone</a></li>
+                                    </ul>
+                                </script>
                                 <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
                                     <a ng-click="openLightboxModal(attribute.screenshots, $index)">
                                         <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
@@ -232,7 +265,7 @@
                             <a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a>
                         </div>
                         <div ng-class="{'col-xs-6': requiredItems - completedItems == 0 && !$last}" class="col-xs-8">
-                            <uib-progressbar max="requiredItems" value="completedItems"><span style="color:white; white-space:nowrap;">{{completedItems}} / {{requiredItems}}</span></uib-progressbar>
+                            <uib-progressbar max="requiredItems" value="completedItems"><span style="color:white; white-space:nowrap;">Progress: {{completedItems}} / {{requiredItems}}</span></uib-progressbar>
                         </div>
                         <div ng-if="!$last" class="col-xs-2">
                             <a class="btn btn-block next btn-primary" ng-click="next()" scroll scroll-target="#header">Continue</a>

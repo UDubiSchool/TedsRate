@@ -79,7 +79,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 question: question,
                 assessmentID: $scope.assessment.assessmentID
             };
-            if(question.assessmentID !== $scope.assessment.assessmentID) {
+            if(question.assessmentID !== $scope.assessment.assessmentID && question.assessmentID !== null) {
                 data.assessmentID = question.assessmentID;
             };
             return responseService.put(data).then(function(response) {
@@ -246,12 +246,12 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 var user = response.data.user;
                 if (user == false) {
                     // alert the dom that there was no matching user
-                    form.$error.notFound = true;
+                    form.notFound = true;
                     // console.log("That user/password combination did not match any in our database.");
 
                 } else {
                     // there was a match
-                    form.$error.notFound = false;
+                    form.notFound = false;
 
                     // set their authed cookie
                     var tenHours = new Date(new Date().setHours(new Date().getHours() + 10));
