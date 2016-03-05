@@ -67,7 +67,7 @@
 
                             <div class="form-group">
                                 <div role="alert">
-                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && singup.confirm !== null && singup.password !== null">
+                                      <span class="error" ng-show="signupForm.confirm.$error.mismatch && !signupForm.$pristine && singup.password !== undefined">
                                         Passwords do not match.
                                         </span>
                                 </div>
@@ -76,7 +76,7 @@
                                 they match: {{signup.password == signup.confirm}} <br>
                                 {{signup}}
                                 <input class="form-control" type="password" name="password" ng-model="signup.password" placeholder="Password" required ng-model-options="{ debounce: 0 }">
-                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value==password && ($value && password)' }"
+                                <input class="form-control" type="password" name="confirm" ng-model="signup.confirm" placeholder="Confirm" required ui-validate="{ mismatch: '$value==password' }"
                         ui-validate-watch=" 'password' " ng-model-options="{ debounce: 500 }">
                             </div>
                             <input class="hidden" type="submit" value="Sign Up">
