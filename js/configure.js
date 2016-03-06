@@ -373,6 +373,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
     $uibModalInstance.dismiss('cancel');
   };
 }).controller('addConfigurationCtrl', function ($scope, $uibModalInstance, project, configurationService) {
+    console.log($scope.$parent);
 
   var newProject = project;
   $scope.project = project;
@@ -400,6 +401,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                     newProject.configurations.push(response.data[0]);
                     newProject.configurationsList.push(response.data[0]);
                     $scope.$parent.addAlert('The configuration has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
                 });
             } else {
                 var id = response.data.data.id;
@@ -428,10 +430,11 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                     };
                     newProject.configurationsList.push(tmp);
                     $scope.$parent.addAlert('The configuration has successfully been added to the database.', 'success');
+                    $uibModalInstance.close(newProject);
+
                 });
 
             }
-            $uibModalInstance.close(newProject);
         } else {
             $scope.$parent.addAlert('The configuration could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
