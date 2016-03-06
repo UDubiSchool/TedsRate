@@ -8,13 +8,13 @@ var app = angular.module('teds.directives.filterList', [])
         restrict: 'E',
         transclude: true,
         scope: {
-            list: '@'
+            list: '='
         },
         controller: ['$scope', function($scope) {
             $scope.options= {};
             $scope.specialOptions= {};
             $scope.filters= {};
-            $scope.table = JSON.parse($scope.list);
+            $scope.table = $scope.list;
             angular.forEach($scope.table, function(listItem, rowKey){
                 // console.log(listItem);
                 angular.forEach(listItem.listData, function(paramValue, paramKey){

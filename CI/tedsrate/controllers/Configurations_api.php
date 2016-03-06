@@ -116,16 +116,31 @@ class Configurations_api extends REST_Controller {
             }
 
             $configurationID = $this->configuration->post($data);
+
             if($configurationID == false) {
                 $this->response([
                             'status' => FALSE,
                             'message' => 'Configuration failed to be created'
                         ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             } else {
-                $this->response([
-                            'status' => TRUE,
-                            'message' => 'Configuration was created'
-                        ], REST_Controller::HTTP_CREATED);
+                $confHash = hash('sha256', $configurationID);
+                $update = [
+                    'configurationID' => $configurationID,
+                    'configurationIDHashed' => $confHash
+                ];
+                if($this->configuration->put($update)) {
+                    $this->response([
+                                'status' => TRUE,
+                                'data' => ['id' => $configurationID],
+                                'message' => 'Configuration was created'
+                            ], REST_Controller::HTTP_CREATED);
+                } else {
+                    $this->response([
+                                'status' => FALSE,
+                                'message' => 'Configuration was created but failed in creating hash'
+                            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+                }
+
             }
         }
 

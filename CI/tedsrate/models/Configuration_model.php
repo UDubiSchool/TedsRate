@@ -9,7 +9,16 @@ class Configuration_model extends CI_Model {
     public function get ($id)
     {
         return $this->db
-                                ->from("configuration")
+                                ->from("configuration c")
+                                ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                                ->join('attributeConfiguration atrc', 'atrc.attributeConfigurationID = c.attributeConfigurationID')
+                                ->join('questionConfiguration qc', 'qc.questionConfigurationID = c.questionConfigurationID')
+                                ->join('uiConfiguration uc', 'uc.uiConfigurationID = c.uiConfigurationID')
+                                ->join('project p', 'p.projectID = ac.projectID')
+                                ->join('artifact art', 'art.artifactID = ac.artifactID')
+                                ->join('scenario s', 's.scenarioID = ac.scenarioID')
+                                ->join('persona per', 'per.personaID = ac.personaID')
+                                ->join('role r', 'r.roleID = ac.roleID')
                                 ->where('configurationID', $id)
                                 ->get()
                                 ->result_array();
@@ -18,7 +27,16 @@ class Configuration_model extends CI_Model {
     public function getAll ()
     {
         return $this->db
-                              ->from("configuration")
+                              ->from("configuration c")
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->join('attributeConfiguration atrc', 'atrc.attributeConfigurationID = c.attributeConfigurationID')
+                              ->join('questionConfiguration qc', 'qc.questionConfigurationID = c.questionConfigurationID')
+                              ->join('uiConfiguration uc', 'uc.uiConfigurationID = c.uiConfigurationID')
+                              ->join('project p', 'p.projectID = ac.projectID')
+                              ->join('artifact art', 'art.artifactID = ac.artifactID')
+                              ->join('scenario s', 's.scenarioID = ac.scenarioID')
+                              ->join('persona per', 'per.personaID = ac.personaID')
+                              ->join('role r', 'r.roleID = ac.roleID')
                               ->get()
                               ->result_array();
     }

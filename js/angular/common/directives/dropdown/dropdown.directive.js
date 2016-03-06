@@ -9,11 +9,11 @@ var app = angular.module('teds.directives.dropdown', [])
         transclude: true,
         scope: {
             title: '@',
-            headerStats: '@'
+            headerStats: '='
         },
         controller: ['$scope', function($scope) {
             $scope.collapsed = true;
-            $scope.stats = JSON.parse($scope.headerStats);
+            $scope.stats = $scope.headerStats;
         }],
         templateUrl: 'js/angular/common/directives/dropdown/dropdown.html'
     }

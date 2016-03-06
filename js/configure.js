@@ -397,13 +397,42 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
     configurationService.post($scope.configuration).then(function(response){
         if(response.status) {
             if ($scope.configuration.configurationID) {
-                artifactService.get($scope.configuration.configurationID).then(function(response){
+                configurationService.get($scope.configuration.configurationID).then(function(response){
                     newProject.configurations.push(response.data[0]);
+                    newProject.configurationsList.push(response.data[0]);
                     $scope.$parent.addAlert('The configuration has successfully been associated with the project.', 'success');
                 });
             } else {
-                newProject.configurations.push($scope.configuration);
-                $scope.$parent.addAlert('The configuration has successfully been added to the database.', 'success');
+                var id = response.data.data.id;
+                configurationService.get(id).then(function(response){
+                    console.log(response);
+                    var configuration = response.data[0];
+                    newProject.configurations.push(configuration);
+                    // newProject.configurationsList.push(configuration);
+                    newProject.configurationsStats.Count++;
+                    var tmp = {
+                        details: configuration,
+                        listData: {
+                            // configuration: configuration.configurationName,
+                            attributes: configuration.attributeConfigurationName,
+                            questions: configuration.questionConfigurationName,
+                            interface: configuration.uiConfigurationName,
+                            artifact: configuration.artifactName,
+                            scenario: configuration.scenarioName,
+                            persona: configuration.personaName,
+                            role: configuration.roleName,
+                        },
+                        specialFields: {
+                            link: {
+                                value: 'start.php?c=' + configuration.configurationIDHashed,
+                                type: 'link'
+                            }
+                        }
+                    };
+                    newProject.configurationsList.push(tmp);
+                    $scope.$parent.addAlert('The configuration has successfully been added to the database.', 'success');
+                });
+
             }
             $uibModalInstance.close(newProject);
         } else {
