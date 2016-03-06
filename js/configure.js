@@ -391,7 +391,6 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
 
   $scope.ok = function () {
     $scope.configuration.projectID = project.projectID;
-    console.log($scope.configuration);
 
     // add configuration to db and to project then return altered project to main ctrl to add to DOM
     configurationService.post($scope.configuration).then(function(response){
@@ -405,10 +404,8 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
             } else {
                 var id = response.data.data.id;
                 configurationService.get(id).then(function(response){
-                    console.log(response);
                     var configuration = response.data[0];
                     newProject.configurations.push(configuration);
-                    // newProject.configurationsList.push(configuration);
                     newProject.configurationsStats.Count++;
                     var tmp = {
                         details: configuration,
