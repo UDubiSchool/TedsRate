@@ -94,7 +94,10 @@
        </teds-dropdown>
 
        <teds-dropdown title="Configurations" header-stats="{{project.configurationsStats}}" class="configurations container col-xs-12 clearfix">
-         <teds-filter-list list="{{project.configurationsList}}"></teds-filter-list>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
+          </div>
+          <teds-filter-list list="{{project.configurationsList}}"></teds-filter-list>
        </teds-dropdown>
 
    </div>

@@ -502,6 +502,138 @@ app.service('roleService', ['$http', '$q', function ($http, $q) {
         });
     }
 }]);
+app.service('configurationService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/configurations/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/configurations/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAttributeConfigurations = function() {
+        var target = "CI/index.php/api/attributeConfigurations/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAssessmentConfigurations = function() {
+        var target = "CI/index.php/api/assessmentConfigurations/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getQuestionConfigurations = function() {
+        var target = "CI/index.php/api/questionConfigurations/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getUiConfigurations = function() {
+        var target = "CI/index.php/api/uiConfigurations/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getComponents = function() {
+        var deferred = $q.defer();
+        var data = {};
+        var assessmentConfigurations = this.getAssessmentConfigurations();
+        var attributeConfigurations = this.getAttributeConfigurations();
+        var questionConfigurations = this.getQuestionConfigurations();
+        var uiConfigurations = this.getUiConfigurations();
+        var ret = {
+            assessmentConfigurations: assessmentConfigurations.data,
+            attributeConfigurations: attributeConfigurations.data,
+            questionConfigurations: questionConfigurations.data,
+            uiConfigurations: uiConfigurations.data
+        };
+        deferred.resolve(ret);
+        return deferred.promise;
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/configurations/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/configurations/"+ data.configurationID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/configurations/"+ data.configurationID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/configurations/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+
+
 
 // old vanilla services
 app.service('userService', ['$http', '$q', function ($http, $q) {
