@@ -21,7 +21,7 @@
             <label for="">User</label>
             <select class="form-control" ng-model="assessment.userID" required>
                 <option value=""></option>
-                <option ng-repeat="(userKey, user) in $parent.users" ng-value="user.userID">{{user.email}}</option>
+                <option ng-repeat="(userKey, user) in $parent.users" ng-value="user.userID" ng-if="user.email">{{user.email}}</option>
             </select>
         </div>
         <!-- <div class="existing">
