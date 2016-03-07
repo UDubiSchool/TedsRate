@@ -396,7 +396,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
 
         var deferred = $q.defer();
         var assessment;
-        return assessmentService.get({asid: asid}).then(function(response) {
+        return assessmentService.validate({asid: asid}).then(function(response) {
             assessment = response.data;
             $scope.showSignin = assessment.user.email ? true : false;
             $scope.requiredItems = 0;

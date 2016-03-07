@@ -25,7 +25,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
     $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService) {
+app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService) {
     // $scope.alerts =[];
     // $scope.isCollapsed = true;
     projectService.getAll().then(function(response) {
@@ -153,6 +153,10 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         $scope.projects = processed;
     });
 
+    userService.getAll().then(function(response){
+        $scope.users = response.data;
+    });
+
     // $scope.setTargetAssessment = function (project, assessment) {
     //     project.targetAssessment = assessment;
     // }
@@ -175,7 +179,8 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         scenario: 'partials/admin/modals/add_scenario.html',
         persona: 'partials/admin/modals/add_persona.html',
         role: 'partials/admin/modals/add_role.html',
-        configuration: 'partials/admin/modals/add_configuration.html'
+        configuration: 'partials/admin/modals/add_configuration.html',
+        assessment: 'partials/admin/modals/add_assessment.html'
     };
 
     var modalControllers = {
@@ -184,7 +189,8 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         scenario: 'addScenarioCtrl',
         persona: 'addPersonaCtrl',
         role: 'addRoleCtrl',
-        configuration: 'addConfigurationCtrl'
+        configuration: 'addConfigurationCtrl',
+        assessment: 'addAssessmentCtrl'
     };
 
     $scope.modals = {
@@ -211,11 +217,76 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
     // console.log('opened assessmentCtrl');
     // console.log($state);
     // console.log($stateParams);
-}]).controller('assessmentCtrl', ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams){
-    $scope.assessment = $stateParams.assessment;
-    console.log('opened assessmentCtrl');
-    console.log($stateParams.assessment);
-}]);
+}]).controller('addAssessmentCtrl', function($scope, $uibModalInstance, project, assessmentService){
+    var newProject = project;
+    $scope.project = project;
+
+    $scope.ok = function () {
+      $scope.assessment.projectID = project.projectID;
+      var filteredData = {
+        configurationID: $scope.assessment.configurationID,
+        userID: $scope.assessment.userID
+      };
+      // add configuration to db and to project then return altered project to main ctrl to add to DOM
+      assessmentService.post(filteredData).then(function(response){
+          if(response.status) {
+
+              var id = response.data.data.id;
+              assessmentService.get(id).then(function(response){
+                  var assessment = response.data[0];
+                  newProject.assessments.push(assessment);
+                  newProject.assessmentsStats.Count++;
+                  var tmp = {
+                      details: assessment,
+                        listData: {
+                            project: assessment.projectName,
+                            artifact: assessment.artifactName,
+                            persona: assessment.personaName,
+                            role: assessment.roleName,
+                            scenario: assessment.scenarioName,
+                            user: assessment.email,
+                            configuration: assessment.attributeConfigurationName,
+                        },
+                        specialFields: {
+                            link: {
+                                value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
+                                type: 'link'
+                            },
+                            issued: {
+                                value: assessment.issuanceDate,
+                                preface: 'Issued on',
+                                type: 'date'
+                            },
+                            completion: {
+                                value: assessment.completionDate,
+                                preface: 'Completed on',
+                                type: 'date'
+                            },
+                            edited: {
+                                value: assessment.lastEditDate,
+                                preface: 'Last Edited on',
+                                type: 'date'
+                            }
+                        }
+                  };
+                  newProject.assessmentsList.push(tmp);
+                  $scope.$parent.addAlert('The assessment has successfully been added to the database.', 'success');
+                  $uibModalInstance.close(newProject);
+              });
+
+
+          } else {
+              $scope.$parent.addAlert('The assessment could not be added to the database.', 'danger');
+              $uibModalInstance.dismiss('cancel');
+
+          }
+      });
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+});
 
 app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
 
@@ -378,7 +449,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
     $uibModalInstance.dismiss('cancel');
   };
 }).controller('addConfigurationCtrl', function ($scope, $uibModalInstance, project, configurationService) {
-    console.log($scope.$parent);
+    // console.log($scope.$parent);
 
   var newProject = project;
   $scope.project = project;

@@ -56,6 +56,9 @@
         </teds-dropdown>
 
         <teds-dropdown title="Assessments" header-stats="project.assessmentsStats" class="assessments container col-xs-12 clearfix">
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
+          </div>
           <teds-filter-list list="project.assessmentsList"></teds-filter-list>
         </teds-dropdown>
 

@@ -8,7 +8,8 @@ var app = angular.module('teds.directives.filterList', [])
         restrict: 'E',
         transclude: true,
         scope: {
-            list: '='
+            list: '=',
+            listSelectedPassback: '='
         },
         controller: ['$scope', function($scope) {
             $scope.options= {};
@@ -58,10 +59,13 @@ var app = angular.module('teds.directives.filterList', [])
 
             $scope.select = function(item){
                 $scope.selected = item;
+                $scope.listSelectedPassback = item.details;
             }
 
             $scope.unsetSelected = function() {
                 delete $scope.selected;
+                delete $scope.listSelectedPassback;
+
             }
         }],
         templateUrl: 'js/angular/common/directives/filterList/filterList.html'

@@ -15,7 +15,7 @@ class User_model extends CI_Model {
                             ->result_array();
     }
 
-    public funtion validate ($data)
+    public function validate ($data)
     {
         return $this->db
                             ->from("user")

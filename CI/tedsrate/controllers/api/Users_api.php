@@ -13,7 +13,7 @@ class Users_api extends REST_Controller {
     {
         $tmp = null;
         $id = $key;
-        if($id === null) {
+        if($id == null) {
             $tmp = $this->user->getAll();
             if (!$tmp) {
                 $this->response([

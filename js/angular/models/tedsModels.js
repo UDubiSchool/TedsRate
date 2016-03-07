@@ -638,6 +638,28 @@ app.service('configurationService', ['$http', '$q', function ($http, $q) {
 // old vanilla services
 app.service('userService', ['$http', '$q', function ($http, $q) {
 
+    this.get = function(id) {
+        var target = "CI/index.php/api/users/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function(){
+        var target ="CI/index.php/api/users/";
+        var data ={};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
     // validates a email-password pair
     this.validate = function(email, password){
         var target = "models/user.php?f=get";
@@ -692,8 +714,42 @@ app.service('userService', ['$http', '$q', function ($http, $q) {
 }]);
 
 app.service('assessmentService', ['$http', '$q', function ($http, $q) {
+
+    this.get = function(id) {
+        var target = "CI/index.php/api/assessments/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getAll = function() {
+        var target = "CI/index.php/api/assessments/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/assessments/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
     // gets a single assessment based on the hashed ID
-    this.get = function(data){
+    this.validate = function(data){
         var target = "models/assessment.php?f=get";
         // var data = data;
         return $http.post(target, data, {

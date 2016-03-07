@@ -1,6 +1,6 @@
- <div class="details col-xs-12" ng-if="selected">
-    DETAILS
-<!--                    <h4>Configuration {{project.targetConfiguration.configurationID}}</h4>
+ <div class="details col-xs-12" ng-if="selected" ng-transclude>
+
+    <!--                    <h4>Configuration {{project.targetConfiguration.configurationID}}</h4>
    <a class="btn btn-primary" ng-click="unsetTargetAssessment(project)">Back</a>
    <div class="responses" ng-if="project.targetAssessment.responses.length > 0">
      <h5>Responses</h5>
