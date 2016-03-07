@@ -136,32 +136,34 @@ form label:first-child {margin-top:0;}
 }
 
 .section-header h5 {
-	margin-top:20px;
-	padding-left:25px;
+    margin-top:20px;
+    padding-left:25px;
 }
 
 .project > .section-header h5 {
-	margin-top:40px;
-	padding-left:25px;
+    margin-top:40px;
+    padding-left:25px;
 }
 
 .project > .collapsable > .container {
-	border-top: 1px solid #ccc;
-	padding: 0px;
-}
-
-.project > .collapsable > .container > .collapsable {
-	border-top: 1px solid #ccc;
-	padding:10px;
-}
-
-.project > .collapsable > .container > div {
-	padding: 0px 15px;
+    border-top: 1px solid #ccc;
+    /*padding: 0px;*/
 }
 
 .project > .collapsable > .container:first-child {
-	border-top: 0px;
+    border-top: 0px;
 }
+
+.project > .collapsable > .container > .collapsable {
+    border-top: 1px solid #ccc;
+    padding:10px;
+}
+
+.project > .collapsable > .container > .container div {
+	padding: 0px 15px;
+}
+
+
 
 .project-item > .desc {
 	padding-left:1em;

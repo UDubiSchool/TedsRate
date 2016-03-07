@@ -3,6 +3,7 @@
         <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
     </div>
    <div ng-repeat="(projectKey, project) in projects" class="row clearfix project">
+
        <div class="section-header clearfix clickable" ng-click="project.collapsed = !project.collapsed">
            <h3 class="pull-left">
                <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.collapsed}"></i></span>
@@ -11,94 +12,61 @@
            <h5 class="pull-left">Assessments: {{project.assessments.length}}</h5>
            <h5 class="pull-left">Completion Rate: {{project.assessments.length ? (project.completedAssessments.length /project.assessments.length * 100 |number:1) + '%'  : 'No Assessments'}}</h5>
        </div>
-       <div class="collapsable clearfix" uib-collapse="project.collapsed">
-           <!-- <h5>Inner</h5> -->
-           <div class="artifacts container col-xs-12 clearfix">
-               <div class="section-header clearfix clickable" ng-click="project.artifactsCollapsed = !project.artifactsCollapsed">
-                   <h4 class="pull-left" ng-class="{'disabled': {{project.artifacts.length == 0}}}" >
-                   <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.artifactsCollapsed}"></i></span>
-                   Artifacts
-               </h4>
-               <h5 class="pull-left">Count: {{project.artifacts.length}}</h5>
-               </div>
-               <div class="collapsable clearfix" uib-collapse="project.artifactsCollapsed">
-                   <div ng-repeat="(artifactKey, artifact) in project.artifacts" class="clearfix col-xs-6 artifact project-item">
-                       <h5 class="name"><a ng-href="{{artifact.artifactURL}}" target="_blank">{{artifact.artifactName}}</a></h5>
-                       <h6 class="desc">{{artifact.artifactDescription}}</h6>
-                   </div>
-                   <div class="menu col-xs-12 clearfix">
-                       <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
-                   </div>
-               </div>
-           </div>
+      <div class="collapsable clearfix" uib-collapse="project.collapsed">
 
-           <div class="scenarios container col-xs-12 clearfix">
-               <div class="section-header clearfix clickable" ng-click="project.scenariosCollapsed = !project.scenariosCollapsed">
-                   <h4 class="pull-left" ng-class="{'disabled': {{project.scenarios.length == 0}}}" >
-                       <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.scenariosCollapsed}"></i></span>
-                       Scenarios
-                   </h4>
-                   <h5 class="pull-left">Count: {{project.scenarios.length}}</h5>
-               </div>
-               <div class="collapsable clearfix" uib-collapse="project.scenariosCollapsed">
-                   <div ng-repeat="(scenarioKey, scenario) in project.scenarios" class="clearfix col-xs-6 scenario project-item">
-                       <h5 class="name">{{scenario.scenarioName}}</h5>
-                       <h6 class="desc">{{scenario.scenarioDescription}}</h6>
-                   </div>
-                   <div class="menu col-xs-12 clearfix">
-                       <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
-                   </div>
-               </div>
-           </div>
-
-           <div class="personas container col-xs-12 clearfix">
-               <div class="section-header clearfix clickable" ng-click="project.personasCollapsed = !project.personasCollapsed">
-                   <h4 class="pull-left" ng-class="{'disabled': {{project.personas.length == 0}}}" >
-                       <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.personasCollapsed}"></i></span>
-                       Personas
-                   </h4>
-                   <h5 class="pull-left">Count: {{project.personas.length}}</h5>
-               </div>
-               <div class="collapsable clearfix" uib-collapse="project.personasCollapsed">
-                   <div ng-repeat="(personaKey, persona) in project.personas" class="clearfix col-xs-6 persona project-item">
-                       <h5 class="name">{{persona.personaName}}</h5>
-                       <h6 class="desc">{{persona.personaDesc}}</h6>
-                   </div>
-                   <div class="menu col-xs-12 clearfix">
-                       <span class="btn btn-primary" ng-click="modals.open('persona', project, $index)"><i class="fa fa-plus"></i> Add a Persona</span>
-                   </div>
-               </div>
-           </div>
-
-           <div class="roles container col-xs-12 clearfix">
-               <div class="section-header clearfix clickable" ng-click="project.rolesCollapsed = !project.rolesCollapsed">
-                   <h4 class="pull-left" ng-class="{'disabled': {{project.roles.length == 0}}}" >
-                       <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.rolesCollapsed}"></i></span>
-                       Roles
-                   </h4>
-                   <h5 class="pull-left">Count: {{project.roles.length}}</h5>
-               </div>
-               <div class="collapsable clearfix" uib-collapse="project.rolesCollapsed">
-                   <div ng-repeat="(roleKey, role) in project.roles" class="clearfix col-xs-6 role project-item">
-                       <h5 class="name">{{role.roleName}}</h5>
-                       <h6 class="desc">{{role.roleDesc}}</h6>
-                   </div>
-                   <div class="menu col-xs-12 clearfix">
-                       <span class="btn btn-primary" ng-click="modals.open('role', project, $index)"><i class="fa fa-plus"></i> Add a Role</span>
-                   </div>
-               </div>
-           </div>
-
-       <teds-dropdown title="Assessments" header-stats="project.assessmentsStats" class="assessments container col-xs-12 clearfix">
-         <teds-filter-list list="project.assessmentsList"></teds-filter-list>
-       </teds-dropdown>
-
-       <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix">
-          <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
+        <teds-dropdown title="Artifacts" header-stats="{count: project.artifacts.length}" class="artifacts container col-xs-12">
+          <div ng-repeat="(artifactKey, artifact) in project.artifacts" class="clearfix col-xs-6 artifact project-item">
+              <h5 class="name"><a ng-href="{{artifact.artifactURL}}" target="_blank">{{artifact.artifactName}}</a></h5>
+              <h6 class="desc">{{artifact.artifactDescription}}</h6>
           </div>
-          <teds-filter-list list="project.configurationsList"></teds-filter-list>
-       </teds-dropdown>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
+          </div>
+        </teds-dropdown>
+
+
+        <teds-dropdown title="Scenarios" header-stats="{count: project.scenarios.length}" class="scenarios container col-xs-12 clearfix">
+          <div ng-repeat="(scenarioKey, scenario) in project.scenarios" class="clearfix col-xs-6 scenario project-item">
+              <h5 class="name">{{scenario.scenarioName}}</h5>
+              <h6 class="desc">{{scenario.scenarioDescription}}</h6>
+          </div>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
+          </div>
+        </teds-dropdown>
+
+        <teds-dropdown title="Personas" header-stats="{count: project.personas.length}" class="personas container col-xs-12 clearfix">
+          <div ng-repeat="(personaKey, persona) in project.personas" class="clearfix col-xs-6 persona project-item">
+              <h5 class="name">{{persona.personaName}}</h5>
+              <h6 class="desc">{{persona.personaDesc}}</h6>
+          </div>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('persona', project, $index)"><i class="fa fa-plus"></i> Add a Persona</span>
+          </div>
+        </teds-dropdown>
+
+        <teds-dropdown title="Roles" header-stats="{count: project.roles.length}" class="roles container col-xs-12 clearfix">
+          <div ng-repeat="(roleKey, role) in project.roles" class="clearfix col-xs-6 role project-item">
+              <h5 class="name">{{role.roleName}}</h5>
+              <h6 class="desc">{{role.roleDesc}}</h6>
+          </div>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('role', project, $index)"><i class="fa fa-plus"></i> Add a Role</span>
+          </div>
+        </teds-dropdown>
+
+        <teds-dropdown title="Assessments" header-stats="project.assessmentsStats" class="assessments container col-xs-12 clearfix">
+          <teds-filter-list list="project.assessmentsList"></teds-filter-list>
+        </teds-dropdown>
+
+        <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix">
+           <div class="menu col-xs-12 clearfix">
+               <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
+           </div>
+           <teds-filter-list list="project.configurationsList"></teds-filter-list>
+        </teds-dropdown>
+      </div>
+
 
    </div>
 </div>

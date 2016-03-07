@@ -17,4 +17,8 @@ var app = angular.module('teds.directives.dropdown', [])
         }],
         templateUrl: 'js/angular/common/directives/dropdown/dropdown.html'
     }
-})
+}).filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
+});
