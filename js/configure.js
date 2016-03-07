@@ -205,6 +205,7 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
             }, function () {});
         }
     };
+
 }]).controller('assessmentsCtrl', ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams){
     // $scope.assessment = $stateParams.assessment;
     // console.log('opened assessmentCtrl');
@@ -243,7 +244,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
   $scope.ok = function () {
     $scope.artifact.projectID = project.projectID;
     // $scope.artifact.artifactURL = encodeURI($scope.artifact.artifactURL);
-    console.log($scope.artifact);
+    // console.log($scope.artifact);
 
     // add artifact to db and to project then return altered project to main ctrl to add to DOM
     artifactService.post($scope.artifact).then(function(response){
@@ -252,12 +253,13 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                 artifactService.get($scope.artifact.artifactID).then(function(response){
                     newProject.artifacts.push(response.data[0]);
                     $scope.$parent.addAlert('The artifact has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
                 });
             } else {
                 newProject.artifacts.push($scope.artifact);
                 $scope.$parent.addAlert('The artifact has successfully been added to the database.', 'success');
+                $uibModalInstance.close(newProject);
             }
-            $uibModalInstance.close(newProject);
         } else {
             $scope.$parent.addAlert('The artifact could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
@@ -279,7 +281,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
 
   $scope.ok = function () {
     $scope.scenario.projectID = project.projectID;
-    console.log($scope.scenario);
+    // console.log($scope.scenario);
     // add scenario to db and to project then return altered project to main ctrl to add to DOM
     scenarioService.post($scope.scenario).then(function(response){
         if(response.status) {
@@ -287,12 +289,13 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                 scenarioService.get($scope.scenario.scenarioID).then(function(response){
                     newProject.scenarios.push(response.data[0]);
                     $scope.$parent.addAlert('The scenario has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
                 });
             } else {
                 newProject.scenarios.push($scope.scenario);
                 $scope.$parent.addAlert('The scenario has successfully been added to the database.', 'success');
+                $uibModalInstance.close(newProject);
             }
-            $uibModalInstance.close(newProject);
         } else {
             $scope.$parent.addAlert('The scenario could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
@@ -321,12 +324,13 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                 personaService.get($scope.persona.personaID).then(function(response){
                     newProject.personas.push(response.data[0]);
                     $scope.$parent.addAlert('The persona has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
                 });
             } else {
                 newProject.personas.push($scope.persona);
                 $scope.$parent.addAlert('The persona has successfully been added to the database.', 'success');
+                $uibModalInstance.close(newProject);
             }
-            $uibModalInstance.close(newProject);
         } else {
             $scope.$parent.addAlert('The persona could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
@@ -355,12 +359,13 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                 roleService.get($scope.role.roleID).then(function(response){
                     newProject.roles.push(response.data[0]);
                     $scope.$parent.addAlert('The role has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
                 });
             } else {
                 newProject.roles.push($scope.role);
                 $scope.$parent.addAlert('The role has successfully been added to the database.', 'success');
+                $uibModalInstance.close(newProject);
             }
-            $uibModalInstance.close(newProject);
         } else {
             $scope.$parent.addAlert('The role could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
@@ -431,7 +436,6 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
                     newProject.configurationsList.push(tmp);
                     $scope.$parent.addAlert('The configuration has successfully been added to the database.', 'success');
                     $uibModalInstance.close(newProject);
-
                 });
 
             }

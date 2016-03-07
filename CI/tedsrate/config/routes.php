@@ -54,7 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 
-$route['api/([a-zA-Z0-9_-]+)/(:num)/([a-zA-Z0-9_-]+)'] = '$1_api/api/$2/format/$3';
-$route['api/([a-zA-Z0-9_-]+)/(:num)'] = '$1_api/api/$2/format/json';
-$route['api/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)'] = '$1_api/api//format/$3';
-$route['api/([a-zA-Z0-9_-]+)'] = '$1_api/api//format/json';
+$route['api/([a-zA-Z0-9_-]+)/(:num)/([a-zA-Z0-9_-]+)'] = 'api/$1_api/api/$2/format/$3';
+$route['api/([a-zA-Z0-9_-]+)/(:num)'] = 'api/$1_api/api/$2/format/json';
+$route['api/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)'] = 'api/$1_api/api//format/$3';
+$route['api/([a-zA-Z0-9_-]+)'] = 'api/$1_api/api//format/json';
