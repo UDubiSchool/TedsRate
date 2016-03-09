@@ -1,4 +1,4 @@
-INNER<?php
+<?php
 
     if(!isset($_POST['asid'])) {
         exit;
