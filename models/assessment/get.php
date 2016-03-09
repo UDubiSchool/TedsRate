@@ -53,6 +53,10 @@
         'questions' => []
     ];
 
+    header('Content-Type: application/json');
+    echo json_encode($data, TRUE);
+    exit;
+
     //populate user
     $sth = $dbq->prepare("CALL getUser(:userID, @rowCount)");
     $sth->bindValue(':userID', $userID, PDO::PARAM_INT);
@@ -131,10 +135,6 @@
     }
     $sth->closeCursor();
 
-    header('Content-Type: application/json');
-    // print_r($data);
-    echo json_encode($data, TRUE);
-    exit;
 
 
     // get the question types
