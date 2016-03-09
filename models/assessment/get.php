@@ -123,8 +123,8 @@
         $data['scenario'] = $tmp;
     }
     $sth->closeCursor();
-
-    header('Content-Type: application/json');
+    echo $scenarioID
+    // header('Content-Type: application/json');
     echo json_encode($data, TRUE);
     exit;
 
