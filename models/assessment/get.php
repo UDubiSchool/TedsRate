@@ -132,7 +132,7 @@
     $sth->closeCursor();
 
     header('Content-Type: application/json');
-    echo "TESTING!!!";
+    print_r($data);
     // echo json_encode($data, TRUE);
     exit;
 
