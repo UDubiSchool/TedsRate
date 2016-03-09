@@ -70,8 +70,8 @@
     $sth->execute();
     while ($row = $sth->fetch()){
     $tmp = [
-        'name' => $row['name'],
-        'description' => $row['description'],
+        'name' => "$row['name']",
+        'description' => "$row['description']",
         'url' => $row['URL']
     ];
     $data['artifact'] = $tmp;
@@ -83,8 +83,8 @@
     $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
     while ($row = $sth->fetch()){
      $tmp = [
-         'name' => $row['name'],
-         'description' => $row['description']
+         'name' => "$row['name']",
+         'description' => "$row['description']"
      ];
      $data['project'] = $tmp;
     }
@@ -94,8 +94,8 @@
     $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => $row['personaName'],
-            'description' => $row['personaDesc']
+            'name' => "$row['personaName']",
+            'description' => "$row['personaDesc']"
         ];
         $data['persona'] = $tmp;
     }
@@ -105,8 +105,8 @@
     $sth = $dbq->query('SELECT * FROM role where role.roleID = ' . $roleID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => $row['roleName'],
-            'description' => $row['roleDesc']
+            'name' => "$row['roleName']",
+            'description' => "$row['roleDesc']"
         ];
         $data['role'] = $tmp;
     }
@@ -117,8 +117,8 @@
     $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => $row['scenarioName'],
-            'description' => $row['scenarioDescription']
+            'name' => "$row['scenarioName']",
+            'description' => "$row['scenarioDescription']"
         ];
         $data['scenario'] = $tmp;
     }
