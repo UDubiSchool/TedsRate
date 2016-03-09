@@ -132,8 +132,8 @@
     $sth->closeCursor();
 
     header('Content-Type: application/json');
-    print_r($data);
-    // echo json_encode($data, TRUE);
+    // print_r($data);
+    echo json_encode($data, TRUE);
     exit;
 
 
