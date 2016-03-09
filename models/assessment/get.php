@@ -123,10 +123,7 @@
         $data['scenario'] = $tmp;
     }
     $sth->closeCursor();
-    echo $scenarioID;
-    // header('Content-Type: application/json');
-    echo json_encode($data, TRUE);
-    exit;
+
 
     //populate uiConfig
     $sth = $dbq->query('SELECT * FROM uiConfiguration where uiConfigurationID = ' . $uiConfigurationID);
