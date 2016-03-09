@@ -112,12 +112,8 @@
     }
     $sth->closeCursor();
 
-    header('Content-Type: application/json');
-    echo json_encode($data, TRUE);
-    exit;
 
-
-    //populate scenarios the "language" value (5) is hard coded!
+    //populate scenarios
     $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
     while ($row = $sth->fetch()){
         $tmp = [
@@ -127,6 +123,10 @@
         $data['scenario'] = $tmp;
     }
     $sth->closeCursor();
+
+    header('Content-Type: application/json');
+    echo json_encode($data, TRUE);
+    exit;
 
     //populate uiConfig
     $sth = $dbq->query('SELECT * FROM uiConfiguration where uiConfigurationID = ' . $uiConfigurationID);
