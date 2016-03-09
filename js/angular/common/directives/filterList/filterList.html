@@ -47,7 +47,7 @@
             <tr class="clickable" ng-repeat="item in table | filter: filters track by $index" ng-click="select(item)">
                 <td ng-repeat="param in item.listData">{{param}}</td>
                 <td ng-repeat="param in item.specialFields">
-                    <div ng-if="param.type == 'link'"><a ng-href="{{param.value}}">Link</a></div>
+                    <div ng-if="param.type == 'link'"><a ng-href="{{param.value}}" target="_blank">Link</a></div>
                     <div ng-if="param.type == 'date'">{{param.value ? param.preface : ''}} {{param.value}}</div>
                 </td>
             </tr>

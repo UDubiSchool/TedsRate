@@ -1,4 +1,4 @@
-<?php
+INNER<?php
 
     if(!isset($_POST['asid'])) {
         exit;
@@ -8,11 +8,11 @@
 
 
     $authenticate_query = $dbq->prepare("SELECT * FROM assessment
-                            LEFT JOIN configuration ON configuration.configurationID = assessment.configurationID
-                            LEFT JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
-                            LEFT JOIN questionConfiguration ON questionConfiguration.questionConfigurationID = configuration.questionConfigurationID
-                            LEFT JOIN uiConfiguration ON uiConfiguration.uiConfigurationID = configuration.uiConfigurationID
-                            LEFT JOIN user ON user.userID = assessment.userID
+                            INNER JOIN configuration ON configuration.configurationID = assessment.configurationID
+                            INNER JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
+                            INNER JOIN questionConfiguration ON questionConfiguration.questionConfigurationID = configuration.questionConfigurationID
+                            INNER JOIN uiConfiguration ON uiConfiguration.uiConfigurationID = configuration.uiConfigurationID
+                            INNER JOIN user ON user.userID = assessment.userID
                             WHERE assessment.assessmentIDHashed = :hashedID");
     $authenticate_query->bindValue(':hashedID', $hashedID, PDO::PARAM_STR);
     $authenticate_query->execute();
@@ -131,6 +131,10 @@
     }
     $sth->closeCursor();
 
+    header('Content-Type: application/json');
+    echo json_encode($data, TRUE);
+    exit;
+
 
     // get the question types
     $questions = [];
@@ -185,138 +189,6 @@
 
 
     $data['questions'] = $questions;
-
-
-    // $questions = [
-    //  'demographic' => [],
-    //  'project' =>[],
-    //  'artifact' =>[],
-    //  'scenario' => [],
-    //  'attribute' => [],
-    //  'persona' => [],
-    //  'role' => []
-    //  ];
-
-    //  // get the question types
-    //  $sth = $dbq->query("SELECT r.responseID, r.responseAnswer, q.questionID, q.questionName, q.questionDesc, q.questionData, q.questionRequired, qt.questionTypeName FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 AND qt.questionTypeName = 'Demographic'
-    //                                 LEFT JOIN response r ON q.questionID = r.questionID
-    //                                 LEFT JOIN assessment a ON r.assessmentID = a.assessmentID
-    //                                 LEFT JOIN user u ON a.userID = u.userID
-    //                                 AND u.userID = $userID
-    //                                  ");
-    //  while ($row = $sth->fetch()){
-    //      $questions['demographic'][intval($row['questionID'])] = $row;
-
-    //      //push question to the generic question array
-    //      // $questions[intval($row['questionID'])] = $row;
-    //  }
-    //  $sth->closeCursor();
-
-    // // get the question types
-    // $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_project qp ON qp.questionID = q.questionID
-    //                                 WHERE qp.projectID = $pid
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['projectID']) {
-    //         $questions['project'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    // $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_scenario qs ON qs.questionID = q.questionID
-    //                                 WHERE qs.scenarioID = $scenarioID
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['scenarioID']) {
-    //         $questions['scenario'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    // $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_artifact qart ON qart.questionID = q.questionID
-    //                                 WHERE qart.artifactID = $aid
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['artifactID']) {
-    //         $questions['artifact'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    // $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_attribute quat ON quat.questionID = q.questionID
-    //                                 WHERE qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['attributeID']) {
-    //         $questions['attribute'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    // $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_persona qp ON qp.questionID = q.questionID
-    //                                 WHERE qp.personaID = $personaID
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['personaID']) {
-    //         $questions['persona'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    //  $sth = $dbq->query("SELECT * FROM question q
-    //                                 INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
-    //                                 INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-    //                                 INNER JOIN question_role qr ON qr.questionID = q.questionID
-    //                                 WHERE qr.roleID = $roleID
-    //                                 AND qqc.questionConfigurationID = $questionConfigurationID
-    //                                 ");
-    // while ($row = $sth->fetch()){
-    //     if($row['roleID']) {
-    //         $questions['role'][intval($row['questionID'])] = $row;
-    //     }
-    // }
-    // $sth->closeCursor();
-
-    // foreach ($questions as &$cat) {
-    //     foreach ($cat as &$question) {
-    //         $sth = $dbq->query("SELECT * FROM response r
-    //                                     WHERE r.assessmentID = $assessmentID
-    //                                     AND r.questionID = $question[questionID]
-    //                                     ");
-    //         while ($row = $sth->fetch()){
-    //             $question['responseID'] =  intval($row['responseID']);
-    //             $question['response'] = $row['responseAnswer'];
-    //         }
-    //         $sth->closeCursor();
-    //         $question['questionRequired'] = intval($question['questionRequired']);
-    //     }
-    // }
-    // $data['questions'] = $questions;
-
-
 
     //populate categories the "language" value (1) is hard coded!
     // echo "started retieval";
