@@ -90,6 +90,9 @@
     }
     $sth->closeCursor();
 
+    header('Content-Type: application/json');
+    echo json_encode($data, TRUE);
+    exit;
 
     //populate personas the "language" value (5) is hard coded!
     $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
@@ -132,9 +135,7 @@
     }
     $sth->closeCursor();
 
-    header('Content-Type: application/json');
-    echo json_encode($data, TRUE);
-    exit;
+
 
     // get the question types
     $questions = [];
