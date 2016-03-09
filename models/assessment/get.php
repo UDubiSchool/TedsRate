@@ -70,8 +70,8 @@
     $sth->execute();
     while ($row = $sth->fetch()){
     $tmp = [
-        'name' => urlencode($row['name']),
-        'description' => urlencode($row['description']),
+        'name' => rawurlencode($row['name']),
+        'description' => rawurlencode($row['description']),
         'url' => $row['URL']
     ];
     $data['artifact'] = $tmp;
@@ -83,8 +83,8 @@
     $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
     while ($row = $sth->fetch()){
      $tmp = [
-         'name' => urlencode($row['name']),
-         'description' => urlencode($row['description'])
+         'name' => rawurlencode($row['name']),
+         'description' => rawurlencode($row['description'])
      ];
      $data['project'] = $tmp;
     }
@@ -94,8 +94,8 @@
     $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => urlencode($row['personaName']),
-            'description' => urlencode($row['personaDesc'])
+            'name' => rawurlencode($row['personaName']),
+            'description' => rawurlencode($row['personaDesc'])
         ];
         $data['persona'] = $tmp;
     }
@@ -105,8 +105,8 @@
     $sth = $dbq->query('SELECT * FROM role where role.roleID = ' . $roleID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => urlencode($row['roleName']),
-            'description' => urlencode($row['roleDesc'])
+            'name' => rawurlencode($row['roleName']),
+            'description' => rawurlencode($row['roleDesc'])
         ];
         $data['role'] = $tmp;
     }
@@ -117,8 +117,8 @@
     $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => urlencode($row['scenarioName']),
-            'description' => urlencode($row['scenarioDescription'])
+            'name' => rawurlencode($row['scenarioName']),
+            'description' => rawurlencode($row['scenarioDescription'])
         ];
         $data['scenario'] = $tmp;
     }
