@@ -401,7 +401,19 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             $scope.showSignin = assessment.user.email ? true : false;
             $scope.requiredItems = 0;
             $scope.completedItems = 0;
+
+            assessment.project.name = decodeURI(assessment.project.name);
+            assessment.project.description = decodeURI(assessment.project.description);
+            assessment.artifact.name = decodeURI(assessment.artifact.name);
+            assessment.artifact.description = decodeURI(assessment.artifact.description);
+            assessment.persona.name = decodeURI(assessment.persona.name);
+            assessment.persona.description = decodeURI(assessment.persona.description);
+            assessment.role.name = decodeURI(assessment.role.name);
+            assessment.role.description = decodeURI(assessment.role.description);
+            assessment.scenario.name = decodeURI(assessment.scenario.name);
+            assessment.scenario.description = decodeURI(assessment.scenario.description);
             console.log(assessment);
+
 
             // assemble question data and calculate completed and required questions
             angular.forEach(assessment.questions, function(questionCategory, questionCategoryKey) {
