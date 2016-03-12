@@ -18,8 +18,8 @@
         <script src="js/angular/ng-file-upload.min.js"></script>
         <script src="js/angular/models/tedsModels.js"></script>
         <script src="js/assessment.js"></script>
-        <!-- <base href="/"> -->
-        <base href="/tedsrate/tedsrate/">
+        <base href="/">
+        <!-- <base href="/tedsrate/tedsrate/"> -->
     </head>
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
@@ -130,7 +130,7 @@
                     <h4>{{assessment[key].description}}</h4>
                     <div ng-if="key == 'demographic'">
                         <h5>Privacy Policy</h5>
-                        <p>This demographic information won’t be shared.  The gathered data will be destroyed after research is completed. We are gathering this data to ensure that our gathered surveys represent the characteristics of the real user base for the application being evaluted. It will also allow us to do some simple comparisons of the evaluations as grouped by these characteristics.</p>
+                        <p>Your personal information is used to better understand the needs and preferences of groups of individuals with similar characteristics. We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. After the research project is completed the information you provided will be completely deleted.</p>
                     </div>
                     <div  ng-repeat="question in group" class="question" question-template></div>
                     <div class="navigation" panel-navigation></div>
@@ -219,12 +219,12 @@
                         <div class="optional-section col-xs-12 clearfix">
                             <h6>Please feel free to explain your perspective on the applications performance for this rating and/or provide screenshots in the 2 sections below.</h6>
                             <div class="comment form-group clearfix">
-                                <h4>Notes</h4>
+                                <h4>Notes <span class="h5"> (optional)</span></h4>
                                 <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
                             </div>
                             <div class="screenshots form-group clearfix">
                                 <div class="clearfix">
-                                    <h4 class="pull-left">Screenshots</h4>
+                                    <h4 class="pull-left">Screenshots <span class="h5">(optional)</span></h4>
                                     <a style='margin-top:8px;margin-left:5px' class="pull-left" uib-popover-template="'screenshot.html'" popover-trigger="outsideClick"><i class="fa fa-question-circle"></i></a>
                                 </div>
                                 <script type="text/ng-template" id="screenshot.html">

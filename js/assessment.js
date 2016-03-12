@@ -246,7 +246,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 var user = response.data.user;
                 if (user == false) {
                     // alert the dom that there was no matching user
-                    form.notFound = true;
+                    return form.notFound = true;
                     // console.log("That user/password combination did not match any in our database.");
 
                 } else {
