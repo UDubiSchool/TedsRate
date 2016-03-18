@@ -402,15 +402,15 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             $scope.requiredItems = 0;
             $scope.completedItems = 0;
 
-            assessment.project.name = decodeURI(assessment.project.name);
-            assessment.project.description = decodeURI(assessment.project.description);
-            assessment.artifact.name = decodeURI(assessment.artifact.name);
-            assessment.artifact.description = decodeURI(assessment.artifact.description);
-            assessment.persona.name = decodeURI(assessment.persona.name);
-            assessment.persona.description = decodeURI(assessment.persona.description);
-            assessment.role.name = decodeURI(assessment.role.name);
-            assessment.role.description = decodeURI(assessment.role.description);
-            assessment.scenario.name = decodeURI(assessment.scenario.name);
+            assessment.project.name = decodeURIComponent(assessment.project.name);
+            assessment.project.description = decodeURIComponent(assessment.project.description);
+            assessment.artifact.name = decodeURIComponent(assessment.artifact.name);
+            assessment.artifact.description = decodeURIComponent(assessment.artifact.description);
+            assessment.persona.name = decodeURIComponent(assessment.persona.name);
+            assessment.persona.description = decodeURIComponent(assessment.persona.description);
+            assessment.role.name = decodeURIComponent(assessment.role.name);
+            assessment.role.description = decodeURIComponent(assessment.role.description);
+            assessment.scenario.name = decodeURIComponent(assessment.scenario.name);
             assessment.scenario.description = decodeURIComponent(assessment.scenario.description);
             console.log(assessment);
 
