@@ -24,7 +24,15 @@
     <body>
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
-            <div id="header" class="header"><h1>{{assessment.project.name}} - {{assessment.scenario.name}}</h1></div>
+            <div id="header" class="clearfix header">
+                <div class="clearfix pull-left">
+                    <h2>{{assessment.project.name}}</h2>
+                </div>
+                <div class="clearfix scenario pull-right">
+                    <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
+                    <p>{{assessment.scenario.description}}</p>
+                </div>
+            </div>
             <div id="alert-wrapper">
                 <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
             </div>
@@ -32,7 +40,9 @@
 
                 <div class="panel active col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                     <h2>Welcome</h2>
-                    <p>This assessment is a component of the Purposeful Sampling Research Project at the University of Washington Information School. The work group's aim is to refine a methodology to measure the usability of content and information artifacts in mobile applications, specifically the usability of professional sport team mobile applications, based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework.</p>
+                    <p>
+                        This assessment is a component of the Purposeful Sampling Research Project and the University of Washington Information School. The work group’s aim is to refine a methodology to measure the usability of content and information artifacts. It has been used to evaluate mobile applications with a concentration on professional sport team mobile applications, but it is now being adapted to evaluate emergency management information systems, specifically WebEOC. The methodology is based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework.
+                    </p>
                     <p>Although these assessments are short, you do not need the do them all at once. Your changes are saved so you can take as much time as you need!</p>
                     <br>
                     <p>The focus of this assessment is to analyze the <a ng-href="{{assessment.artifact.url}}">{{assessment.artifact.name}}</a></p>
@@ -139,14 +149,6 @@
 
                 <!-- BEGIN ATTRIBUTE PANELS -->
                 <div ng-repeat="criterion in assessment.criteria" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
-                    <div class="clearfix bottom-line">
-                        <div class="pull-right">
-                            <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
-                            <p>{{assessment.scenario.description}}</p>
-                        </div>
-                    </div>
-
-
                     <!-- <h2>{{criterion.criterionName}}</h2> -->
                     <!-- <p>{{criterion.criterionDesc}}</p> -->
                     <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">

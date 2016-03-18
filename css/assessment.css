@@ -5,6 +5,9 @@ body {
 .nav, .pagination, .carousel, .panel-title, a { cursor: pointer; }
 
 .header {
+    position:fixed;
+    z-index: 1000;
+    width:100%;
     margin:0px -15px;
     padding:5px 15px;
     box-shadow: 0px 3px 3px #ccc;
@@ -13,7 +16,10 @@ body {
 }
 
 #panel-wrapper {
+    position: relative;
+    margin:25px 0px;
     height:100%;
+    margin-top:125px;
 }
 
 #alert-wrapper {
@@ -32,11 +38,6 @@ body {
 
 .user-panel .form-control{
     margin:8px 0px;
-}
-
-#panel-wrapper {
-    position: relative;
-    margin:25px 0px;
 }
 
 .panel {
@@ -215,3 +216,5 @@ body {
 .drop-box.rejectFile {
     background: rgba(255, 0, 0, .3);
 }
+
+
