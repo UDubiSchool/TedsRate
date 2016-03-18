@@ -411,7 +411,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             assessment.role.name = decodeURI(assessment.role.name);
             assessment.role.description = decodeURI(assessment.role.description);
             assessment.scenario.name = decodeURI(assessment.scenario.name);
-            assessment.scenario.description = decodeURI(decodeURI(assessment.scenario.description));
+            assessment.scenario.description = decodeURIComponent(assessment.scenario.description);
             console.log(assessment);
 
 
