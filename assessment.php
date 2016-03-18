@@ -25,10 +25,10 @@
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
             <div id="header" class="clearfix header">
-                <div class="clearfix pull-left">
+                <div class="clearfix col-xs-4 pull-left">
                     <h2>{{assessment.project.name}}</h2>
                 </div>
-                <div class="clearfix scenario pull-right">
+                <div class="clearfix scenario col-xs-8 pull-right">
                     <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
                     <p>{{assessment.scenario.description}}</p>
                 </div>
