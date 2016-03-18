@@ -1,13 +1,14 @@
 body {
     background-color: #eaeaea;
+    height:100vh;
 }
 
 .nav, .pagination, .carousel, .panel-title, a { cursor: pointer; }
 
 .header {
-    position:fixed;
-    z-index: 1000;
-    width:100%;
+    /*position:fixed;*/
+    /*z-index: 1000;*/
+    /*width:100%;*/
     margin:0px -15px;
     padding:5px 15px;
     box-shadow: 0px 3px 3px #ccc;
@@ -18,8 +19,8 @@ body {
 #panel-wrapper {
     position: relative;
     margin:25px 0px;
-    height:100%;
-    margin-top:125px;
+    height:80vh;
+    /*margin-top:125px;*/
 }
 
 #alert-wrapper {
@@ -217,4 +218,8 @@ body {
     background: rgba(255, 0, 0, .3);
 }
 
-
+.attributes {
+    height:65vh;
+    overflow: auto;
+    margin:10px 0px;
+}

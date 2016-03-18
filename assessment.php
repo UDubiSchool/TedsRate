@@ -25,12 +25,8 @@
         <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
             <div id="header" class="clearfix header">
-                <div class="clearfix col-xs-4 pull-left">
-                    <h2>{{assessment.project.name}}</h2>
-                </div>
-                <div class="clearfix scenario col-xs-8 pull-right">
-                    <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
-                    <p>{{assessment.scenario.description}}</p>
+                <div class="clearfix pull-left">
+                    <h2>{{assessment.project.name}} - {{assessment.scenario.name}}</h2>
                 </div>
             </div>
             <div id="alert-wrapper">
@@ -149,118 +145,128 @@
 
                 <!-- BEGIN ATTRIBUTE PANELS -->
                 <div ng-repeat="criterion in assessment.criteria" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
+
+                    <div class="clearfix bottom-line scenario">
+                        <div class="pull-right">
+                            <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
+                            <p>{{assessment.scenario.description}}</p>
+                        </div>
+                    </div>
                     <!-- <h2>{{criterion.criterionName}}</h2> -->
                     <!-- <p>{{criterion.criterionDesc}}</p> -->
-                    <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
-                        <div class="clearfix">
-                            <h3 class="pull-left">{{attribute.attributeName}} </h3>
-                            <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
+                    <div class="attributes">
+                        <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
+                            <div class="clearfix">
+                                <h3 class="pull-left">{{attribute.attributeName}} </h3>
+                                <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
+                            </div>
+
+                            <script type="text/ng-template" id="clusterTemp.html">
+                                <div>
+                                    This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
+                                    <span ng-repeat="category in attribute.categories">
+                                        <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
+                                    </span>
+                                </div>
+                            </script>
+
+                            <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
+                            <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
+
+
+                            <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix likert-rater">
+
+                                <div class="center-block clearfix likert">
+                                    <!-- <div class="col-xs-3"></div> -->
+                                    <div class="">1</div>
+                                    <div class="">2</div>
+                                    <div class="">3</div>
+                                    <div class="">4</div>
+                                    <div class="">5</div>
+                                    <!-- <div class="col-xs-3"></div> -->
+                                </div>
+                                <div class="center-block clearfix likert">
+                                    <!-- <div class="col-xs-3"></div> -->
+                                    <div class="">Very Poor</div>
+                                    <div class="">Poor</div>
+                                    <div class="">Fair</div>
+                                    <div class="">Good</div>
+                                    <div class="">Very Good</div>
+                                    <!-- <div class="col-xs-3"></div> -->
+                                </div>
+                                <div class="center-block clearfix likert">
+                            <!--         <div class="col-xs-3">
+                                        {{attribute.preface}}
+                                    </div> -->
+                                    <div class="">
+                                        <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'1'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
+                                    </div>
+                                    <div class="">
+                                        <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'2'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
+                                    </div>
+                                    <div class="">
+                                        <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'3'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
+                                    </div>
+                                    <div class="">
+                                        <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'4'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
+                                    </div>
+                                    <div class="">
+                                        <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'5'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
+                                    </div>
+                                    <!-- <div class="col-xs-3">
+                                        {{attribute.postface}}
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Text'">
+                                <input class="form-control" type="text" name="rating" ng-model="attribute.ratingValue" placeholder="Rating eg. 4" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)">
+                            </div>
+                            <div class="optional-section col-xs-12 clearfix">
+                                <h6>Please feel free to explain your perspective on the applications performance for this rating and/or provide screenshots in the 2 sections below.</h6>
+                                <div class="comment form-group clearfix">
+                                    <h4>Notes <span class="h5"> (optional)</span></h4>
+                                    <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
+                                </div>
+                                <div class="screenshots form-group clearfix">
+                                    <div class="clearfix">
+                                        <h4 class="pull-left">Screenshots <span class="h5">(optional)</span></h4>
+                                        <a style='margin-top:8px;margin-left:5px' class="pull-left" uib-popover-template="'screenshot.html'" popover-trigger="outsideClick"><i class="fa fa-question-circle"></i></a>
+                                    </div>
+                                    <script type="text/ng-template" id="screenshot.html">
+                                        <h4>Need Help making a screenshot?</h4>
+                                        <p>Here are some how-to links for various devices.</p>
+                                        <ul class="list-unstyled">
+                                            <li><a href="http://www.imore.com/screenshot-mac" target="_blank">Mac</a></li>
+                                            <li><a href="http://windows.microsoft.com/en-us/windows/take-screen-capture-print-screen" target="_blank">PC</a></li>
+                                            <li><a href="http://www.thegeekstuff.com/2012/08/screenshot-ubuntu/" target="_blank">Linux - Ubuntu</a></li>
+                                            <li><a href="https://support.apple.com/en-us/HT200289" target="_blank">iPhone</a></li>
+                                            <li><a href="http://www.makeuseof.com/tag/6-ways-to-take-screenshots-on-android/" target="_blank">Android</a></li>
+                                            <li><a href="http://www.windowsphone.com/en-us/how-to/wp8/photos/take-a-screenshot" target="_blank">Windows Phone</a></li>
+                                        </ul>
+                                    </script>
+                                    <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
+                                        <a ng-click="openLightboxModal(attribute.screenshots, $index)">
+                                            <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div ngf-drop ngf-select ng-model="files[attribute.attributeID]" class="drop-box"
+                                               ngf-change="save.screenshot(attribute)"
+                                               ngf-allow-dir="true"
+                                               accept="image/*"
+                                               ngf-pattern="'image/*'"
+                                               ngf-drag-over-class="{pattern: 'image/*', accept:'acceptFile', reject:'rejectFile', delay:100}"
+                                               >Drop images here or click to upload</div>
+                                        <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                                        <uib-progressbar ng-if="attribute.progressPercentage" class="progress-striped active" value="attribute.progressPercentage" type="success">uploading</uib-progressbar>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-
-                        <script type="text/ng-template" id="clusterTemp.html">
-                            <div>
-                                This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
-                                <span ng-repeat="category in attribute.categories">
-                                    <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
-                                </span>
-                            </div>
-                        </script>
-
-                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
-                        <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
-
-
-                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix likert-rater">
-
-                            <div class="center-block clearfix likert">
-                                <!-- <div class="col-xs-3"></div> -->
-                                <div class="">1</div>
-                                <div class="">2</div>
-                                <div class="">3</div>
-                                <div class="">4</div>
-                                <div class="">5</div>
-                                <!-- <div class="col-xs-3"></div> -->
-                            </div>
-                            <div class="center-block clearfix likert">
-                                <!-- <div class="col-xs-3"></div> -->
-                                <div class="">Very Poor</div>
-                                <div class="">Poor</div>
-                                <div class="">Fair</div>
-                                <div class="">Good</div>
-                                <div class="">Very Good</div>
-                                <!-- <div class="col-xs-3"></div> -->
-                            </div>
-                            <div class="center-block clearfix likert">
-                        <!--         <div class="col-xs-3">
-                                    {{attribute.preface}}
-                                </div> -->
-                                <div class="">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'1'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
-                                </div>
-                                <div class="">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'2'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
-                                </div>
-                                <div class="">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'3'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
-                                </div>
-                                <div class="">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'4'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
-                                </div>
-                                <div class="">
-                                    <label class="btn checkbox" ng-model="attribute.ratingValue" uib-btn-radio="'5'" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)"></label>
-                                </div>
-                                <!-- <div class="col-xs-3">
-                                    {{attribute.postface}}
-                                </div> -->
-                            </div>
-                        </div>
-
-                        <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Text'">
-                            <input class="form-control" type="text" name="rating" ng-model="attribute.ratingValue" placeholder="Rating eg. 4" ng-change="trackProgress(attribute.ratingValue, '{{attribute.ratingValue}}', true); save.rating(attribute)">
-                        </div>
-                        <div class="optional-section col-xs-12 clearfix">
-                            <h6>Please feel free to explain your perspective on the applications performance for this rating and/or provide screenshots in the 2 sections below.</h6>
-                            <div class="comment form-group clearfix">
-                                <h4>Notes <span class="h5"> (optional)</span></h4>
-                                <textarea name="" id="" ng-model="attribute.comment" ng-change="save.comment(attribute)" ng-model-options="{updateOn: 'blur'}" cols="" rows="1" placeholder="Type optional comment(s) for this question here" msd-elastic>{{attribute.comment}}</textarea>
-                            </div>
-                            <div class="screenshots form-group clearfix">
-                                <div class="clearfix">
-                                    <h4 class="pull-left">Screenshots <span class="h5">(optional)</span></h4>
-                                    <a style='margin-top:8px;margin-left:5px' class="pull-left" uib-popover-template="'screenshot.html'" popover-trigger="outsideClick"><i class="fa fa-question-circle"></i></a>
-                                </div>
-                                <script type="text/ng-template" id="screenshot.html">
-                                    <h4>Need Help making a screenshot?</h4>
-                                    <p>Here are some how-to links for various devices.</p>
-                                    <ul class="list-unstyled">
-                                        <li><a href="http://www.imore.com/screenshot-mac" target="_blank">Mac</a></li>
-                                        <li><a href="http://windows.microsoft.com/en-us/windows/take-screen-capture-print-screen" target="_blank">PC</a></li>
-                                        <li><a href="http://www.thegeekstuff.com/2012/08/screenshot-ubuntu/" target="_blank">Linux - Ubuntu</a></li>
-                                        <li><a href="https://support.apple.com/en-us/HT200289" target="_blank">iPhone</a></li>
-                                        <li><a href="http://www.makeuseof.com/tag/6-ways-to-take-screenshots-on-android/" target="_blank">Android</a></li>
-                                        <li><a href="http://www.windowsphone.com/en-us/how-to/wp8/photos/take-a-screenshot" target="_blank">Windows Phone</a></li>
-                                    </ul>
-                                </script>
-                                <div class="col-xs-3" ng-repeat="screenshot in attribute.screenshots">
-                                    <a ng-click="openLightboxModal(attribute.screenshots, $index)">
-                                        <img ng-src="{{screenshot}}" class="col-xs-12 img-thumbnail" alt="">
-                                    </a>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div ngf-drop ngf-select ng-model="files[attribute.attributeID]" class="drop-box"
-                                           ngf-change="save.screenshot(attribute)"
-                                           ngf-allow-dir="true"
-                                           accept="image/*"
-                                           ngf-pattern="'image/*'"
-                                           ngf-drag-over-class="{pattern: 'image/*', accept:'acceptFile', reject:'rejectFile', delay:100}"
-                                           >Drop images here or click to upload</div>
-                                    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-                                    <uib-progressbar ng-if="attribute.progressPercentage" class="progress-striped active" value="attribute.progressPercentage" type="success">uploading</uib-progressbar>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
+
                     <div class="navigation">
                         <div class="col-xs-2">
                             <a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a>
@@ -275,6 +281,7 @@
                             <a class="btn btn-block btn-success next" ng-disabled="requiredItems - completedItems !== 0 "  ng-click="save.finish(); last()" scroll scroll-target="#header">Finish</a>
                         </div>
                     </div>
+
                 </div>
                 <!-- END ATTRIBUTE PANELS -->
 
