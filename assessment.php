@@ -175,15 +175,10 @@
                             <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                         </div>
 
-                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == '0'">
-                            <h3 ng-if="assessment.configuration.uiConfiguration.escriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
+                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 0">
+                            <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
                             <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h3>
                         </div>
-                        <!-- {{assessment.configuration.uiConfiguration.attributeTitles}} -->
-
-
-
-
 
                             <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix likert-rater">
 
