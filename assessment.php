@@ -156,7 +156,7 @@
                     <!-- <p>{{criterion.criterionDesc}}</p> -->
                     <div class="attributes">
                         <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
-                        <div ng-if="assessment.uiConfiguration.attributeTitles == 1">
+                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 1">
                             <div class="clearfix">
                                 <h3 class="pull-left">{{attribute.attributeName}} </h3>
                                 <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
@@ -175,8 +175,8 @@
                             <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                         </div>
 
-                        <div ng-if="assessment.uiConfiguration.attributeTitles == 0">
-                            <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
+                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 0">
+                            <h3 ng-if="assessment.configuration.uiConfiguration.escriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
                             <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h3>
                         </div>
 
