@@ -175,11 +175,11 @@
                             <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                         </div>
 
-                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 0">
+                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == '0'">
                             <h3 ng-if="assessment.configuration.uiConfiguration.escriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
                             <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h3>
                         </div>
-                        {{assessment.configuration.uiConfiguration.attributeTitles}}
+                        <!-- {{assessment.configuration.uiConfiguration.attributeTitles}} -->
 
 
 
