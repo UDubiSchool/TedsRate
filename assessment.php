@@ -179,6 +179,7 @@
                             <h3 ng-if="assessment.configuration.uiConfiguration.escriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h3>
                             <h3 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h3>
                         </div>
+                        {{assessment.configuration.uiConfiguration.attributeTitles}}
 
 
 
