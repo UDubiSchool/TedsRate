@@ -412,6 +412,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             assessment.role.description = decodeURIComponent(assessment.role.description);
             assessment.scenario.name = decodeURIComponent(assessment.scenario.name);
             assessment.scenario.description = decodeURIComponent(assessment.scenario.description);
+            assessment.configuration.uiConfiguration.attributeTitles = parseInt(assessment.configuration.uiConfiguration.attributeTitles);
             console.log(assessment);
 
 
