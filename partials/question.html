@@ -54,7 +54,7 @@
     <input class="form-control" type="text" ng-model="question.response" placeholder="{{question.questionData.Text.placeholder}}" ng-value="question.response" ng-change="trackProgress(question.response, '{{encodeURI(question.response)}}', {{question.questionRequired}}); save.response(question)" ng-model-options="{updateOn: 'blur'}">
 </div>
 <div ng-if="question.questionData.questionType == 'Select'" class="clearfix">
-    <select class="form-control col-sm-6" ng-model="question.response" ng-change="trackProgress(question.response, {{question.response !== undefined ? encodeURI(question.response) : null}}, {{question.questionRequired}}); save.response(question)">
+    <select class="form-control col-sm-6" ng-model="question.response" ng-change="trackProgress(question.response, {{question.response !== undefined ? encodeURI(question.response) : 'testing is undefined'}}, {{question.questionRequired}}); save.response(question)">
         <option value=""></option>
         <option ng-repeat="option in question.questionData.Select.options" ng-value="option">{{option}}</option>
     </select>
