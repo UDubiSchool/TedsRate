@@ -441,7 +441,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                 }
             });
 
-            // calculate completed attributes
+            // calculate completed attributes and upack criterion for new layout
+            assessment.attributes = [];
             angular.forEach(assessment.criteria, function(criterion, criterionKey) {
                 angular.forEach(criterion['attributes'], function(attribute, attributeKey) {
 
@@ -461,6 +462,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                         });
 
                     }
+                    // add attribute to new array
+                    assessment.attributes.push(attribute);
 
                 });
             });

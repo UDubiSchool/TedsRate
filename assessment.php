@@ -144,7 +144,8 @@
                 <!-- END QUESTION PANELS -->
 
                 <!-- BEGIN ATTRIBUTE PANELS -->
-                <div ng-repeat="criterion in assessment.criteria" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
+                <div ng-repeat="(attributeKey, attribute) in assessment.attributes" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel">
+                <!-- <div ng-repeat="criterion in assessment.criteria" class="panel attribute-panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 attribute-panel"> -->
 
                     <div class="clearfix bottom-line scenario">
                         <div class="pull-right">
@@ -155,30 +156,30 @@
                     <!-- <h2>{{criterion.criterionName}}</h2> -->
                     <!-- <p>{{criterion.criterionDesc}}</p> -->
                     <div class="attributes">
-                        <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix">
-                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 1">
-                            <div class="clearfix">
-                                <h3 class="pull-left">{{attribute.attributeName}} </h3>
-                                <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
+                        <!-- <div ng-repeat="(attributeKey, attribute) in criterion.attributes"class="attribute clearfix"> -->
+                            <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 1">
+                                <div class="clearfix">
+                                    <h3 class="pull-left">{{attribute.attributeName}} </h3>
+                                    <a style='margin-top:22px;margin-left:5px' class="pull-left" ng-if="attribute.attributeTypeName == 'Cluster'" uib-popover-template="'clusterTemp.html'" popover-trigger="outsideClick"><i class="fa fa-info-circle"></i></a>
+                                </div>
+
+                                <script type="text/ng-template" id="clusterTemp.html">
+                                    <div>
+                                        This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
+                                        <span ng-repeat="category in attribute.categories">
+                                            <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
+                                        </span>
+                                    </div>
+                                </script>
+
+                                <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
+                                <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
                             </div>
 
-                            <script type="text/ng-template" id="clusterTemp.html">
-                                <div>
-                                    This ranking refers to the information artifacts' effectiveness evaluated on the aspects of:
-                                    <span ng-repeat="category in attribute.categories">
-                                        <a uib-popover="{{category.attributeLaymanDesc}}" popover-trigger="outsideClick">{{category.attributeName}}</a>{{$last ? '' : ', '}}
-                                    </span>
-                                </div>
-                            </script>
-
-                            <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</p>
-                            <p ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</p>
-                        </div>
-
-                        <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 0">
-                            <h4 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h4>
-                            <h4 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h4>
-                        </div>
+                            <div ng-if="assessment.configuration.uiConfiguration.attributeTitles == 0">
+                                <h4 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Layman'">{{attribute.attributeLaymanDesc}}</h4>
+                                <h4 ng-if="assessment.configuration.uiConfiguration.descriptionType == 'Intellectual'">{{attribute.attributeDesc}}</h4>
+                            </div>
 
                             <div ng-if="assessment.configuration.uiConfiguration.ratingStyle == 'Likert'" class="col-xs-12 clearfix likert-rater">
 
@@ -271,7 +272,7 @@
                             </div>
 
                         </div>
-                    </div>
+                    <!-- </div> -->
 
                     <div class="navigation">
                         <div class="col-xs-2">
