@@ -477,7 +477,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.trackProgress = function (newValue, oldValue, required) {
         var oldValue = decodeURI(oldValue);
         if(required) {
-            if(oldValue == '' || oldValue == undefined || oldValue== null) {
+            if(oldValue == '' || oldValue == undefined || oldValue == null) {
                 $scope.completedItems++;
             }
             if(newValue == '' || newValue == undefined || newValue== null) {
