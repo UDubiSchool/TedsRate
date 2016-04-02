@@ -26,6 +26,7 @@ class Scenario_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("s.scenarioID, scenarioName, s.scenarioDescription")
                               ->from("scenario s")
                               ->join('project_scenario ps', 'ps.scenarioID = s.scenarioID')
                               ->join('project p', 'p.projectID = ps.projectID')

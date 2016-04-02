@@ -35,6 +35,7 @@ class User_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("u.userID, u.email, u.firstName, u.lastName")
                               ->from("user u")
                               ->join('assessment a', 'a.userID = u.userID')
                               ->join('configuration c', 'c.configurationID = a.configurationID')

@@ -26,6 +26,7 @@ class Role_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("r.roleID, r.roleName, r.roleDesc")
                               ->from("role r")
                               ->join('project_role pr', 'pr.roleID = r.roleID')
                               ->join('project p', 'p.projectID = pr.projectID')

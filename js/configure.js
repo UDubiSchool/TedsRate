@@ -26,132 +26,146 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
 }]);
 
 app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService) {
-    // $scope.alerts =[];
-    // $scope.isCollapsed = true;
-    projectService.getAll().then(function(response) {
+
+    // get initial project data for page load
+    projectService.getBasic().then(function(response){
         var deferred = $q.defer();
-        console.log(response);
         var tmp = response.data;
         angular.forEach(tmp, function(project, projectKey){
             project.collapsed = true;
-            project.artifactsCollapsed = true;
-            project.scenariosCollapsed = true;
-            project.personasCollapsed = true;
-            project.rolesCollapsed = true;
-            project.assessmentsCollapsed = true;
-            project.assessmentFilters = {
-                artifacts: [],
-                personas: [],
-                scenarios: [],
-                users: [],
-                roles: [],
-                configurations: []
-            };
-            angular.forEach(project.artifacts, function(artifact, artifactKey){
-                artifact.collapsed = true;
-                if(project.assessmentFilters.artifacts.indexOf(artifact.artifactName) === -1) {
-                    project.assessmentFilters.artifacts.push(artifact.artifactName);
-                }
-            });
-            angular.forEach(project.scenarios, function(scenario, artifactKey){
-                scenario.collapsed = true;
-                if(project.assessmentFilters.scenarios.indexOf(scenario.scenarioName) === -1) {
-                    project.assessmentFilters.scenarios.push(scenario.scenarioName);
-                }
-            });
-            angular.forEach(project.personas, function(persona, artifactKey){
-                persona.collapsed = true;
-                if(project.assessmentFilters.personas.indexOf(persona.personaName) === -1) {
-                    project.assessmentFilters.personas.push(persona.personaName);
-                }
-            });
-            angular.forEach(project.roles, function(role, artifactKey){
-                role.collapsed = true;
-                if(project.assessmentFilters.roles.indexOf(role.roleName) === -1) {
-                    project.assessmentFilters.roles.push(role.roleName);
-                }
-            });
-
-            project.assessmentsList = [];
-            project.assessmentsStats = {
-                Count: project.assessments.length
-            };
-            angular.forEach(project.assessments, function(assessment, assessmentKey) {
-                if(assessment !== undefined && assessment !== null && assessment !== '') {
-                    var tmp = {
-                        details: assessment,
-                        listData: {
-                            project: assessment.projectName,
-                            artifact: assessment.artifactName,
-                            persona: assessment.personaName,
-                            role: assessment.roleName,
-                            scenario: assessment.scenarioName,
-                            user: assessment.email,
-                            configuration: assessment.attributeConfigurationName,
-                        },
-                        specialFields: {
-                            link: {
-                                value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
-                                type: 'link'
-                            },
-                            issued: {
-                                value: assessment.issuanceDate,
-                                preface: 'Issued on',
-                                type: 'date'
-                            },
-                            completion: {
-                                value: assessment.completionDate,
-                                preface: 'Completed on',
-                                type: 'date'
-                            },
-                            edited: {
-                                value: assessment.lastEditDate,
-                                preface: 'Last Edited on',
-                                type: 'date'
-                            }
-                        }
-                    };
-                    project.assessmentsList.push(tmp);
-                }
-
-            });
-
-            project.configurationsList = [];
-            project.configurationsStats = {
-                Count: project.configurations.length
-            };
-            angular.forEach(project.configurations, function(configuration, configurationKey) {
-                if(configuration !== undefined && configuration !== null && configuration !== '') {
-                    var tmp = {
-                        details: configuration,
-                        listData: {
-                            // configuration: configuration.configurationName,
-                            attributes: configuration.attributeConfigurationName,
-                            questions: configuration.questionConfigurationName,
-                            interface: configuration.uiConfigurationName,
-                            artifact: configuration.artifactName,
-                            scenario: configuration.scenarioName,
-                            persona: configuration.personaName,
-                            role: configuration.roleName,
-                        },
-                        specialFields: {
-                            link: {
-                                value: 'start.php?c=' + configuration.configurationIDHashed,
-                                type: 'link'
-                            }
-                        }
-                    };
-                    project.configurationsList.push(tmp);
-                }
-
-            });
-
         });
         deferred.resolve(tmp);
         return deferred.promise;
     }).then(function(processed){
         $scope.projects = processed;
+
+        // get all data after intial project data load
+        projectService.getAll().then(function(response) {
+            var deferred = $q.defer();
+            console.log(response);
+            var tmp = response.data;
+            angular.forEach(tmp, function(project, projectKey){
+                project.collapsed = true;
+                project.artifactsCollapsed = true;
+                project.scenariosCollapsed = true;
+                project.personasCollapsed = true;
+                project.rolesCollapsed = true;
+                project.assessmentsCollapsed = true;
+                project.assessmentFilters = {
+                    artifacts: [],
+                    personas: [],
+                    scenarios: [],
+                    users: [],
+                    roles: [],
+                    configurations: []
+                };
+                angular.forEach(project.artifacts, function(artifact, artifactKey){
+                    artifact.collapsed = true;
+                    if(project.assessmentFilters.artifacts.indexOf(artifact.artifactName) === -1) {
+                        project.assessmentFilters.artifacts.push(artifact.artifactName);
+                    }
+                });
+                angular.forEach(project.scenarios, function(scenario, artifactKey){
+                    scenario.collapsed = true;
+                    if(project.assessmentFilters.scenarios.indexOf(scenario.scenarioName) === -1) {
+                        project.assessmentFilters.scenarios.push(scenario.scenarioName);
+                    }
+                });
+                angular.forEach(project.personas, function(persona, artifactKey){
+                    persona.collapsed = true;
+                    if(project.assessmentFilters.personas.indexOf(persona.personaName) === -1) {
+                        project.assessmentFilters.personas.push(persona.personaName);
+                    }
+                });
+                angular.forEach(project.roles, function(role, artifactKey){
+                    role.collapsed = true;
+                    if(project.assessmentFilters.roles.indexOf(role.roleName) === -1) {
+                        project.assessmentFilters.roles.push(role.roleName);
+                    }
+                });
+
+                project.assessmentsList = [];
+                project.assessmentsStats = {
+                    Count: project.assessments.length
+                };
+                angular.forEach(project.assessments, function(assessment, assessmentKey) {
+                    if(assessment !== undefined && assessment !== null && assessment !== '') {
+                        var tmp = {
+                            details: assessment,
+                            listData: {
+                                project: assessment.projectName,
+                                artifact: assessment.artifactName,
+                                persona: assessment.personaName,
+                                role: assessment.roleName,
+                                scenario: assessment.scenarioName,
+                                user: assessment.email,
+                                configuration: assessment.attributeConfigurationName,
+                            },
+                            specialFields: {
+                                link: {
+                                    value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
+                                    type: 'link'
+                                },
+                                issued: {
+                                    value: assessment.issuanceDate,
+                                    preface: 'Issued on',
+                                    type: 'date'
+                                },
+                                completion: {
+                                    value: assessment.completionDate,
+                                    preface: 'Completed on',
+                                    type: 'date'
+                                },
+                                edited: {
+                                    value: assessment.lastEditDate,
+                                    preface: 'Last Edited on',
+                                    type: 'date'
+                                }
+                            }
+                        };
+                        project.assessmentsList.push(tmp);
+                    }
+
+                });
+
+                project.configurationsList = [];
+                project.configurationsStats = {
+                    Count: project.configurations.length
+                };
+                angular.forEach(project.configurations, function(configuration, configurationKey) {
+                    if(configuration !== undefined && configuration !== null && configuration !== '') {
+                        var tmp = {
+                            details: configuration,
+                            listData: {
+                                // configuration: configuration.configurationName,
+                                attributes: configuration.attributeConfigurationName,
+                                questions: configuration.questionConfigurationName,
+                                interface: configuration.uiConfigurationName,
+                                artifact: configuration.artifactName,
+                                scenario: configuration.scenarioName,
+                                persona: configuration.personaName,
+                                role: configuration.roleName,
+                            },
+                            specialFields: {
+                                link: {
+                                    value: 'start.php?c=' + configuration.configurationIDHashed,
+                                    type: 'link'
+                                }
+                            }
+                        };
+                        project.configurationsList.push(tmp);
+                    }
+
+                });
+
+            });
+            deferred.resolve(tmp);
+            return deferred.promise;
+        }).then(function(processed){
+            $scope.projects = processed;
+        });
     });
+
 
     userService.getAll().then(function(response){
         $scope.users = response.data;

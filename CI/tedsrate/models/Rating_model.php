@@ -26,6 +26,7 @@ class Rating_model extends CI_Model {
     public function getAssessment ($assessmentID)
     {
         return $this->db
+                              ->select("r.ratingID, r.ratingValue, at.attributeID, at.attributeName, at.attributeDesc, at.attributeLaymanDesc")
                               ->from("rating r")
                               ->join('assessment a', 'a.assessmentID = r.assessmentID')
                               ->join('attribute at', 'at.attributeID = r.attributeID')

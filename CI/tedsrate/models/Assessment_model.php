@@ -44,6 +44,7 @@ class Assessment_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("a.assessmentID, a.assessmentIDHashed, a.completionDate, a.ratingURL, a.issuanceDate, a.lastEditDate, u.userID, u.email, u.firstName, u.lastName, c.configurationID, ac.assessmentConfigurationID, atrc.attributeConfigurationID, atrc.attributeConfigurationName, atrc.attributeConfigurationDesc, p.projectName, p.projectID, art.artifactID, art.artifactName, art.artifactURL, s.scenarioID, s.scenarioName, per.personaID, per.personaName, r.roleID, r.roleName")
                               ->from("assessment a")
                               ->join('configuration c', 'a.configurationID = c.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
@@ -62,6 +63,7 @@ class Assessment_model extends CI_Model {
     public function getProjectCompleted ($projectID)
     {
         return $this->db
+                              ->select("a.assessmentID, a.assessmentIDHashed, a.completionDate, a.ratingURL, a.issuanceDate, a.lastEditDate, u.userID, u.email, u.firstName, u.lastName, c.configurationID, ac.assessmentConfigurationID, atrc.attributeConfigurationID, atrc.attributeConfigurationName, atrc.attributeConfigurationDesc, p.projectName, p.projectID, art.artifactID, art.artifactName, art.artifactURL, s.scenarioID, s.scenarioName, per.personaID, per.personaName, r.roleID, r.roleName")
                               ->from("assessment a")
                               ->join('configuration c', 'a.configurationID = c.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')

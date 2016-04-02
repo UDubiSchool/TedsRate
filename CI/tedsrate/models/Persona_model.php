@@ -26,6 +26,7 @@ class Persona_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("pe.personaID, pe.personaName, pe.personaDesc")
                               ->from("persona pe")
                               ->join('project_persona pp', 'pp.personaID = pe.personaID')
                               ->join('project p', 'p.projectID = pp.projectID')

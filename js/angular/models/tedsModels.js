@@ -40,6 +40,17 @@ app.service('projectService', ['$http', '$q', function ($http, $q) {
         });
     }
 
+    this.getBasic = function() {
+        var target = "CI/index.php/project/getBasic";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
     this.post = function(data) {
         var target = "CI/index.php/api/projects/";
         var data = data;

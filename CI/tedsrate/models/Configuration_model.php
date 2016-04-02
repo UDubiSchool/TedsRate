@@ -44,6 +44,7 @@ class Configuration_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
+                              ->select("c.configurationID, c.configurationIDHashed, ac.assessmentConfigurationID, p.projectID, p.projectName, p.projectDescription, art.artifactID, art.artifactName, art.artifactDescription, art.artifactURL, s.scenarioID, s.scenarioName, s.scenarioDescription, per.personaID, per.personaName, per.personaDesc, r.roleID, r.roleName, r.roleDesc, atrc.attributeConfigurationID, atrc.attributeConfigurationName, qc.questionConfigurationID, qc.questionConfigurationName, uc.uiConfigurationID, uc.uiConfigurationName")
                               ->from("configuration c")
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->join('attributeConfiguration atrc', 'atrc.attributeConfigurationID = c.attributeConfigurationID')

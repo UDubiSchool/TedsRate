@@ -9,7 +9,8 @@ class Project extends CI_Controller {
         $this->load->model('project_model', 'project');
     }
 
-    public function get($id = null, $assoc = false)
+    // public function get($id = null, $assoc = false)
+    public function getBasic($id = null)
     {
 
         if($id == null || $id == 0) {
@@ -18,36 +19,22 @@ class Project extends CI_Controller {
             $tmp = $this->project->get($id);
         }
 
-        if($assoc == 'true') {
-            foreach ($tmp as $key => $value) {
-                $tmp[$key] = $this->getAssoc($value);
-            }
-        }
+        // if($assoc == 'true') {
+        //     foreach ($tmp as $key => $value) {
+        //         $tmp[$key] = $this->getAssoc($value);
+        //     }
+        // }
         // $data['projects'] = $tmp;
         echoJSON($tmp);
     }
 
-    public function put()
-    {
 
-    }
-
-    public function post()
-    {
-
-    }
-
-    public function delete()
-    {
-
-    }
-
-    private function getAssoc($project)
-    {
-        $project['artifacts'] = $this->project->getArtifacts($project['projectID']);
-        $project['scenarios'] = $this->project->getScenarios($project['projectID']);
-        $project['personas'] = $this->project->getPersonas($project['projectID']);
-        $project['roles'] = $this->project->getRoles($project['projectID']);
-        return $project;
-    }
+    // private function getAssoc($project)
+    // {
+    //     $project['artifacts'] = $this->project->getArtifacts($project['projectID']);
+    //     $project['scenarios'] = $this->project->getScenarios($project['projectID']);
+    //     $project['personas'] = $this->project->getPersonas($project['projectID']);
+    //     $project['roles'] = $this->project->getRoles($project['projectID']);
+    //     return $project;
+    // }
 }

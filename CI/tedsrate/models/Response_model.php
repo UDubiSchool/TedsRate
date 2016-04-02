@@ -26,9 +26,11 @@ class Response_model extends CI_Model {
     public function getAssessment ($assessmentID)
     {
         return $this->db
+                              ->select("r.responseID, r.responseAnswer, q.questionID, q.questionName, q.questionDesc, q.questionData, qt.questionTypeID, qt.questionTypeName, qt.questionTypeDesc, a.assessmentID")
                               ->from("response r")
                               ->join('assessment a', 'a.assessmentID = r.assessmentID')
                               ->join('question q', 'q.questionID = r.questionID')
+                              ->join('questionType qt', 'qt.questionTypeID = q.questionTypeID')
                               ->where('a.assessmentID', $assessmentID)
                               ->order_by('q.questionID', 'ASC')
                               ->get()
