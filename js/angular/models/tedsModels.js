@@ -28,6 +28,39 @@ app.service('statService', ['$http', '$q', function ($http, $q) {
             return response;
         });
     }
+
+    this.byScenario = function(projectID, scenarioID){
+        var target = "CI/index.php/stats/byScenario/" + projectID + "/" + scenarioID;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.byProject = function(projectID){
+        var target = "CI/index.php/stats/byProject/" + projectID;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.byConfiguration = function(projectID, configurationID){
+        var target = "CI/index.php/stats/byConfiguration/" + projectID + "/" + configurationID;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
 }]);
 
 app.service('projectService', ['$http', '$q', function ($http, $q) {

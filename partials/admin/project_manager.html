@@ -21,9 +21,26 @@
           </div>
 
           <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
-            {{project.selected.artifact}}
+            <!-- {{project.selected.artifact}} -->
             <h4><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h4>
             <h5>{{project.selected.artifact.artifactDescription}}</h5>
+            <table class="table table-striped">
+              <thead>
+                <th></th>
+                <th ng-repeat="scenario in project.selected.artifact.stats.scenarios">{{scenario.scenarioName}}</th>
+                <th>Total Average</th>
+                <th>Total Standard Deviation</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="(attrKey, attribute) in project.selected.artifact.stats.attributes">
+                  <td>{{attribute.attributeName}}</td>
+                  <td ng-repeat="cell in attribute.scenarios">{{cell.AttributeAverage ? (cell.AttributeAverage | number: 2) : "N/A"}} {{cell.AttributeStandardDeviation ? ' ± ' + (cell.AttributeStandardDeviation|number: 2): ''}}</td>
+                  <td>{{attribute.totalAverage | number: 2}}</td>
+                  <td>{{attribute.totalStandardDeviation ? (attribute.totalStandardDeviation | number: 2) : "N/A"}}</td>
+
+                </tr>
+              </tbody>
+            </table>
           </teds-filter-list>
 
         </teds-dropdown>
@@ -34,7 +51,11 @@
           <div class="menu col-xs-12 clearfix">
               <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
           </div>
-          <teds-filter-list list="project.scenariosList"></teds-filter-list>
+          <teds-filter-list list="project.scenariosList" passback="project.selected.scenario">
+            {{project.selected.scenario}}
+            <h4>{{project.selected.scenario.scenarioName}}</h4>
+
+          </teds-filter-list>
         </teds-dropdown>
 
         <teds-dropdown title="Personas" header-stats="{count: project.personas.length}" class="personas container col-xs-12 clearfix">

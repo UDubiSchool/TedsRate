@@ -46,23 +46,51 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
             var tmp = response.data;
             angular.forEach(tmp, function(project, projectKey){
                 project.collapsed = true;
-                project.artifactsCollapsed = true;
-                project.scenariosCollapsed = true;
-                project.personasCollapsed = true;
-                project.rolesCollapsed = true;
-                project.assessmentsCollapsed = true;
-                project.selected ={};
-                project.selected.artifact = '';
+                project.selected ={
+                    artifact: '',
+                    scenario: '',
+                    persona: '',
+                    role: '',
+                    assessment: '',
+                    configuration: ''
+                };
                 $scope.$watch(function () {
                     return project.selected.artifact;
                 }, function(artifact){
                     if(artifact != undefined && artifact !=null && artifact !='') {
                         statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
+                            project.selected.artifact.stats = stats.data;
                             console.log(stats);
                         });
                         console.log('a change happened!');
                     }
-                }, true);
+                }, false);
+
+                $scope.$watch(function () {
+                    return project.selected.scenario;
+                }, function(scenario){
+                    if(scenario != undefined && scenario !=null && scenario !='') {
+                        statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
+                            project.selected.scenario.stats = stats.data;
+                            console.log(stats);
+                        });
+                        console.log('a change happened!');
+                    }
+                }, false);
+
+                  $scope.$watch(function () {
+                    return project.selected.configuration;
+                }, function(configuration){
+                    if(configuration != undefined && configuration !=null && configuration !='') {
+                        statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
+                            project.selected.configuration.stats = stats.data;
+                            console.log(stats);
+                        });
+                        console.log('a change happened!');
+                    }
+                }, false);
+
+
                 // set up the filterlists
 
                 project.scenariosList = [];
