@@ -25,7 +25,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
     $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService) {
+app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService) {
 
     // get initial project data for page load
     projectService.getBasic().then(function(response){
@@ -51,37 +51,61 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                 project.personasCollapsed = true;
                 project.rolesCollapsed = true;
                 project.assessmentsCollapsed = true;
-                project.assessmentFilters = {
-                    artifacts: [],
-                    personas: [],
-                    scenarios: [],
-                    users: [],
-                    roles: [],
-                    configurations: []
+                project.selected ={};
+                project.selected.artifact = '';
+                $scope.$watch(function () {
+                    return project.selected.artifact;
+                }, function(artifact){
+                    if(artifact != undefined && artifact !=null && artifact !='') {
+                        statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
+                            console.log(stats);
+                        });
+                        console.log('a change happened!');
+                    }
+                }, true);
+                // set up the filterlists
+
+                project.scenariosList = [];
+                project.scenariosStats = {
+                    Count: project.scenarios.length
                 };
-                angular.forEach(project.artifacts, function(artifact, artifactKey){
-                    artifact.collapsed = true;
-                    if(project.assessmentFilters.artifacts.indexOf(artifact.artifactName) === -1) {
-                        project.assessmentFilters.artifacts.push(artifact.artifactName);
+                angular.forEach(project.scenarios, function(scenario, scenarioKey) {
+                    if(scenario !== undefined && scenario !== null && scenario !== '') {
+                        var tmp = {
+                            details: scenario,
+                            listData: {
+                                name: scenario.scenarioName,
+                                description: scenario.scenarioDescription,
+                            }
+                        };
+                        project.scenariosList.push(tmp);
                     }
+
                 });
-                angular.forEach(project.scenarios, function(scenario, artifactKey){
-                    scenario.collapsed = true;
-                    if(project.assessmentFilters.scenarios.indexOf(scenario.scenarioName) === -1) {
-                        project.assessmentFilters.scenarios.push(scenario.scenarioName);
+
+
+                project.artifactsList = [];
+                project.artifactsStats = {
+                    Count: project.artifacts.length
+                };
+                angular.forEach(project.artifacts, function(artifact, artifactKey) {
+                    if(artifact !== undefined && artifact !== null && artifact !== '') {
+                        var tmp = {
+                            details: artifact,
+                            listData: {
+                                name: artifact.artifactName,
+                                description: artifact.artifactDescription,
+                            },
+                            specialFields: {
+                                link: {
+                                    value: decodeURIComponent(artifact.artifactURL),
+                                    type: 'link'
+                                }
+                            }
+                        };
+                        project.artifactsList.push(tmp);
                     }
-                });
-                angular.forEach(project.personas, function(persona, artifactKey){
-                    persona.collapsed = true;
-                    if(project.assessmentFilters.personas.indexOf(persona.personaName) === -1) {
-                        project.assessmentFilters.personas.push(persona.personaName);
-                    }
-                });
-                angular.forEach(project.roles, function(role, artifactKey){
-                    role.collapsed = true;
-                    if(project.assessmentFilters.roles.indexOf(role.roleName) === -1) {
-                        project.assessmentFilters.roles.push(role.roleName);
-                    }
+
                 });
 
                 project.assessmentsList = [];

@@ -17,6 +17,19 @@ app.service('uploadService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
+app.service('statService', ['$http', '$q', function ($http, $q) {
+    this.byArtifact = function(projectID, artifactID){
+        var target = "CI/index.php/stats/byArtifact/" + projectID + "/" + artifactID;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+
 app.service('projectService', ['$http', '$q', function ($http, $q) {
     this.get = function(id) {
         var target = "CI/index.php/api/projects/"+id;

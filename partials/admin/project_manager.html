@@ -15,24 +15,26 @@
       <div class="collapsable clearfix" uib-collapse="project.collapsed">
 
         <teds-dropdown title="Artifacts" header-stats="{count: project.artifacts.length}" class="artifacts container col-xs-12">
-          <div ng-repeat="(artifactKey, artifact) in project.artifacts" class="clearfix col-xs-6 artifact project-item">
-              <h5 class="name"><a ng-href="{{artifact.artifactURL}}" target="_blank">{{artifact.artifactName}}</a></h5>
-              <h6 class="desc">{{artifact.artifactDescription}}</h6>
-          </div>
+
           <div class="menu col-xs-12 clearfix">
               <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
           </div>
+
+          <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
+            {{project.selected.artifact}}
+            <h4><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h4>
+            <h5>{{project.selected.artifact.artifactDescription}}</h5>
+          </teds-filter-list>
+
         </teds-dropdown>
 
 
         <teds-dropdown title="Scenarios" header-stats="{count: project.scenarios.length}" class="scenarios container col-xs-12 clearfix">
-          <div ng-repeat="(scenarioKey, scenario) in project.scenarios" class="clearfix col-xs-6 scenario project-item">
-              <h5 class="name">{{scenario.scenarioName}}</h5>
-              <h6 class="desc">{{scenario.scenarioDescription}}</h6>
-          </div>
+
           <div class="menu col-xs-12 clearfix">
               <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
           </div>
+          <teds-filter-list list="project.scenariosList"></teds-filter-list>
         </teds-dropdown>
 
         <teds-dropdown title="Personas" header-stats="{count: project.personas.length}" class="personas container col-xs-12 clearfix">
