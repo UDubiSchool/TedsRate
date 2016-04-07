@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList']);
+var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint']);
 
 app.service('alertService', function(){
     this.alerts = [];
@@ -54,6 +54,14 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                     assessment: '',
                     configuration: ''
                 };
+                $scope.pivotOptions = {
+                    colorize: true,
+                    min: 1,
+                    max: 5,
+                    minColor: 'yellow',
+                    maxColor: 'green'
+                };
+
                 $scope.$watch(function () {
                     return project.selected.artifact;
                 }, function(artifact){

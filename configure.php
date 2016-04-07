@@ -16,6 +16,9 @@
 <script src="js/angular/models/tedsModels.js"></script>
 <script src="js/angular/common/directives/dropdown/dropdown.directive.js"></script>
 <script src="js/angular/common/directives/filterList/filterList.directive.js"></script>
+<script src="js/angular/common/directives/pivotTable/pivotTable.directive.js"></script>
+<script src="js/angular/common/directives/angularPrint/angularPrint.js"></script>
+<link src="js/angular/common/directives/angularPrint/angularPrint.css"></link>
 <script src="js/angular/common/toArrayFilter.js"></script>
 <script src="js/configure.js" type="text/javascript"></script>
 <div id="wrapper" ng-app="administrator" ng-controller="adminCtrl">

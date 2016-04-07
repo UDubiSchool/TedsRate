@@ -11,84 +11,146 @@ class Stats extends CI_Controller {
 
     public function byArtifact($projectID, $artifactID)
     {
-        $scenarios = [];
-        $attributes = [];
-        $tmp = $this->stats->byArtifact($projectID, $artifactID);
-        foreach ($tmp as $key => $cell) {
-            if(!array_key_exists($cell['scenarioID'], $scenarios)) {
-                $scenarios[$cell['scenarioID']] = [
-                    'scenarioID' => $cell['scenarioID'],
-                    'scenarioName' => $cell['scenarioName'],
-                    'scenarioDesc' => $cell['scenarioDescription']
-                ];
-            }
-            if(!array_key_exists($cell['attributeID'], $attributes)) {
-                $attributes[$cell['attributeID']] = [
-                    'attributeID' => $cell['attributeID'],
-                    'attributeName' => $cell['attributeName'],
-                    'attributeDesc' => $cell['attributeDesc'],
-                    'scenarios' => []
-                ];
-
-            }
-
-        }
-        $sorted = [];
-        $counter = 0;
-        foreach ($attributes as $key => $attribute) {
-            $attributes[$key]['scenarios'] = $scenarios;
-            foreach ($tmp as $cellKey => $cell) {
-                if($cell['attributeID'] == $attribute['attributeID']) {
-                    $attributes[$key]['scenarios'][$cell['scenarioID']] = $cell;
-                }
-            }
-
-        }
-        foreach ($attributes as $key => $attribute) {
-            $stdCounter = 0;
-            $avgCounter = 0;
-            $stdSum = 0;
-            $avgSum = 0;
-            foreach ($attributes[$key]['scenarios'] as $cellKey => $cell) {
-                    if( array_key_exists('AttributeAverage', $cell) && $cell['AttributeAverage'] !== null) {
-                        $avgCounter++;
-                        $avgSum += $cell['AttributeAverage'];
-                    }
-                    if(array_key_exists('AttributeStandardDeviation', $cell) && $cell['AttributeStandardDeviation'] !== null) {
-                        $stdCounter++;
-                        $stdSum += $cell['AttributeStandardDeviation'];
-                    }
-            }
-            if($avgCounter > 0) {
-                $attributes[$key]['totalAverage'] = $avgSum / $avgCounter;
-            }
-            if($stdCounter > 0) {
-                $attributes[$key]['totalStandardDeviation'] = $stdSum / $stdCounter;
-            }
-        }
-
-        $final = [
-        'attributes' => $attributes,
-        'scenarios' => $scenarios
+        $column = [
+            'identifier' => 'scenarioID',
+            'fields' => [
+                'id' => 'scenarioID',
+                'name' => 'scenarioName',
+                'desc' => 'scenarioDescription'
+            ]
         ];
+        $row = [
+            'identifier' => 'attributeID',
+            'fields' => [
+                'id' => 'attributeID',
+                'name' => 'attributeName',
+                'desc' => 'attributeDesc'
+            ]
+        ];
+        $tmp = $this->stats->byArtifact($projectID, $artifactID);
+        $final = $this->sortPivot($tmp, $column, $row);
+
         echoJSON($final);
     }
 
     public function byScenario($projectID, $scenarioID)
     {
+        $column = [
+            'identifier' => 'artifactID',
+            'fields' => [
+                'id' => 'artifactID',
+                'name' => 'artifactName',
+                'desc' => 'artifactDescription'
+            ]
+        ];
+        $row = [
+            'identifier' => 'attributeID',
+            'fields' => [
+                'id' => 'attributeID',
+                'name' => 'attributeName',
+                'desc' => 'attributeDesc'
+            ]
+        ];
         $tmp = $this->stats->byScenario($projectID, $scenarioID);
-        echoJSON($tmp);
+        $final = $this->sortPivot($tmp, $column, $row);
+        echoJSON($final);
     }
 
+    // unfinished
     public function byProject($projectID)
     {
         $tmp = $this->stats->byProject($projectID);
-        echoJSON($tmp);
+        $final = $this->sortPivot($tmp, $column, $row);
+        echoJSON($final);
     }
-
     public function byConfiguration($projectID, $configurationID)
     {
+        $column = [
+            'identifier' => 'configurationID',
+            'fields' => [
+                'id' => 'configurationID',
+                'artifactName' => 'artifactName',
+                'artifactDesc' => 'artifactDescription',
+                'scenarioName' => 'scenarioName',
+                'scenarioDesc' => 'scenarioDescription'
+            ]
+        ];
+        $row = [
+            'identifier' => 'attributeID',
+            'fields' => [
+                'id' => 'attributeID',
+                'name' => 'attributeName',
+                'desc' => 'attributeDesc'
+            ]
+        ];
         $tmp = $this->stats->byConfiguration($projectID, $configurationID);
-        echoJSON($tmp);
+        $final = $this->sortPivot($tmp, $column, $row);
+        echoJSON($final);
+    }
+
+    // sorts a data set of averages and standard deviations into a two value pivot table requires the array of data, an array specifing the columns identifier and associated fields, an array specifing the rows identifier and associated fields
+    private function sortPivot($data, $column, $row) {
+        $columns = [];
+        $rows = [];
+        foreach ($data as $key => $cell) {
+            if(!array_key_exists($cell[$column['identifier']], $columns)) {
+                $columns[$cell[$column['identifier']]] = [];
+                foreach ($column['fields'] as $name => $value) {
+                    $columns[$cell[$column['identifier']]][$name] = $cell[$value];
+                }
+            }
+            if(!array_key_exists($cell[$row['identifier']], $rows)) {
+                $rows[$cell[$row['identifier']]] = [];
+                foreach ($row['fields'] as $name => $value) {
+                    $rows[$cell[$row['identifier']]][$name] = $cell[$value];
+                    $rows[$cell[$row['identifier']]]['cells'] = [];
+                }
+            }
+        }
+
+        $sorted = [];
+        $counter = 0;
+        foreach ($rows as $key => $rowValue) {
+            $rows[$key]['cells'] = $columns;
+            foreach ($data as $cellKey => $cell) {
+
+                if($cell[$row['identifier']] == $rowValue['id']) {
+                    $rows[$key]['cells'][$cell[$column['identifier']]] = [
+                    'average' => $cell['average'],
+                    'standardDeviation' => $cell['standardDeviation']
+                    ];
+                }
+            }
+
+        }
+
+        foreach ($rows as $key => $rowValue) {
+            $stdCounter = 0;
+            $avgCounter = 0;
+            $stdSum = 0;
+            $avgSum = 0;
+            foreach ($rows[$key]['cells'] as $cellKey => $cell) {
+                    if( array_key_exists('average', $cell) && $cell['average'] !== null) {
+                        $avgCounter++;
+                        $avgSum += $cell['average'];
+                    }
+                    if(array_key_exists('standardDeviation', $cell) && $cell['standardDeviation'] !== null) {
+                        $stdCounter++;
+                        $stdSum += $cell['standardDeviation'];
+                    }
+            }
+            if($avgCounter > 0) {
+                $rows[$key]['totalAverage'] = $avgSum / $avgCounter;
+            }
+            if($stdCounter > 0) {
+                $rows[$key]['totalStandardDeviation'] = $stdSum / $stdCounter;
+            }
+        }
+
+        $final = [
+        'rows' => $rows,
+        'columns' => $columns
+        ];
+        return $final;
     }
 }

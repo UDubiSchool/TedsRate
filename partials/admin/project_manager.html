@@ -23,24 +23,9 @@
           <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
             <!-- {{project.selected.artifact}} -->
             <h4><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h4>
+            <h5>{{project.selected.artifact.artifactTypeName}}</h5>
             <h5>{{project.selected.artifact.artifactDescription}}</h5>
-            <table class="table table-striped">
-              <thead>
-                <th></th>
-                <th ng-repeat="scenario in project.selected.artifact.stats.scenarios">{{scenario.scenarioName}}</th>
-                <th>Total Average</th>
-                <th>Total Standard Deviation</th>
-              </thead>
-              <tbody>
-                <tr ng-repeat="(attrKey, attribute) in project.selected.artifact.stats.attributes">
-                  <td>{{attribute.attributeName}}</td>
-                  <td ng-repeat="cell in attribute.scenarios">{{cell.AttributeAverage ? (cell.AttributeAverage | number: 2) : "N/A"}} {{cell.AttributeStandardDeviation ? ' ± ' + (cell.AttributeStandardDeviation|number: 2): ''}}</td>
-                  <td>{{attribute.totalAverage | number: 2}}</td>
-                  <td>{{attribute.totalStandardDeviation ? (attribute.totalStandardDeviation | number: 2) : "N/A"}}</td>
-
-                </tr>
-              </tbody>
-            </table>
+            <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions"></teds-pivot-table>
           </teds-filter-list>
 
         </teds-dropdown>
@@ -52,9 +37,9 @@
               <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
           </div>
           <teds-filter-list list="project.scenariosList" passback="project.selected.scenario">
-            {{project.selected.scenario}}
             <h4>{{project.selected.scenario.scenarioName}}</h4>
-
+            <h5>{{project.selected.scenario.scenarioDescription}}</h5>
+            <teds-pivot-table class="clearfix" teds-data="project.selected.scenario.stats" teds-options="pivotOptions"></teds-pivot-table>
           </teds-filter-list>
         </teds-dropdown>
 
@@ -82,14 +67,58 @@
           <div class="menu col-xs-12 clearfix">
               <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
           </div>
-          <teds-filter-list list="project.assessmentsList"></teds-filter-list>
+          <teds-filter-list list="project.assessmentsList" passback="project.selected.assignment"></teds-filter-list>
         </teds-dropdown>
 
         <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix">
            <div class="menu col-xs-12 clearfix">
                <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
            </div>
-           <teds-filter-list list="project.configurationsList"></teds-filter-list>
+           <teds-filter-list list="project.configurationsList" passback="project.selected.configuration">
+              <h4>
+                Configuration - {{project.selected.configuration.artifactName}}, {{project.selected.configuration.scenarioName}}
+              </h4>
+              <div class="col-xs-6">
+                <h5>Assessment Configuration</h5>
+                <dl>
+                  <dt>Artifact</dt>
+                  <dd>
+                    <h6>{{project.selected.configuration.artifactName}} - {{project.selected.configuration.artifactTypeName}}</h6>
+                    <h6>{{project.selected.configuration.artifactDescription}}</h6>
+                  </dd>
+                  <dt>Scenario</dt>
+                  <dd>
+                    <h6>{{project.selected.configuration.scenarioName}}</h6>
+                    <h6>{{project.selected.configuration.scenarioDescription}}</h6>
+                  </dd>
+                  <dt>Persona</dt>
+                  <dd>
+                    <h6>{{project.selected.configuration.personaName}}</h6>
+                    <h6>{{project.selected.configuration.personaDescription}}</h6>
+                  </dd>
+                  <dt>Role</dt>
+                  <dd>
+                    <h6>{{project.selected.configuration.roleName}}</h6>
+                    <h6>{{project.selected.configuration.roleDesc}}</h6>
+                  </dd>
+                </dl>
+              </div>
+              <div class="col-xs-6">
+                <h5>Attribute Configuration</h5>
+                <h6><b>{{project.selected.configuration.attributeConfigurationName}}</b></h6>
+                <h6>{{project.selected.configuration.attributeConfigurationDesc}}</h6>
+              </div>
+              <div class="col-xs-6">
+                <h5>Question Configuration</h5>
+                <h6><b>{{project.selected.configuration.questionConfigurationName}}</b></h6>
+                <h6>{{project.selected.configuration.questionConfigurationDesc}}</h6>
+              </div>
+              <div class="col-xs-6">
+                <h5>UI Configuration</h5>
+                <h6><b>{{project.selected.configuration.uiConfigurationName}}</b></h6>
+                <h6>{{project.selected.configuration.uiConfigurationDesc}}</h6>
+              </div>
+           </teds-filter-list>
         </teds-dropdown>
       </div>
 

@@ -9,7 +9,7 @@ class Stats_model extends CI_Model {
     public function byArtifact ($projectID, $artifactID)
     {
         return $this->db
-                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, s.scenarioID, s.scenarioName, s.scenarioDescription, AVG(r.ratingValue) as AttributeAverage, STDDEV_SAMP(r.ratingValue) as AttributeStandardDeviation')
+                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, s.scenarioID, s.scenarioName, s.scenarioDescription, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
                                 ->from("project p")
                                 ->join('assessmentConfiguration ac', 'ac.projectID = p.projectID')
                                 ->join('artifact art', 'art.artifactID = ac.artifactID')
@@ -28,7 +28,7 @@ class Stats_model extends CI_Model {
     public function byScenario ($projectID, $scenarioID)
     {
         return $this->db
-                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, AVG(r.ratingValue) as AttributeAverage, STDDEV_SAMP(r.ratingValue) as AttributeStandardDeviation')
+                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
                                 ->from("project p")
                                 ->join('assessmentConfiguration ac', 'ac.projectID = p.projectID')
                                 ->join('artifact art', 'art.artifactID = ac.artifactID')
@@ -47,7 +47,7 @@ class Stats_model extends CI_Model {
     public function byProject ($projectID)
     {
         return $this->db
-                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, AVG(r.ratingValue) as AttributeAverage, STDDEV_SAMP(r.ratingValue) as AttributeStandardDeviation')
+                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
                                 ->from("project p")
                                 ->join('assessmentConfiguration ac', 'ac.projectID = p.projectID')
                                 ->join('artifact art', 'art.artifactID = ac.artifactID')
@@ -65,7 +65,7 @@ class Stats_model extends CI_Model {
     public function byConfiguration ($projectID, $configurationID)
     {
         return $this->db
-                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, s.scenarioID, s.scenarioName, s.scenarioDescription, AVG(r.ratingValue) as AttributeAverage, STDDEV_SAMP(r.ratingValue) as AttributeStandardDeviation')
+                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, s.scenarioID, s.scenarioName, s.scenarioDescription, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
                                 ->from("project p")
                                 ->join('assessmentConfiguration ac', 'ac.projectID = p.projectID')
                                 ->join('artifact art', 'art.artifactID = ac.artifactID')

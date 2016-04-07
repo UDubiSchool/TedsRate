@@ -1,5 +1,8 @@
- <div class="details col-xs-12 clearfix" ng-if="selected" ng-transclude>
+ <div class="details col-xs-12 clearfix" ng-if="selected">
+    <button class="btn btn-primary" ng-click="unsetSelected()">Back</button>
+    <div class="clearfix" ng-transclude>
 
+    </div>
  </div>
 <div id="" class="col-xs-12">
     <table ng-if="table.length > 0" class="table table-bordered table-hover">
