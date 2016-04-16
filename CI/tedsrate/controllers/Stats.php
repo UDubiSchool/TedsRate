@@ -203,21 +203,21 @@ class Stats extends CI_Controller {
                     ]
                 ];
 
-                if($questionData['questionType'] == 'Boolean') {
-                    $chartOptions['chart']['type'] = 'pieChart';
-                    $chartOptions['chart']['showLabels'] = true;
-                    $chartOptions['chart']['labelThreshold'] = 0.01;
-                    $chartOptions['chart']['labelSunbeamLayout'] = true;
-                    $chartOptions['chart']['legend'] = [
-                        'margin' => [
-                            'top' => 5,
-                            'right' => 35,
-                            'bottom' => 5,
-                            'left' => 0
-                        ]
-                    ];
-                }
-                if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check') {
+                // if($questionData['questionType'] == 'Boolean') {
+                //     $chartOptions['chart']['type'] = 'pieChart';
+                //     $chartOptions['chart']['showLabels'] = true;
+                //     $chartOptions['chart']['labelThreshold'] = 0.01;
+                //     $chartOptions['chart']['labelSunbeamLayout'] = true;
+                //     $chartOptions['chart']['legend'] = [
+                //         'margin' => [
+                //             'top' => 5,
+                //             'right' => 35,
+                //             'bottom' => 5,
+                //             'left' => 0
+                //         ]
+                //     ];
+                // }
+                if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check' || $questionData['questionType'] == 'Boolean') {
                     $chartOptions['chart']['type'] = 'discreteBarChart';
                     // $chartOptions['chart']['valueFormat'] = "%%function(d){return d3.format(',.4f')(d);}%%";
                     $chartOptions['chart']['xAxis'] = [
