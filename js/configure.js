@@ -66,7 +66,7 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                     chart: {
                         type: 'discreteBarChart',
                         height: 300,
-                        // width:200,
+                        width:400,
                         margin : {
                             top: 20,
                             right: 20,
