@@ -33,6 +33,91 @@ class Screenshot_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getProjectArtifactAttribute ($attributeID, $artifactID, $projectID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->where('ac.artifactID', $artifactID)
+                              ->where('ac.projectID', $projectID)
+                              ->where('r.attributeID', $attributeID)
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getProjectScenarioAttribute ($attributeID, $scenarioID, $projectID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->where('ac.scenarioID', $scenarioID)
+                              ->where('ac.projectID', $projectID)
+                              ->where('r.attributeID', $attributeID)
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getAssessment ($assessmentID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->where('a.assessmentID', $assessmentID)
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getConfiguration ($configurationID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->where('c.configurationID', $configurationID)
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getArtifact ($artifactID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->where('ac.artifactID', $artifactID)
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getScenario ($scenarioID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->where('ac.scenarioID', $scenarioID)
+                              ->get()
+                              ->result_array();
+    }
+
     public function post ($data)
     {
       $this->db->insert('screenshot', $data);

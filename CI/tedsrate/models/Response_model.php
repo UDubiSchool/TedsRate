@@ -37,6 +37,53 @@ class Response_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getConfiguration ($configurationID)
+    {
+        return $this->db
+                              ->select("r.responseID, r.responseAnswer, q.questionID, q.questionName, q.questionDesc, q.questionData, qt.questionTypeID, qt.questionTypeName, qt.questionTypeDesc, a.assessmentID")
+                              ->from("response r")
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('question q', 'q.questionID = r.questionID')
+                              ->join('questionType qt', 'qt.questionTypeID = q.questionTypeID')
+                              ->where('c.configurationID', $configurationID)
+                              ->order_by('q.questionID', 'ASC')
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getArtifact ($artifactID)
+    {
+        return $this->db
+                              ->select("r.responseID, r.responseAnswer, q.questionID, q.questionName, q.questionDesc, q.questionData, qt.questionTypeID, qt.questionTypeName, qt.questionTypeDesc, a.assessmentID")
+                              ->from("response r")
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->join('question q', 'q.questionID = r.questionID')
+                              ->join('questionType qt', 'qt.questionTypeID = q.questionTypeID')
+                              ->where('ac.artifactID', $artifactID)
+                              ->order_by('q.questionID', 'ASC')
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getScenario ($scenarioID)
+    {
+        return $this->db
+                              ->select("r.responseID, r.responseAnswer, q.questionID, q.questionName, q.questionDesc, q.questionData, qt.questionTypeID, qt.questionTypeName, qt.questionTypeDesc, a.assessmentID")
+                              ->from("response r")
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->join('question q', 'q.questionID = r.questionID')
+                              ->join('questionType qt', 'qt.questionTypeID = q.questionTypeID')
+                              ->where('ac.scenarioID', $scenarioID)
+                              ->order_by('q.questionID', 'ASC')
+                              ->get()
+                              ->result_array();
+    }
+
     public function post ($data)
     {
       $this->db->insert('response', $data);

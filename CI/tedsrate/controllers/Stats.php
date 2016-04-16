@@ -30,7 +30,19 @@ class Stats extends CI_Controller {
         $tmp = $this->stats->byArtifact($projectID, $artifactID);
         $final = $this->sortPivot($tmp, $column, $row);
 
-        echoJSON($final);
+        $this->load->model('screenshot_model', 'screenshot');
+        $this->load->model('comment_model', 'comment');
+        $this->load->model('response_model', 'response');
+
+        foreach ($final['columns'] as $key => $value) {
+            $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
+        }
+        foreach ($final['rows'] as $key => $value) {
+            $final['rows'][$key]['screenshots'] = $this->screenshot->getProjectArtifactAttribute($value['id'], $artifactID, $projectID);
+            $final['rows'][$key]['comments'] = $this->comment->getProjectArtifactAttribute($value['id'], $artifactID, $projectID);
+        }
+
+        echoJSON($final, true);
     }
 
     public function byScenario($projectID, $scenarioID)
@@ -53,7 +65,16 @@ class Stats extends CI_Controller {
         ];
         $tmp = $this->stats->byScenario($projectID, $scenarioID);
         $final = $this->sortPivot($tmp, $column, $row);
-        echoJSON($final);
+
+        foreach ($final['columns'] as $key => $value) {
+            $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
+        }
+        foreach ($final['rows'] as $key => $value) {
+            $final['rows'][$key]['screenshots'] = $this->screenshot->getProjectScenarioAttribute($value['id'], $scenarioID, $projectID);
+            $final['rows'][$key]['comments'] = $this->comment->getProjectScenarioAttribute($value['id'], $scenarioID, $projectID);
+        }
+
+        echoJSON($final, true);
     }
 
     // unfinished
@@ -152,5 +173,104 @@ class Stats extends CI_Controller {
         'columns' => $columns
         ];
         return $final;
+    }
+
+    // sorts a data set of question responses by question. cleans the data for use in nvd3 charting
+    private function sortResponses($data) {
+        $questions=[];
+        $chartOptions = null;
+        foreach ($data as $key => $cell) {
+            if(!array_key_exists($cell['questionID'], $questions)) {
+                $questions[$cell['questionID']] = [
+                    'id' => $cell['questionID'],
+                    'name' => $cell['questionName'],
+                    'desc' => $cell['questionDesc'],
+                    'type' => $cell['questionTypeName'],
+                    'questionData' => $cell['questionData'],
+                    'responses' => [],
+                    'chartData' => [],
+                    'chartOptions' => []
+                ];
+                $questionData = json_decode($cell['questionData'], TRUE);
+
+                $chartOptions = [
+                    'chart' => [
+                        // 'type' => 'pieChart',
+                        'height' => 500,
+                        // 'x' => "%%function(d){return d.key;}%%",
+                        // 'y' => "%%function(d){return d.value;}%%",
+                        'duration' => 500,
+                    ]
+                ];
+
+                if($questionData['questionType'] == 'Boolean') {
+                    $chartOptions['chart']['type'] = 'pieChart';
+                    $chartOptions['chart']['showLabels'] = true;
+                    $chartOptions['chart']['labelThreshold'] = 0.01;
+                    $chartOptions['chart']['labelSunbeamLayout'] = true;
+                    $chartOptions['chart']['legend'] = [
+                        'margin' => [
+                            'top' => 5,
+                            'right' => 35,
+                            'bottom' => 5,
+                            'left' => 0
+                        ]
+                    ];
+                }
+                if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check') {
+                    $chartOptions['chart']['type'] = 'discreteBarChart';
+                    // $chartOptions['chart']['valueFormat'] = "%%function(d){return d3.format(',.4f')(d);}%%";
+                    $chartOptions['chart']['xAxis'] = [
+                        'axisLabel' => 'Answer'
+                    ];
+                    $chartOptions['chart']['yAxis'] = [
+                        'axisLabel' => 'Count'
+                    ];
+                }
+
+                $questions[$cell['questionID']]['chartOptions'] = $chartOptions;
+            }
+            $response = [
+                'id' => $cell['responseID'],
+                'answer' => $cell['responseAnswer']
+            ];
+            array_push($questions[$cell['questionID']]['responses'], $response);
+        }
+
+        foreach ($questions as $questionKey => $question) {
+            $tmp = [];
+            foreach ($question['responses'] as $responseKey => $response) {
+                if(!array_key_exists($response['answer'], $tmp)) {
+                    $tmp[$response['answer']] = 1;
+                } else {
+                    $tmp[$response['answer']]++;
+                }
+            }
+
+            if($question['chartOptions']['chart']['type'] == 'discreteBarChart') {
+                foreach ($tmp as $key => $value) {
+                    $toPush = [
+                        'label' => $key,
+                        'value' => $value
+                    ];
+                    array_push($questions[$questionKey]['chartData'], $toPush);
+                }
+                $questions[$questionKey]['chartData'] = [
+                    [
+                        'key' => 'Answer Counts',
+                        'values' => $questions[$questionKey]['chartData']
+                    ]
+                ];
+            } else {
+                foreach ($tmp as $key => $value) {
+                    $toPush = [
+                        'x' => $key,
+                        'y' => $value
+                    ];
+                    array_push($questions[$questionKey]['chartData'], $toPush);
+                }
+            }
+        }
+        return $questions;
     }
 }

@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint']);
+var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint', 'toArray', 'nvd3']);
 
 app.service('alertService', function(){
     this.alerts = [];
@@ -62,13 +62,59 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                     maxColor: 'green'
                 };
 
+                $scope.sampleChartOptions = {
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 300,
+                        // width:200,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 55
+                        },
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showValues: true,
+                        tooltips: false,
+                        valueFormat: function(d){
+                            return d3.format(',.0f')(d);
+                        },
+                        duration: 500,
+                        xAxis: {
+                            axisLabel: 'Answer'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: -15,
+                            margin: {
+                                top: 0,
+                                right: 0,
+                                bottom: 0,
+                                left: 0
+                            }
+                        },
+                        discretebar: {
+                            width: 100,
+                            height: 100,
+                            margin: {
+                                top: 0,
+                                right: 0,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    }
+                };
+
                 $scope.$watch(function () {
                     return project.selected.artifact;
                 }, function(artifact){
                     if(artifact != undefined && artifact !=null && artifact !='') {
                         statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
                             project.selected.artifact.stats = stats.data;
-                            console.log(stats);
+                            project.selected.artifact.passback = {};
+                            console.log(project.selected.artifact);
                         });
                         console.log('a change happened!');
                     }
@@ -80,18 +126,20 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
                     if(scenario != undefined && scenario !=null && scenario !='') {
                         statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
                             project.selected.scenario.stats = stats.data;
+                            project.selected.scenario.passback = {};
                             console.log(stats);
                         });
                         console.log('a change happened!');
                     }
                 }, false);
 
-                  $scope.$watch(function () {
+                $scope.$watch(function () {
                     return project.selected.configuration;
                 }, function(configuration){
                     if(configuration != undefined && configuration !=null && configuration !='') {
                         statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
                             project.selected.configuration.stats = stats.data;
+                            project.selected.configuration.passback = {};
                             console.log(stats);
                         });
                         console.log('a change happened!');

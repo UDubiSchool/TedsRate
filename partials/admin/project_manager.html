@@ -25,7 +25,29 @@
             <h4><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h4>
             <h5>{{project.selected.artifact.artifactTypeName}}</h5>
             <h5>{{project.selected.artifact.artifactDescription}}</h5>
-            <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions"></teds-pivot-table>
+            <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions" teds-passback="project.selected.artifact.passback">
+              <div ng-show="project.selected.artifact.passback.row">
+                <h5>{{project.selected.artifact.passback.row.name}}</h5>
+                <h6>Comments</h6>
+                <div ng-repeat="comment in project.selected.artifact.passback.row.comments">
+                  <p>{{comment.comment}}</p>
+                </div>
+                <h6>Screenshots</h6>
+                <div ng-repeat="screenshot in project.selected.artifact.passback.row.screenshots">
+                  <a>
+                      <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                  </a>
+                </div>
+              </div>
+              <div ng-show="project.selected.artifact.passback.column">
+                <h3>Questions</h3>
+                <div class="col-sm-6" ng-repeat="question in project.selected.artifact.passback.column.questions">
+                  <h4>{{question.name}}</h4>
+                  <h5>{{question.desc}}</h5>
+                  <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                </div>
+              </div>
+            </teds-pivot-table>
           </teds-filter-list>
 
         </teds-dropdown>
@@ -39,7 +61,7 @@
           <teds-filter-list list="project.scenariosList" passback="project.selected.scenario">
             <h4>{{project.selected.scenario.scenarioName}}</h4>
             <h5>{{project.selected.scenario.scenarioDescription}}</h5>
-            <teds-pivot-table class="clearfix" teds-data="project.selected.scenario.stats" teds-options="pivotOptions"></teds-pivot-table>
+            <teds-pivot-table class="clearfix" teds-data="project.selected.scenario.stats" teds-options="pivotOptions" teds-passback="project.selected.scenario.passback"></teds-pivot-table>
           </teds-filter-list>
         </teds-dropdown>
 

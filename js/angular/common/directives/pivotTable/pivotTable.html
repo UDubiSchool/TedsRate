@@ -1,13 +1,32 @@
 <!-- <button print-btn>Print</button> -->
+<div ng-transclude></div>
+<div class="menu">
+  <div class="pull-left">
+    <span>Stat to sort by:</span>
+    <select class="form-control" ng-model="sort.stat">
+      <option value=""></option>
+      <option value="average">Average</option>
+      <option value="standardDeviation">Standard Deviation</option>
+    </select>
+  </div>
+  <div class="pull-left">
+    <span>Column to sort by:</span>
+    <select class="form-control" ng-model="sort.id">
+      <option value=""></option>
+      <option ng-repeat="column in tedsData.columns" ng-value="column.id">{{column.name}}</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" ng-click="sort.reverse = !sort.reverse"><i class="fa fa-refresh"></i> Flip</button>
+</div>
 <table class="table pivot-table" print-section>
   <thead>
     <th></th>
-    <th ng-repeat="column in tedsData.columns">{{column.name}}</th>
+    <th ng-repeat="column in tedsData.columns" ng-click="selectCol(column)">{{column.name}}</th>
     <th>Total Average</th>
     <th>Total Standard Deviation</th>
   </thead>
   <tbody>
-    <tr ng-repeat="(rowKey, row) in tedsData.rows">
+    <tr ng-repeat="(rowKey, row) in tedsData.rows | toArray | orderBy: rowOrder : sort.reverse" ng-click="selectRow(row)">
       <td>{{row.name}}</td>
       <td ng-repeat="cell in row.cells">
         <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.average - options.min) / dataRange) }"></div>

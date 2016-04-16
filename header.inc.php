@@ -10,7 +10,7 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
 
 	<!-- Set the viewport width to device width for mobile -->
     <!-- <meta name="viewport" content="width=device-width" /> -->
@@ -37,7 +37,10 @@
 
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/sb-admin.css" rel="stylesheet">
+    <link href="css/nv.d3.css" rel="stylesheet">
+    <link href="js/angular/common/directives/angularPrint/angularPrint.css" rel="stylesheet">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
     <link rel="stylesheet" type="text/css" href="css/liam.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 

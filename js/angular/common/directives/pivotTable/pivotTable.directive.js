@@ -6,21 +6,63 @@ var app = angular.module('teds.directives.pivotTable', ['AngularPrint'])
 .directive('tedsPivotTable', function(){
     return {
         restrict: 'E',
-        // transclude: true,
+        transclude: true,
         scope: {
             tedsData: '=',
-            tedsOptions: '='
+            tedsOptions: '=',
+            tedsPassback: '='
         },
         controller: ['$scope', '$timeout', function($scope, $timeout) {
-            console.log($scope);
+            // console.log($scope.tedsData);
             $scope.options = $scope.tedsOptions;
             $scope.data = $scope.tedsData;
+            // $scope.passback = $scope.tedsPassback;
+            $scope.selected = {};
 
             if ($scope.options.colorize) {
                 $scope.minColor = 'yellow';
                 $scope.maxColor = 'green';
                 $scope.dataRange = $scope.options.max - $scope.options.min;
             }
+            $scope.sort = {
+                id: '',
+                stat: '',
+                reverse: false
+            };
+
+            $scope.rowOrder = function(row) {
+                var id = $scope.sort.id;
+                var stat = $scope.sort.stat;
+
+                if (row !== '' && row !== null && row !== undefined) {
+                    if(id == '' || stat == '') {
+                        return undefined;
+                    } else if (row.cells[id][stat] == undefined || row.cells[id][stat] == null) {
+                        return -1;
+                    } else {
+                        return row.cells[id][stat];
+                    }
+                } else {
+                    return undefined
+                }
+            }
+
+            $scope.selectRow = function(item){
+                console.log($scope.tedsPassback);
+                $scope.selected.row = item;
+                $scope.tedsPassback.row = item;
+            }
+
+            $scope.selectCol = function(item){
+                $scope.selected.column = item;
+                $scope.tedsPassback.column = item;
+            }
+
+            $scope.unsetSelected = function() {
+                delete $scope.selected;
+                delete $scope.passback;
+            }
+
 
         }],
         templateUrl: 'js/angular/common/directives/pivotTable/pivotTable.html'

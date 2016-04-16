@@ -1,4 +1,4 @@
-angular.module('angular-toArrayFilter', [])
+angular.module('toArray', [])
 
 .filter('toArray', function () {
   return function (obj, addKey) {
