@@ -234,6 +234,13 @@ class Stats extends CI_Controller {
                 'id' => $cell['responseID'],
                 'answer' => $cell['responseAnswer']
             ];
+            if($questionData['questionType'] == 'Boolean') {
+                if($response['answer'] == 0) {
+                    $response['answer'] = 'no';
+                } else {
+                    $response['answer'] = 'yes';
+                }
+            }
             array_push($questions[$cell['questionID']]['responses'], $response);
         }
 
