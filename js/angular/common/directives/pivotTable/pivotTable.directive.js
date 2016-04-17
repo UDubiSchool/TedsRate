@@ -64,7 +64,8 @@ var app = angular.module('teds.directives.pivotTable', ['AngularPrint'])
                 $scope.selected = {
                     selected: false
                 };
-                delete $scope.passback;
+                delete $scope.tedsPassback.column;
+                delete $scope.tedsPassback.row;
             }
 
 

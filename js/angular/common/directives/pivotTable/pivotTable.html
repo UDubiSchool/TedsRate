@@ -30,7 +30,12 @@
     background-color: #ddd;
   }
 </style>
-<div class="clearfix details-panel" ng-if="selected.selected" ng-transclude></div>
+<div class="clearfix details-panel" ng-if="selected.selected">
+  <button class="btn btn-primary" ng-click="unsetSelected()">Back</button>
+  <div class="clearfix" ng-transclude>
+
+  </div>
+</div>
 <div class="menu clearfix">
   <div class="pull-left">
     <span>Stat to sort by:</span>
