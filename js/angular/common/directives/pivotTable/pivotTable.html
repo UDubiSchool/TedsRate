@@ -54,7 +54,7 @@
   </div>
   <button class="btn btn-primary" style="margin-top:1.5em" ng-click="sort.reverse = !sort.reverse"><i class="fa fa-refresh"></i> Flip</button>
 </div>
-<table class="table pivot-table">
+<table class="table pivot-table" print-table>
   <thead>
     <th></th>
     <th class="clickable" ng-class="{selected: selected.column == column}" ng-repeat="column in tedsData.columns" ng-click="selectCol(column)">{{column.name}}</th>
