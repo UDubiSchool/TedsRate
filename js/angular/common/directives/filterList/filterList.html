@@ -1,4 +1,16 @@
- <div class="details col-xs-12 clearfix" ng-if="selected">
+ <style>
+   .pivot-table .selected {
+     background-color: #ddd;
+   }
+
+   teds-filter-list > .details-panel {
+     /*background-color: #ededed;*/
+     padding:10px 5px;
+     margin-top:10px;
+     border-top: 1px solid #e1e1e1;
+   }
+ </style>
+ <div class="details-panel col-xs-12 clearfix" ng-if="selected">
     <button class="btn btn-primary" ng-click="unsetSelected()">Back</button>
     <div class="clearfix" ng-transclude>
 

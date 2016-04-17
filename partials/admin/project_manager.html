@@ -1,4 +1,4 @@
-<div id="page-wrapper" class="configurator">
+<div id="page-wrapper" class="configurator"print-section >
     <div id="alert-wrapper">
         <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
     </div>
@@ -22,27 +22,34 @@
 
           <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
             <!-- {{project.selected.artifact}} -->
-            <h4><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h4>
-            <h5>{{project.selected.artifact.artifactTypeName}}</h5>
-            <h5>{{project.selected.artifact.artifactDescription}}</h5>
+            <h2><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h2>
+            <h5>Artifact Type: {{project.selected.artifact.artifactTypeName}}</h5>
+            <p>{{project.selected.artifact.artifactDescription}}</p>
             <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions" teds-passback="project.selected.artifact.passback">
               <div ng-show="project.selected.artifact.passback.row">
-                <h5>{{project.selected.artifact.passback.row.name}}</h5>
-                <h6>Comments</h6>
-                <div ng-repeat="comment in project.selected.artifact.passback.row.comments">
-                  <p>{{comment.comment}}</p>
-                </div>
-                <h6>Screenshots</h6>
-                <div ng-repeat="screenshot in project.selected.artifact.passback.row.screenshots">
-                  <a>
+                <h3>{{project.selected.artifact.passback.row.name}}</h3>
+                <h5>{{project.selected.artifact.passback.row.desc}}</h5>
+                <h4>Comments</h4>
+                <ul class="list-unstyled">
+                  <li ng-repeat="comment in project.selected.artifact.passback.row.comments">
+                    {{comment.comment}}
+                  </li>
+                </ul>
+
+                <h4>Screenshots</h4>
+                <div class="col-xs-3" ng-repeat="screenshot in project.selected.artifact.passback.row.screenshots">
+                    <a ng-click="Lightbox.openModal(project.selected.artifact.passback.row.screenshots, $index)">
                       <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
-                  </a>
+                    </a>
                 </div>
               </div>
+              <div class="divider" ng-show="project.selected.artifact.passback.column && project.selected.artifact.passback.row"></div>
               <div ng-show="project.selected.artifact.passback.column">
-                <h3>Questions</h3>
+                <h3>{{project.selected.artifact.passback.column.name}}</h3>
+                <h5>{{project.selected.artifact.passback.column.desc}}</h5>
+                <h4>Questions</h4>
                 <div class="col-sm-6" ng-repeat="question in project.selected.artifact.passback.column.questions">
-                  <h4>{{question.name}}</h4>
+                  <p>{{question.name}}</p>
                   <h5>{{question.desc}}</h5>
                   <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
                 </div>
@@ -61,7 +68,36 @@
           <teds-filter-list list="project.scenariosList" passback="project.selected.scenario">
             <h4>{{project.selected.scenario.scenarioName}}</h4>
             <h5>{{project.selected.scenario.scenarioDescription}}</h5>
-            <teds-pivot-table class="clearfix" teds-data="project.selected.scenario.stats" teds-options="pivotOptions" teds-passback="project.selected.scenario.passback"></teds-pivot-table>
+            <teds-pivot-table class="clearfix" teds-data="project.selected.scenario.stats" teds-options="pivotOptions" teds-passback="project.selected.scenario.passback">
+              <div ng-show="project.selected.scenario.passback.row">
+                <h3>{{project.selected.scenario.passback.row.name}}</h3>
+                <h5>{{project.selected.scenario.passback.row.desc}}</h5>
+                <h4>Comments</h4>
+                <ul class="list-unstyled">
+                  <li ng-repeat="comment in project.selected.scenario.passback.row.comments">
+                    {{comment.comment}}
+                  </li>
+                </ul>
+
+                <h4>Screenshots</h4>
+                <div class="col-xs-3" ng-repeat="screenshot in project.selected.scenario.passback.row.screenshots">
+                    <a ng-click="Lightbox.openModal(project.selected.scenario.passback.row.screenshots, $index)">
+                      <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                    </a>
+                </div>
+              </div>
+              <div class="divider" ng-show="project.selected.scenario.passback.column && project.selected.scenario.passback.row"></div>
+              <div ng-show="project.selected.scenario.passback.column">
+                <h3>{{project.selected.scenario.passback.column.name}}</h3>
+                <h5>{{project.selected.scenario.passback.column.desc}}</h5>
+                <h4>Questions</h4>
+                <div class="col-sm-6" ng-repeat="question in project.selected.scenario.passback.column.questions">
+                  <p>{{question.name}}</p>
+                  <h5>{{question.desc}}</h5>
+                  <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                </div>
+              </div>
+            </teds-pivot-table>
           </teds-filter-list>
         </teds-dropdown>
 
@@ -97,49 +133,84 @@
                <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
            </div>
            <teds-filter-list list="project.configurationsList" passback="project.selected.configuration">
-              <h4>
-                Configuration - {{project.selected.configuration.artifactName}}, {{project.selected.configuration.scenarioName}}
-              </h4>
-              <div class="col-xs-6">
-                <h5>Assessment Configuration</h5>
-                <dl>
-                  <dt>Artifact</dt>
-                  <dd>
-                    <h6>{{project.selected.configuration.artifactName}} - {{project.selected.configuration.artifactTypeName}}</h6>
-                    <h6>{{project.selected.configuration.artifactDescription}}</h6>
-                  </dd>
-                  <dt>Scenario</dt>
-                  <dd>
-                    <h6>{{project.selected.configuration.scenarioName}}</h6>
-                    <h6>{{project.selected.configuration.scenarioDescription}}</h6>
-                  </dd>
-                  <dt>Persona</dt>
-                  <dd>
-                    <h6>{{project.selected.configuration.personaName}}</h6>
-                    <h6>{{project.selected.configuration.personaDescription}}</h6>
-                  </dd>
-                  <dt>Role</dt>
-                  <dd>
-                    <h6>{{project.selected.configuration.roleName}}</h6>
-                    <h6>{{project.selected.configuration.roleDesc}}</h6>
-                  </dd>
-                </dl>
+              <div class="clearfix">
+                <h4>
+                  Configuration - {{project.selected.configuration.artifactName}}, {{project.selected.configuration.scenarioName}}
+                </h4>
+                <div class="col-xs-6">
+                  <h5>Assessment Configuration</h5>
+                  <dl>
+                    <dt>Artifact</dt>
+                    <dd>
+                      <h6>{{project.selected.configuration.artifactName}} - {{project.selected.configuration.artifactTypeName}}</h6>
+                      <h6>{{project.selected.configuration.artifactDescription}}</h6>
+                    </dd>
+                    <dt>Scenario</dt>
+                    <dd>
+                      <h6>{{project.selected.configuration.scenarioName}}</h6>
+                      <h6>{{project.selected.configuration.scenarioDescription}}</h6>
+                    </dd>
+                    <dt>Persona</dt>
+                    <dd>
+                      <h6>{{project.selected.configuration.personaName}}</h6>
+                      <h6>{{project.selected.configuration.personaDescription}}</h6>
+                    </dd>
+                    <dt>Role</dt>
+                    <dd>
+                      <h6>{{project.selected.configuration.roleName}}</h6>
+                      <h6>{{project.selected.configuration.roleDesc}}</h6>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="col-xs-6">
+                  <h5>Attribute Configuration</h5>
+                  <h6><b>{{project.selected.configuration.attributeConfigurationName}}</b></h6>
+                  <h6>{{project.selected.configuration.attributeConfigurationDesc}}</h6>
+                </div>
+                <div class="col-xs-6">
+                  <h5>Question Configuration</h5>
+                  <h6><b>{{project.selected.configuration.questionConfigurationName}}</b></h6>
+                  <h6>{{project.selected.configuration.questionConfigurationDesc}}</h6>
+                </div>
+                <div class="col-xs-6">
+                  <h5>UI Configuration</h5>
+                  <h6><b>{{project.selected.configuration.uiConfigurationName}}</b></h6>
+                  <h6>{{project.selected.configuration.uiConfigurationDesc}}</h6>
+                </div>
               </div>
-              <div class="col-xs-6">
-                <h5>Attribute Configuration</h5>
-                <h6><b>{{project.selected.configuration.attributeConfigurationName}}</b></h6>
-                <h6>{{project.selected.configuration.attributeConfigurationDesc}}</h6>
-              </div>
-              <div class="col-xs-6">
-                <h5>Question Configuration</h5>
-                <h6><b>{{project.selected.configuration.questionConfigurationName}}</b></h6>
-                <h6>{{project.selected.configuration.questionConfigurationDesc}}</h6>
-              </div>
-              <div class="col-xs-6">
-                <h5>UI Configuration</h5>
-                <h6><b>{{project.selected.configuration.uiConfigurationName}}</b></h6>
-                <h6>{{project.selected.configuration.uiConfigurationDesc}}</h6>
-              </div>
+
+              <teds-pivot-table class="clearfix" teds-data="project.selected.configuration.stats" teds-options="pivotOptions" teds-passback="project.selected.configuration.passback">
+                <div ng-show="project.selected.configuration.passback.row">
+                  <h3>{{project.selected.configuration.passback.row.name}}</h3>
+                  <h5>{{project.selected.configuration.passback.row.desc}}</h5>
+                  <h4>Comments</h4>
+                  <ul class="list-unstyled">
+                    <li ng-repeat="comment in project.selected.configuration.passback.row.comments">
+                      {{comment.comment}}
+                    </li>
+                  </ul>
+
+                  <h4>Screenshots</h4>
+                  <div class="col-xs-3" ng-repeat="screenshot in project.selected.configuration.passback.row.screenshots">
+                      <a ng-click="Lightbox.openModal(project.selected.configuration.passback.row.screenshots, $index)">
+                        <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                      </a>
+                  </div>
+                </div>
+                <div class="divider" ng-show="project.selected.configuration.passback.column && project.selected.configuration.passback.row"></div>
+                <div ng-show="project.selected.configuration.passback.column">
+                  <h3>AssessmentID: {{project.selected.configuration.passback.column.name}}</h3>
+                  <h5>Owner: {{project.selected.configuration.passback.column.email}}</h5>
+                  <h4>Questions</h4>
+                  <div class="col-sm-6" ng-repeat="question in project.selected.configuration.passback.column.questions">
+                    <p>{{question.name}}</p>
+                    <h5>{{question.desc}}</h5>
+                    <h6>Answer: {{question.responses[0].answer}}</h6>
+                    <!-- <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3> -->
+                  </div>
+                </div>
+              </teds-pivot-table>
+
            </teds-filter-list>
         </teds-dropdown>
       </div>

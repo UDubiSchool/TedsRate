@@ -23,6 +23,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
     $scope.ready = false;
     $scope.finished = false;
     $scope.alerts = [];
+    $scope.Lightbox = Lightbox;
 
     var panels = getPanels();
     var authCookie = $cookies.get('teds_userIDAuthed');

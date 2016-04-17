@@ -65,18 +65,19 @@ class Stats_model extends CI_Model {
     public function byConfiguration ($projectID, $configurationID)
     {
         return $this->db
-                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, s.scenarioID, s.scenarioName, s.scenarioDescription, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
+                                ->select(' attr.attributeID, attr.attributeName, attr.attributeLaymanDesc as attributeDesc, art.artifactID, art.artifactName, art.artifactDescription, s.scenarioID, s.scenarioName, s.scenarioDescription, a.assessmentID, a.userID, u.email, a.completionDate, AVG(r.ratingValue) as average, STDDEV_SAMP(r.ratingValue) as standardDeviation')
                                 ->from("project p")
                                 ->join('assessmentConfiguration ac', 'ac.projectID = p.projectID')
                                 ->join('artifact art', 'art.artifactID = ac.artifactID')
                                 ->join('scenario s', 's.scenarioID = ac.scenarioID')
                                 ->join('configuration c', 'c.assessmentConfigurationID = ac.assessmentConfigurationID')
                                 ->join('assessment a', 'a.configurationID = c.configurationID')
+                                ->join('user u', 'u.userID = a.userID')
                                 ->join('rating r', 'r.assessmentID = a.assessmentID')
                                 ->join('attribute attr', 'attr.attributeID = r.attributeID')
                                 ->where('p.projectID', $projectID)
                                 ->where('c.configurationID', $configurationID)
-                                ->group_by(array("attr.attributeID", "c.configurationID"))
+                                ->group_by(array("attr.attributeID", "a.assessmentID"))
                                 ->get()
                                 ->result_array();
     }

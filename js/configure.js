@@ -25,7 +25,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
     $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService) {
+app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox) {
 
     // get initial project data for page load
     projectService.getBasic().then(function(response){
@@ -645,8 +645,10 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
   };
 });
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider, $urlRouterProvider, LightboxProvider) {
   //
+    LightboxProvider.templateUrl = 'partials/lightbox.html';
+    LightboxProvider.fullScreenMode = true;
   // For any unmatched url, redirect to /projects
   $urlRouterProvider.otherwise("/projects");
   //

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Stats extends CI_Controller {
+class Reports extends CI_Controller {
 
     public function __construct()
     {
@@ -9,7 +9,7 @@ class Stats extends CI_Controller {
         $this->load->model('stats_model', 'stats');
     }
 
-    public function byArtifact($projectID, $artifactID)
+    public function artifact($projectID, $artifactID)
     {
         $column = [
             'identifier' => 'scenarioID',
@@ -42,7 +42,30 @@ class Stats extends CI_Controller {
             $final['rows'][$key]['comments'] = $this->comment->getProjectArtifactAttribute($value['id'], $artifactID, $projectID);
         }
 
-        echoJSON($final);
+        $this->load->model('artifact_model', 'artifact');
+        $this->load->model('project_model', 'project');
+        $details = $this->artifact->get($artifactID);
+        $details = $details[0];
+        $project = $this->project->get($projectID);
+        $project = $project[0];
+        $final = [
+            'stats' => $final,
+            'details' => [
+                'project' => [
+                    'name' => $project['projectName'],
+                    'desc' => $project['projectDescription']
+                ],
+                'item' => [
+                    'name' => $details['artifactName'],
+                    'desc' => $details['artifactDescription'],
+                    'url' => $details['artifactURL']
+                ]
+            ]
+        ];
+
+        $this->load->view('report', ['final' => $final]);
+
+        // echoJSON($final);
     }
 
     public function byScenario($projectID, $scenarioID)

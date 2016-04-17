@@ -1,6 +1,37 @@
 <!-- <button print-btn>Print</button> -->
-<div ng-transclude></div>
-<div class="menu">
+<style>
+  .pivot-table .selected {
+    background-color: #ddd;
+  }
+
+  teds-pivot-table .menu {
+    border-top: 1px solid #ededed;
+    margin-top:10px;
+    padding-top:10px;
+  }
+
+  teds-pivot-table .divider {
+    margin:10px 0px;
+    border-top: 1px solid #ededed;
+  }
+
+  teds-pivot-table .details-panel {
+    /*background-color: #ededed;*/
+    padding:10px 5px;
+    margin-top:10px;
+    border-top: 1px solid #ededed;
+  }
+
+  teds-pivot-table .clickable:hover {
+    background-color: #eee;
+  }
+
+  teds-pivot-table .selected:hover {
+    background-color: #ddd;
+  }
+</style>
+<div class="clearfix details-panel" ng-if="selected.selected" ng-transclude></div>
+<div class="menu clearfix">
   <div class="pull-left">
     <span>Stat to sort by:</span>
     <select class="form-control" ng-model="sort.stat">
@@ -16,18 +47,18 @@
       <option ng-repeat="column in tedsData.columns" ng-value="column.id">{{column.name}}</option>
     </select>
   </div>
-  <button class="btn btn-primary" ng-click="sort.reverse = !sort.reverse"><i class="fa fa-refresh"></i> Flip</button>
+  <button class="btn btn-primary" style="margin-top:1.5em" ng-click="sort.reverse = !sort.reverse"><i class="fa fa-refresh"></i> Flip</button>
 </div>
-<table class="table pivot-table" print-section>
+<table class="table pivot-table">
   <thead>
     <th></th>
-    <th ng-repeat="column in tedsData.columns" ng-click="selectCol(column)">{{column.name}}</th>
+    <th class="clickable" ng-class="{selected: selected.column == column}" ng-repeat="column in tedsData.columns" ng-click="selectCol(column)">{{column.name}}</th>
     <th>Total Average</th>
     <th>Total Standard Deviation</th>
   </thead>
   <tbody>
     <tr ng-repeat="(rowKey, row) in tedsData.rows | toArray | orderBy: rowOrder : sort.reverse" ng-click="selectRow(row)">
-      <td>{{row.name}}</td>
+      <td class="clickable" ng-class="{selected: selected.row == row}">{{row.name}}</td>
       <td ng-repeat="cell in row.cells">
         <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.average - options.min) / dataRange) }"></div>
         <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.average - options.min) / dataRange) }"></div>

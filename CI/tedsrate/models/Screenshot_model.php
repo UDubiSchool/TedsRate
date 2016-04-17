@@ -65,6 +65,22 @@ class Screenshot_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getProjectConfigurationAttribute ($attributeID, $configurationID, $projectID)
+    {
+        return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
+                              ->from("screenshot s")
+                              ->join('rating r', 'r.ratingID = s.ratingID')
+                              ->join('assessment a', 'a.assessmentID = r.assessmentID')
+                              ->join('configuration c', 'c.configurationID = a.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->where('c.configurationID', $configurationID)
+                              ->where('ac.projectID', $projectID)
+                              ->where('r.attributeID', $attributeID)
+                              ->get()
+                              ->result_array();
+    }
+
     public function getAssessment ($assessmentID)
     {
         return $this->db

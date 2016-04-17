@@ -6,9 +6,9 @@ body {font:400 12px Arial;}
 
 #sitecontainer {position:relative;margin:0 auto;padding:0;background:#fff;padding:0 20px 20px;border:1px solid #ddd;border-top:0;padding-top:20px;}
 
-h1{font:400 24px arial;}
-h2{font:400 18px arial;border-top:1px solid #888;border-bottom:2px solid #888;margin-bottom:10px;padding:5px 0;}
-h3 {font:400 18px arial;}
+/*h1{font:400 24px arial;}*/
+/*h2{font:400 18px arial;border-top:1px solid #888;border-bottom:2px solid #888;margin-bottom:10px;padding:5px 0;}*/
+/*h3 {font:400 18px arial;}*/
 
 #whatsnew .post {margin-bottom:15px;padding-bottom:15px;border-bottom:1px dotted #888;}
 #whatsnew .post:last-child {border:0;}
