@@ -94,7 +94,7 @@
         </div>
         <div class="col-xs-10 center-block content-wrapper">
             <h1 ng-if="reportData.details.item.url">
-                <a ng-href="reportData.details.item.url">
+                <a ng-href="{{reportData.details.item.url}}">
                     {{reportData.details.item.name}}
                 </a>
             </h1>

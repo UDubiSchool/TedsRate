@@ -22,7 +22,7 @@
 
           <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
             <!-- {{project.selected.artifact}} -->
-            <h2><a ng-href="project.selected.artifact.artifactURL">{{project.selected.artifact.artifactName}}</a></h2>
+            <h2><a ng-href="{{project.selected.artifact.artifactURL}}">{{project.selected.artifact.artifactName}}</a></h2>
             <h5>Artifact Type: {{project.selected.artifact.artifactTypeName}}</h5>
             <p>{{project.selected.artifact.artifactDescription}}</p>
             <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions" teds-passback="project.selected.artifact.passback">
