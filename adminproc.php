@@ -280,7 +280,7 @@ if ($source == "assessment") {
         // auth okay, setup session
         $_SESSION['user_email'] = $_POST['user_email'];
         $_SESSION['teds.userID'] = $userID;
-        $source_url             = "admin.php?notice=success";
+        $source_url             = "admin.php";
 
 
     } else {

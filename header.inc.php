@@ -39,7 +39,7 @@
     <link href="css/sb-admin.css" rel="stylesheet">
     <link href="css/nv.d3.css" rel="stylesheet">
     <link href="js/angular/common/directives/angularPrint/angularPrint.css" rel="stylesheet">
-    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
 
     <link rel="stylesheet" type="text/css" href="css/liam.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">

@@ -7,6 +7,7 @@ class Project extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('project_model', 'project');
+        $this->load->model('assessment_model', 'assessment');
     }
 
     // public function get($id = null, $assoc = false)
@@ -19,12 +20,10 @@ class Project extends CI_Controller {
             $tmp = $this->project->get($id);
         }
 
-        // if($assoc == 'true') {
-        //     foreach ($tmp as $key => $value) {
-        //         $tmp[$key] = $this->getAssoc($value);
-        //     }
-        // }
-        // $data['projects'] = $tmp;
+        foreach ($tmp as $key => $project) {
+            // $stats = $this->assessment->getProjectStats($project['projectID']);
+            $tmp[$key]['counts'] = $this->assessment->getProjectStats($project['projectID']);
+        }
         echoJSON($tmp);
     }
 

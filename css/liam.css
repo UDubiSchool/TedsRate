@@ -23,3 +23,19 @@
  .img-thumbnail:hover {
     border:1px solid #bbb;
 }
+
+nav .disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  /*color: grey;*/
+}
+
+.spin {
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+}
+
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

@@ -1,176 +1,62 @@
 <?php
-// ============================== authentication ===============================
     require_once "session_inc.php";
-// ============================== authentication ===============================
-
-    require_once "dbconnect.php";
-    try {
-    $dbq = db_connect();
+    require_once "header.inc.php";
 ?>
+<script src="js/d3.min.js"></script>
+<script src="js/nv.d3.min.js"></script>
+<script src="js/angular/angular.min.js" type="text/javascript"></script>
+<script src="js/angular/angular-animate.js" type="text/javascript"/></script>
+<script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
+<script src="js/angular/angular-ui-router.min.js" type="text/javascript"/></script>
+<script src="js/angular/elastic.js" type="text/javascript" /></script>
+<script src="js/angular/validate.js" type="text/javascript" /></script>
+<script src="js/angular/angular-cookies.js"></script>
+<script src="js/angular/angular-bootstrap-lightbox.js"></script>
+<script src="js/angular/ng-file-upload-shim.min.js"></script>
+<script src="js/angular/ng-file-upload.min.js"></script>
+<script src="js/angular/angular-nvd3.min.js"></script>
+<script src="js/angular/angular-spinners.min.js"></script>
 
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<script src="js/angular/models/tedsModels.js"></script>
+<script src="js/angular/common/directives/dropdown/dropdown.directive.js"></script>
+<script src="js/angular/common/directives/filterList/filterList.directive.js"></script>
+<script src="js/angular/common/directives/pivotTable/pivotTable.directive.js"></script>
+<script src="js/angular/common/directives/angularPrint/angularPrint.js"></script>
+<script src="js/angular/common/toArray.js"></script>
+<script src="js/configure.js" type="text/javascript"></script>
+<div id="wrapper" ng-app="administrator" ng-controller="adminCtrl">
+     <!-- Sidebar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="admin.php">TEDSRate Admin</a>
+        </div>
 
-    <title>Dashboard - SB Admin</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-
-    <!-- Add custom CSS here -->
-    <link href="css/sb-admin.css" rel="stylesheet">
-    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
-    <!-- Page Specific CSS -->
-    <!-- <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css"> -->
-    <link rel="stylesheet" href="css/main.css">
-    <script src="js/jquery-1.11.0.min.js"></script>
-
-  </head>
-
-  <body>
-
-    <div id="wrapper">
-
-        <?php
-        include "nav_part.inc.php";
-        ?>
-      <div id="page-wrapper">
-
-        <div class="row">
-          <div class="col-lg-12">
-            <h1>Dashboard <small>Completed Assessments</small></h1>
-            <ol class="breadcrumb">
-              <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
-            </ol>
-          </div>
-        </div><!-- /.row -->
-
-<?php
-    // outer level query
-    $query = "SELECT CONCAT(u.firstName, ' ', u.lastName) AS userName,
-                u.email AS email,
-                ass.completionDate AS completeDate,
-                pjt.projectName AS projectName,
-                a.artifactName AS artifactName,
-                ass.assessmentID
-
-                FROM assessment ass
-                LEFT JOIN user u ON ass.userID = u.userID
-                LEFT JOIN configuration con ON con.configurationID = ass.configurationID
-                LEFT JOIN assessmentConfiguration ascon ON ascon.assessmentConfigurationID = con.assessmentConfigurationID
-                LEFT JOIN persona p ON ascon.personaID = p.personaID
-                LEFT JOIN scenario s ON ascon.scenarioID = s.scenarioID
-                LEFT JOIN project pjt ON pjt.projectID = ascon.projectID
-                LEFT JOIN artifact a ON a.artifactID = ascon.artifactID
-                WHERE ass.completionDate IS NOT NULL
-                ORDER BY completeDate DESC
-                LIMIT 25
-                ";
-
-        $first_level_result = $dbq->prepare($query);
-        $first_level_result->execute();
-        while ($row = $first_level_result->fetch(PDO::FETCH_ASSOC)) {
-?>
-
-<?php
-    // inner level query
-        $inner_query = "SELECT a.attributeName AS cName,
-                        r.ratingValue
-                        FROM assessment ass
-                        LEFT JOIN rating r ON ass.assessmentID = r.assessmentID
-                        LEFT JOIN attribute a ON a.attributeID = r.attributeID
-                        LEFT JOIN category c ON c.attributeID = a.attributeID
-                        where ass.assessmentID = " . $row['assessmentID'];
-        $stmt = $dbq->prepare($inner_query);
-        $stmt->execute();
-        $second_level_result = $stmt->fetchAll();
-        $half = count($second_level_result) / 2;
-        $sec_first_half = array_slice($second_level_result, 0, $half);
-        $sec_second_half = array_slice($second_level_result, $half + 1);
-
-?>
-
-        <div class="row">
-            <div class="panel-group urp_record_group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<?= $row['assessmentID'] ?>">
-                                <?= $row['userName'] . " | " . $row['projectName'] . " | " . $row['artifactName'] ?>
-                                <span class="left-small"><?= " -- Completed at: " . $row['completeDate'] ?></span>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapse_<?= $row['assessmentID'] ?>" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <div class="half-table-wrapper">
-                                <table class="tbl_first_half table table-bordered table-hover table-striped tablesorter">
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>User rating score</th>
-                                    </tr>
-                                    <?php
-                                    for ($i = 0; $i < count($sec_first_half); $i++) {
-                                        print "<tr class='data_wrapper'><td>" . $sec_first_half[$i]['cName'] . "</td>";
-                                        print "<td>" . $sec_first_half[$i]['ratingValue'] . "</td></tr>";
-                                    }
-                                    ?>
-                                </table>
-                            </div>
-                            <div class="half-table-wrapper">
-                                <table class="tbl_second_half table table-bordered table-hover table-striped tablesorter">
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>User rating score</th>
-                                    </tr>
-                                    <?php
-                                    for ($i = 0; $i < count($sec_second_half); $i++) {
-                                        print "<tr class='data_wrapper'><td>" . $sec_second_half[$i]['cName'] . "</td>";
-                                        print "<td>" . $sec_second_half[$i]['ratingValue'] . "</td></tr>";
-                                    }
-                                    ?>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /accordion -->
-        </div><!-- /.row -->
-<?php
-        }
-?>
-
-
-        <?php
-            require_once "logout_form.inc.php";
-        ?>
-      </div><!-- /#page-wrapper -->
-      <div id="noticeInfo"></div>
-    </div><!-- /#wrapper -->
-
-  <!-- /template -->
-
-
-
-
-    <script src="js/bootstrap.js"></script>
-
-    <!-- Page Specific Plugins -->
-    <script src="js/main.js"></script>
-    <script src="js/notice.js"></script>
-  <!-- /template plugins -->
-    <?php
-        require_once "notice.inc.php";
-    ?>
-</body>
-</html>
-<?php
-    } catch (PDOException $e) {
-        print ("getMessage(): " . $e->getMessage () . "\n");
-    }
-?>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav side-nav">
+                <li ui-sref-active="active" class="">
+                    <a href ui-sref="dashboard" class="disabled"><i class="fa fa-dashboard"></i> Dashboard</a>
+                </li>
+                <li ui-sref-active="active" class="">
+                    <a href ui-sref="projects">Projects</a>
+                </li>
+                 <!--
+                 <li class=""><a class="disabled" href="admin_rp.php"><i class="fa fa-file-text"></i> Assessments</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_project.php">Projects</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_atft.php">Artifacts</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_scenario.php">Scenarios</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_persona.php">Personas</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_user.php">Users</a></li>
+                 <li class=""><a class="disabled" href="admin_pjt_cate.php">Categories</a></li> -->
+            </ul>
+        <ul class="nav navbar-nav navbar-right navbar-user">
+           <li>
+               <a id="logout" href="logout.php">Log out</a>
+           </li>
+        </ul>
+     </div><!-- /.navbar-collapse -->
+    </nav>
+     <div id=page-wrapper ui-view></div>
+</div>

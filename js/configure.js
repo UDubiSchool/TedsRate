@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint', 'toArray', 'nvd3']);
+var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint', 'toArray', 'nvd3', 'angularSpinners']);
 
 app.service('alertService', function(){
     this.alerts = [];
@@ -27,252 +27,271 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
 
 app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox) {
 
+    $scope.pivotOptions = {
+        colorize: true,
+        min: 1,
+        max: 5,
+        minColor: 'yellow',
+        maxColor: 'green'
+    };
+
+    $scope.sampleChartOptions = {
+        chart: {
+            type: 'discreteBarChart',
+            height: 300,
+            width:400,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 50,
+                left: 55
+            },
+            x: function(d){return d.label;},
+            y: function(d){return d.value;},
+            showValues: true,
+            tooltips: false,
+            valueFormat: function(d){
+                return d3.format(',.0f')(d);
+            },
+            duration: 500,
+            xAxis: {
+                axisLabel: 'Answer'
+            },
+            yAxis: {
+                axisLabel: 'Count',
+                axisLabelDistance: -15,
+                margin: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                }
+            },
+            discretebar: {
+                width: 100,
+                height: 100,
+                margin: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                }
+            }
+        }
+    };
+
     // get initial project data for page load
     projectService.getBasic().then(function(response){
         var deferred = $q.defer();
         var tmp = response.data;
         angular.forEach(tmp, function(project, projectKey){
             project.collapsed = true;
+            project.loaded = false;
+            project.loading = false;
         });
         deferred.resolve(tmp);
         return deferred.promise;
     }).then(function(processed){
         $scope.projects = processed;
-
-        // get all data after intial project data load
-        projectService.getAll().then(function(response) {
-            var deferred = $q.defer();
-            console.log(response);
-            var tmp = response.data;
-            angular.forEach(tmp, function(project, projectKey){
-                project.collapsed = true;
-                project.selected ={
-                    artifact: '',
-                    scenario: '',
-                    persona: '',
-                    role: '',
-                    assessment: '',
-                    configuration: ''
-                };
-                $scope.pivotOptions = {
-                    colorize: true,
-                    min: 1,
-                    max: 5,
-                    minColor: 'yellow',
-                    maxColor: 'green'
-                };
-
-                $scope.sampleChartOptions = {
-                    chart: {
-                        type: 'discreteBarChart',
-                        height: 300,
-                        width:400,
-                        margin : {
-                            top: 20,
-                            right: 20,
-                            bottom: 50,
-                            left: 55
-                        },
-                        x: function(d){return d.label;},
-                        y: function(d){return d.value;},
-                        showValues: true,
-                        tooltips: false,
-                        valueFormat: function(d){
-                            return d3.format(',.0f')(d);
-                        },
-                        duration: 500,
-                        xAxis: {
-                            axisLabel: 'Answer'
-                        },
-                        yAxis: {
-                            axisLabel: 'Count',
-                            axisLabelDistance: -15,
-                            margin: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        },
-                        discretebar: {
-                            width: 100,
-                            height: 100,
-                            margin: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    }
-                };
-
-                $scope.$watch(function () {
-                    return project.selected.artifact;
-                }, function(artifact){
-                    if(artifact != undefined && artifact !=null && artifact !='') {
-                        statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
-                            project.selected.artifact.stats = stats.data;
-                            project.selected.artifact.passback = {};
-                            console.log(project.selected.artifact);
-                        });
-                        console.log('a change happened!');
-                    }
-                }, false);
-
-                $scope.$watch(function () {
-                    return project.selected.scenario;
-                }, function(scenario){
-                    if(scenario != undefined && scenario !=null && scenario !='') {
-                        statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
-                            project.selected.scenario.stats = stats.data;
-                            project.selected.scenario.passback = {};
-                            console.log(stats);
-                        });
-                        console.log('a change happened!');
-                    }
-                }, false);
-
-                $scope.$watch(function () {
-                    return project.selected.configuration;
-                }, function(configuration){
-                    if(configuration != undefined && configuration !=null && configuration !='') {
-                        statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
-                            project.selected.configuration.stats = stats.data;
-                            project.selected.configuration.passback = {};
-                            console.log(stats);
-                        });
-                        console.log('a change happened!');
-                    }
-                }, false);
-
-
-                // set up the filterlists
-
-                project.scenariosList = [];
-                project.scenariosStats = {
-                    Count: project.scenarios.length
-                };
-                angular.forEach(project.scenarios, function(scenario, scenarioKey) {
-                    if(scenario !== undefined && scenario !== null && scenario !== '') {
-                        var tmp = {
-                            details: scenario,
-                            listData: {
-                                name: scenario.scenarioName,
-                                description: scenario.scenarioDescription,
-                            }
-                        };
-                        project.scenariosList.push(tmp);
-                    }
-
-                });
-
-
-                project.artifactsList = [];
-                project.artifactsStats = {
-                    Count: project.artifacts.length
-                };
-                angular.forEach(project.artifacts, function(artifact, artifactKey) {
-                    if(artifact !== undefined && artifact !== null && artifact !== '') {
-                        var tmp = {
-                            details: artifact,
-                            listData: {
-                                name: artifact.artifactName,
-                                description: artifact.artifactDescription,
-                            },
-                            specialFields: {
-                                link: {
-                                    value: decodeURIComponent(artifact.artifactURL),
-                                    type: 'link'
-                                }
-                            }
-                        };
-                        project.artifactsList.push(tmp);
-                    }
-
-                });
-
-                project.assessmentsList = [];
-                project.assessmentsStats = {
-                    Count: project.assessments.length
-                };
-                angular.forEach(project.assessments, function(assessment, assessmentKey) {
-                    if(assessment !== undefined && assessment !== null && assessment !== '') {
-                        var tmp = {
-                            details: assessment,
-                            listData: {
-                                project: assessment.projectName,
-                                artifact: assessment.artifactName,
-                                persona: assessment.personaName,
-                                role: assessment.roleName,
-                                scenario: assessment.scenarioName,
-                                user: assessment.email,
-                                configuration: assessment.attributeConfigurationName,
-                            },
-                            specialFields: {
-                                link: {
-                                    value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
-                                    type: 'link'
-                                },
-                                issued: {
-                                    value: assessment.issuanceDate,
-                                    preface: 'Issued on',
-                                    type: 'date'
-                                },
-                                completion: {
-                                    value: assessment.completionDate,
-                                    preface: 'Completed on',
-                                    type: 'date'
-                                },
-                                edited: {
-                                    value: assessment.lastEditDate,
-                                    preface: 'Last Edited on',
-                                    type: 'date'
-                                }
-                            }
-                        };
-                        project.assessmentsList.push(tmp);
-                    }
-
-                });
-
-                project.configurationsList = [];
-                project.configurationsStats = {
-                    Count: project.configurations.length
-                };
-                angular.forEach(project.configurations, function(configuration, configurationKey) {
-                    if(configuration !== undefined && configuration !== null && configuration !== '') {
-                        var tmp = {
-                            details: configuration,
-                            listData: {
-                                // configuration: configuration.configurationName,
-                                attributes: configuration.attributeConfigurationName,
-                                questions: configuration.questionConfigurationName,
-                                interface: configuration.uiConfigurationName,
-                                artifact: configuration.artifactName,
-                                scenario: configuration.scenarioName,
-                                persona: configuration.personaName,
-                                role: configuration.roleName,
-                            },
-                            specialFields: {
-                                link: {
-                                    value: 'start.php?c=' + configuration.configurationIDHashed,
-                                    type: 'link'
-                                }
-                            }
-                        };
-                        project.configurationsList.push(tmp);
-                    }
-
-                });
-
-            });
-            deferred.resolve(tmp);
-            return deferred.promise;
-        }).then(function(processed){
-            $scope.projects = processed;
-        });
     });
+
+    $scope.loadProject = function (project, index) {
+        if(!project.loaded) {
+            // get all data after intial project data load
+            $scope.projects[index].loading = true;
+            projectService.get(project.projectID).then(function(response) {
+                var deferred = $q.defer();
+
+                console.log('loading a project');
+                console.log(response);
+
+                var tmp = response.data;
+                angular.forEach(tmp, function(project, projectKey){
+                    project.collapsed = true;
+                    project.selected ={
+                        artifact: '',
+                        scenario: '',
+                        persona: '',
+                        role: '',
+                        assessment: '',
+                        configuration: ''
+                    };
+
+
+                    $scope.$watch(function () {
+                        return project.selected.artifact;
+                    }, function(artifact){
+                        if(artifact != undefined && artifact !=null && artifact !='') {
+                            statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
+                                project.selected.artifact.stats = stats.data;
+                                project.selected.artifact.passback = {};
+                                console.log(project.selected.artifact);
+                            });
+                            console.log('a change happened!');
+                        }
+                    }, false);
+
+                    $scope.$watch(function () {
+                        return project.selected.scenario;
+                    }, function(scenario){
+                        if(scenario != undefined && scenario !=null && scenario !='') {
+                            statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
+                                project.selected.scenario.stats = stats.data;
+                                project.selected.scenario.passback = {};
+                                console.log(stats);
+                            });
+                            console.log('a change happened!');
+                        }
+                    }, false);
+
+                    $scope.$watch(function () {
+                        return project.selected.configuration;
+                    }, function(configuration){
+                        if(configuration != undefined && configuration !=null && configuration !='') {
+                            statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
+                                project.selected.configuration.stats = stats.data;
+                                project.selected.configuration.passback = {};
+                                console.log(stats);
+                            });
+                            console.log('a change happened!');
+                        }
+                    }, false);
+
+
+                    // set up the filterlists
+
+                    project.scenariosList = [];
+                    project.scenariosStats = {
+                        Count: project.scenarios.length
+                    };
+                    angular.forEach(project.scenarios, function(scenario, scenarioKey) {
+                        if(scenario !== undefined && scenario !== null && scenario !== '') {
+                            var tmp = {
+                                details: scenario,
+                                listData: {
+                                    name: scenario.scenarioName,
+                                    description: scenario.scenarioDescription,
+                                }
+                            };
+                            project.scenariosList.push(tmp);
+                        }
+
+                    });
+
+
+                    project.artifactsList = [];
+                    project.artifactsStats = {
+                        Count: project.artifacts.length
+                    };
+                    angular.forEach(project.artifacts, function(artifact, artifactKey) {
+                        if(artifact !== undefined && artifact !== null && artifact !== '') {
+                            var tmp = {
+                                details: artifact,
+                                listData: {
+                                    name: artifact.artifactName,
+                                    description: artifact.artifactDescription,
+                                },
+                                specialFields: {
+                                    link: {
+                                        value: decodeURIComponent(artifact.artifactURL),
+                                        type: 'link'
+                                    }
+                                }
+                            };
+                            project.artifactsList.push(tmp);
+                        }
+
+                    });
+
+                    project.assessmentsList = [];
+                    project.assessmentsStats = {
+                        Count: project.assessments.length
+                    };
+                    angular.forEach(project.assessments, function(assessment, assessmentKey) {
+                        if(assessment !== undefined && assessment !== null && assessment !== '') {
+                            var tmp = {
+                                details: assessment,
+                                listData: {
+                                    project: assessment.projectName,
+                                    artifact: assessment.artifactName,
+                                    persona: assessment.personaName,
+                                    role: assessment.roleName,
+                                    scenario: assessment.scenarioName,
+                                    user: assessment.email,
+                                    configuration: assessment.attributeConfigurationName,
+                                },
+                                specialFields: {
+                                    link: {
+                                        value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
+                                        type: 'link'
+                                    },
+                                    issued: {
+                                        value: assessment.issuanceDate,
+                                        preface: 'Issued on',
+                                        type: 'date'
+                                    },
+                                    completion: {
+                                        value: assessment.completionDate,
+                                        preface: 'Completed on',
+                                        type: 'date'
+                                    },
+                                    edited: {
+                                        value: assessment.lastEditDate,
+                                        preface: 'Last Edited on',
+                                        type: 'date'
+                                    }
+                                }
+                            };
+                            project.assessmentsList.push(tmp);
+                        }
+
+                    });
+
+                    project.configurationsList = [];
+                    project.configurationsStats = {
+                        Count: project.configurations.length
+                    };
+                    angular.forEach(project.configurations, function(configuration, configurationKey) {
+                        if(configuration !== undefined && configuration !== null && configuration !== '') {
+                            var tmp = {
+                                details: configuration,
+                                listData: {
+                                    // configuration: configuration.configurationName,
+                                    attributes: configuration.attributeConfigurationName,
+                                    questions: configuration.questionConfigurationName,
+                                    interface: configuration.uiConfigurationName,
+                                    artifact: configuration.artifactName,
+                                    scenario: configuration.scenarioName,
+                                    persona: configuration.personaName,
+                                    role: configuration.roleName,
+                                },
+                                specialFields: {
+                                    link: {
+                                        value: 'start.php?c=' + configuration.configurationIDHashed,
+                                        type: 'link'
+                                    }
+                                }
+                            };
+                            project.configurationsList.push(tmp);
+                        }
+
+                    });
+
+                    project.loaded = true;
+                    project.collapsed = false;
+                    project.loading = false;
+                }); // end foreach project
+
+                deferred.resolve(tmp);
+                return deferred.promise;
+            }).then(function(processed){
+
+                $scope.projects[index] = processed[0];
+            });
+        } else {
+            $scope.projects[index].collapsed = !$scope.projects[index].collapsed;
+        }
+    };
 
 
     userService.getAll().then(function(response){

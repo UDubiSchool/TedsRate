@@ -80,6 +80,40 @@ class Assessment_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getProjectStats ($projectID)
+    {
+        $completed = $this->db->from("assessment a")
+                              ->join('configuration c', 'a.configurationID = c.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->join('attributeConfiguration atrc', 'atrc.attributeConfigurationID = c.attributeConfigurationID')
+                              ->join('project p', 'p.projectID = ac.projectID')
+                              ->join('artifact art', 'art.artifactID = ac.artifactID')
+                              ->join('scenario s', 's.scenarioID = ac.scenarioID')
+                              ->join('persona per', 'per.personaID = ac.personaID')
+                              ->join('role r', 'r.roleID = ac.roleID')
+                              ->join('user u', 'u.userID = a.userID')
+                              ->where("p.projectID", $projectID)
+                              ->where("a.completionDate IS NOT NULL")
+                              ->count_all_results();
+        // $this->db->reset_query();
+        $assessments = $this->db->from("assessment a")
+                              ->join('configuration c', 'a.configurationID = c.configurationID')
+                              ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                              ->join('attributeConfiguration atrc', 'atrc.attributeConfigurationID = c.attributeConfigurationID')
+                              ->join('project p', 'p.projectID = ac.projectID')
+                              ->join('artifact art', 'art.artifactID = ac.artifactID')
+                              ->join('scenario s', 's.scenarioID = ac.scenarioID')
+                              ->join('persona per', 'per.personaID = ac.personaID')
+                              ->join('role r', 'r.roleID = ac.roleID')
+                              ->join('user u', 'u.userID = a.userID')
+                              ->where("p.projectID", $projectID)
+                              ->count_all_results();
+        return  [
+          "assessments" => $assessments,
+          "completed" => $completed
+        ];
+    }
+
     public function getProjectScenario ($projectID, $scenarioID)
     {
         return $this->db

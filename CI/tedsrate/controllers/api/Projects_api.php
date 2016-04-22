@@ -92,6 +92,8 @@ class Projects_api extends REST_Controller {
         $project['roles'] = $this->role->getProject($project['projectID']);
         $project['completedAssessments'] = $this->assessment->getProjectCompleted($project['projectID']);
         $project['assessments'] = $this->assessment->getProject($project['projectID']);
+        $project['counts'] = $this->assessment->getProjectStats($project['projectID']);
+
         foreach($project['assessments'] as $key => $assessment) {
 
             $project['assessments'][$key]['ratings'] = $this->rating->getAssessment($assessment['assessmentID']);
