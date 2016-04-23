@@ -132,6 +132,47 @@
                   <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
                 </div>
               </div>
+
+              <div class="clearfix" ng-show="passback.cell">
+                <div class="clearfix">
+                  <h3>{{passback.column.name}}</h3>
+                  <h5>{{passback.column.desc}}</h5>
+                  <h4>Questions</h4>
+                  <div class="col-sm-4" ng-repeat="question in passback.column.questions">
+                    <p>{{question.name}}</p>
+                    <h5>{{question.desc}}</h5>
+                    <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                  </div>
+                </div>
+
+                <div class="divider clearfix"></div>
+
+                <div>
+                  <h3>{{passback.row.name}}</h3>
+                  <h5>{{passback.row.desc}}</h5>
+                </div>
+
+                <div class="divider clearfix"></div>
+
+                <div class="clearfix">
+                  <h4>Ratings</h4>
+                  <ul class="list-unstyled">
+                    <li class="col-sm-4" ng-repeat="rating in passback.cell.ratings">
+                      <h5>ID: {{rating.ratingID}}</h5>
+                      <h5>Value: {{rating.ratingValue}}</h5>
+                      <h5 ng-show="rating.comments.length > 0">Comment: <span>{{rating.comments[0].comment}}</span></h5>
+                      <div class="clearfix" ng-show="rating.screenshots.length > 0">
+                        <h5>Screenshots</h5>
+                        <div class="col-xs-6" ng-repeat="screenshot in rating.screenshots">
+                            <a class="clickable" ng-href="{{screenshot.screenshotPath}}" target="_blank">
+                              <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                            </a>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </teds-pivot-table>
         </div>
     </div>
