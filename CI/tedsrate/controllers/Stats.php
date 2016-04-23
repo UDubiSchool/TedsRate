@@ -47,7 +47,6 @@ class Stats extends CI_Controller {
                 }
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
-
         }
 
         echoJSON($final);
@@ -136,15 +135,12 @@ class Stats extends CI_Controller {
         }
         foreach ($final['rows'] as $rowKey => $row) {
             foreach ($row['cells'] as $cellKey => $cell) {
-                // $final['rows'][$rowKey]['cells'][$cellKey]['screenshots'] = $this->screenshot->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
-                // $final['rows'][$rowKey]['cells'][$cellKey]['comments'] = $this->comment->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
                 $ratings = $this->rating->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
                     $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
                     $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
                 }
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
-
             }
         }
 
