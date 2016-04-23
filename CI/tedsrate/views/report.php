@@ -104,34 +104,6 @@
             <h3>{{reportData.details.item.desc}}</h3>
 
             <teds-pivot-table class="clearfix" teds-data="reportData.stats" teds-options="pivotOptions" teds-passback="passback">
-              <div ng-show="passback.row">
-                <h3>{{passback.row.name}}</h3>
-                <h5>{{passback.row.desc}}</h5>
-                <h4>Comments</h4>
-                <ul class="list-unstyled">
-                  <li ng-repeat="comment in passback.row.comments">
-                    {{comment.comment}}
-                  </li>
-                </ul>
-
-                <h4>Screenshots</h4>
-                <div class="col-xs-3" ng-repeat="screenshot in passback.row.screenshots">
-                    <a ng-click="Lightbox.openModal(passback.row.screenshots, $index)">
-                      <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
-                    </a>
-                </div>
-              </div>
-              <div class="divider" ng-show="passback.column && passback.row"></div>
-              <div ng-show="passback.column">
-                <h3>{{passback.column.name}}</h3>
-                <h5>{{passback.column.desc}}</h5>
-                <h4>Questions</h4>
-                <div class="col-sm-6" ng-repeat="question in passback.column.questions">
-                  <p>{{question.name}}</p>
-                  <h5>{{question.desc}}</h5>
-                  <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
-                </div>
-              </div>
 
               <div class="clearfix" ng-show="passback.cell">
                 <div class="clearfix">
