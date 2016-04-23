@@ -7,6 +7,10 @@ class Reports extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('stats_model', 'stats');
+        $this->load->model('screenshot_model', 'screenshot');
+        $this->load->model('comment_model', 'comment');
+        $this->load->model('response_model', 'response');
+        $this->load->model('rating_model', 'rating');
     }
 
     public function artifact($projectID, $artifactID)
@@ -29,10 +33,6 @@ class Reports extends CI_Controller {
         ];
         $tmp = $this->stats->byArtifact($projectID, $artifactID);
         $final = $this->sortPivot($tmp, $column, $row);
-
-        $this->load->model('screenshot_model', 'screenshot');
-        $this->load->model('comment_model', 'comment');
-        $this->load->model('response_model', 'response');
 
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
@@ -95,10 +95,6 @@ class Reports extends CI_Controller {
         $tmp = $this->stats->byScenario($projectID, $scenarioID);
         $final = $this->sortPivot($tmp, $column, $row);
 
-        $this->load->model('screenshot_model', 'screenshot');
-        $this->load->model('comment_model', 'comment');
-        $this->load->model('response_model', 'response');
-
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getArtifact($value['id']));
         }
@@ -145,10 +141,6 @@ class Reports extends CI_Controller {
         ];
         $tmp = $this->stats->byConfiguration($projectID, $configurationID);
         $final = $this->sortPivot($tmp, $column, $row);
-
-        $this->load->model('screenshot_model', 'screenshot');
-        $this->load->model('comment_model', 'comment');
-        $this->load->model('response_model', 'response');
 
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getAssessment($value['id']));
