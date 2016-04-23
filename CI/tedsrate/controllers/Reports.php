@@ -37,7 +37,7 @@ class Reports extends CI_Controller {
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
+        foreach ($final['rows'] as $rowKey => $row) {
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectArtifactAttributeScenario($row['id'], $artifactID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -102,7 +102,7 @@ class Reports extends CI_Controller {
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getArtifact($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
+        foreach ($final['rows'] as $rowKey => $row) {
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectScenarioAttributeArtifact($row['id'], $scenarioID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -153,7 +153,7 @@ class Reports extends CI_Controller {
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getAssessment($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
+        foreach ($final['rows'] as $rowKey => $row) {
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
