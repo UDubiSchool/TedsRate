@@ -39,3 +39,9 @@ nav .disabled {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+teds-pivot-table .rating {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+}
