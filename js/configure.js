@@ -27,6 +27,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
 
 app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox) {
 
+    $scope.Lightbox = Lightbox;
     $scope.pivotOptions = {
         colorize: true,
         min: 1,

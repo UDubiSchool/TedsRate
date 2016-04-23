@@ -26,6 +26,7 @@ class Screenshot_model extends CI_Model {
     public function getRating ($ratingID)
     {
         return $this->db
+                              ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
                               ->from("screenshot s")
                               ->join('rating r', 'r.ratingID = s.ratingID')
                               ->where('r.ratingID', $ratingID)
@@ -33,7 +34,7 @@ class Screenshot_model extends CI_Model {
                               ->result_array();
     }
 
-    public function getProjectArtifactAttribute ($attributeID, $artifactID, $projectID)
+    public function getProjectArtifactAttributeScenario ($attributeID, $artifactID, $scenarioID, $projectID)
     {
         return $this->db
                               ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
@@ -43,13 +44,14 @@ class Screenshot_model extends CI_Model {
                               ->join('configuration c', 'c.configurationID = a.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->where('ac.artifactID', $artifactID)
+                              ->where('ac.scenarioID', $scenarioID)
                               ->where('ac.projectID', $projectID)
                               ->where('r.attributeID', $attributeID)
                               ->get()
                               ->result_array();
     }
 
-    public function getProjectScenarioAttribute ($attributeID, $scenarioID, $projectID)
+    public function getProjectScenarioAttributeArtifact ($attributeID, $scenarioID, $artifactID, $projectID)
     {
         return $this->db
                               ->select('s.screenshotID, s.screenshotPath, s.screenshotDesc, s.dateCreated')
@@ -59,6 +61,7 @@ class Screenshot_model extends CI_Model {
                               ->join('configuration c', 'c.configurationID = a.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->where('ac.scenarioID', $scenarioID)
+                              ->where('ac.artifactID', $artifactID)
                               ->where('ac.projectID', $projectID)
                               ->where('r.attributeID', $attributeID)
                               ->get()

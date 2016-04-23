@@ -47,17 +47,28 @@ var app = angular.module('teds.directives.pivotTable', ['AngularPrint'])
                 }
             }
 
-            $scope.selectRow = function(item){
-                console.log($scope.tedsPassback);
-                $scope.selected.row = item;
-                $scope.selected.selected = true;
-                $scope.tedsPassback.row = item;
-            }
+            // $scope.selectRow = function(item){
+            //     console.log($scope.tedsPassback);
+            //     $scope.selected.row = item;
+            //     $scope.selected.selected = true;
+            //     $scope.tedsPassback.row = item;
+            // }
 
-            $scope.selectCol = function(item){
-                $scope.selected.column = item;
+            // $scope.selectCol = function(item){
+            //     $scope.selected.column = item;
+            //     $scope.selected.selected = true;
+            //     $scope.tedsPassback.column = item;
+            // }
+
+            $scope.selectCell = function(cell, columnID, rowID){
+                console.log(rowID);
+                $scope.selected.column = $scope.tedsData.columns[columnID];
+                $scope.tedsPassback.column = $scope.tedsData.columns[columnID];
+                $scope.selected.row = $scope.tedsData.rows[rowID];
+                $scope.tedsPassback.row = $scope.tedsData.rows[rowID];
+                $scope.selected.cell = cell;
+                $scope.tedsPassback.cell = cell;
                 $scope.selected.selected = true;
-                $scope.tedsPassback.column = item;
             }
 
             $scope.unsetSelected = function() {
@@ -66,6 +77,7 @@ var app = angular.module('teds.directives.pivotTable', ['AngularPrint'])
                 };
                 delete $scope.tedsPassback.column;
                 delete $scope.tedsPassback.row;
+                delete $scope.tedsPassback.cell;
             }
 
 

@@ -26,6 +26,7 @@ class Comment_model extends CI_Model {
     public function getRating ($ratingID)
     {
         return $this->db
+                              ->select('c.commentID, c.comment, c.dateCreated')
                               ->from("comment c")
                               ->join('rating r', 'r.ratingID = c.ratingID')
                               ->where('r.ratingID', $ratingID)
@@ -33,7 +34,7 @@ class Comment_model extends CI_Model {
                               ->result_array();
     }
 
-    public function getProjectArtifactAttribute ($attributeID, $artifactID, $projectID)
+    public function getProjectArtifactAttributeScenario ($attributeID, $artifactID, $scenarioID, $projectID)
     {
         return $this->db
                               ->select('cm.commentID, cm.comment, cm.dateCreated')
@@ -43,13 +44,14 @@ class Comment_model extends CI_Model {
                               ->join('configuration c', 'c.configurationID = a.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->where('ac.artifactID', $artifactID)
+                              ->where('ac.scenarioID', $scenarioID)
                               ->where('ac.projectID', $projectID)
                               ->where('r.attributeID', $attributeID)
                               ->get()
                               ->result_array();
     }
 
-    public function getProjectScenarioAttribute ($attributeID, $scenarioID, $projectID)
+    public function getProjectScenarioAttributeArtifact ($attributeID, $scenarioID, $artifactID, $projectID)
     {
         return $this->db
                               ->select('cm.commentID, cm.comment, cm.dateCreated')
@@ -59,13 +61,14 @@ class Comment_model extends CI_Model {
                               ->join('configuration c', 'c.configurationID = a.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->where('ac.scenarioID', $scenarioID)
+                              ->where('ac.artifactID', $artifactID)
                               ->where('ac.projectID', $projectID)
                               ->where('r.attributeID', $attributeID)
                               ->get()
                               ->result_array();
     }
 
-    public function getProjectConfigurationAttribute ($attributeID, $configurationID, $projectID)
+    public function getProjectConfigurationAttributeAssessment ($attributeID, $configurationID, $assessmentID, $projectID)
     {
         return $this->db
                               ->select('cm.commentID, cm.comment, cm.dateCreated')
@@ -75,6 +78,7 @@ class Comment_model extends CI_Model {
                               ->join('configuration c', 'c.configurationID = a.configurationID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->where('c.configurationID', $configurationID)
+                              ->where('a.assessmentID', $assessmentID)
                               ->where('ac.projectID', $projectID)
                               ->where('r.attributeID', $attributeID)
                               ->get()

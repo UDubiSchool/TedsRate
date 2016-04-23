@@ -32,14 +32,22 @@ class Stats extends CI_Controller {
 
         $this->load->model('screenshot_model', 'screenshot');
         $this->load->model('comment_model', 'comment');
+        $this->load->model('rating_model', 'rating');
         $this->load->model('response_model', 'response');
 
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
-            $final['rows'][$key]['screenshots'] = $this->screenshot->getProjectArtifactAttribute($value['id'], $artifactID, $projectID);
-            $final['rows'][$key]['comments'] = $this->comment->getProjectArtifactAttribute($value['id'], $artifactID, $projectID);
+        foreach ($final['rows'] as $rowKey => $row) {
+            foreach ($row['cells'] as $cellKey => $cell) {
+                $ratings = $this->rating->getProjectArtifactAttributeScenario($row['id'], $artifactID, $cellKey, $projectID);
+                foreach ($ratings as $ratingKey => $rating) {
+                    $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
+                    $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
+                }
+                $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
+            }
+
         }
 
         echoJSON($final);
@@ -68,14 +76,21 @@ class Stats extends CI_Controller {
 
         $this->load->model('screenshot_model', 'screenshot');
         $this->load->model('comment_model', 'comment');
+        $this->load->model('rating_model', 'rating');
         $this->load->model('response_model', 'response');
 
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getArtifact($value['id']));
         }
         foreach ($final['rows'] as $key => $value) {
-            $final['rows'][$key]['screenshots'] = $this->screenshot->getProjectScenarioAttribute($value['id'], $scenarioID, $projectID);
-            $final['rows'][$key]['comments'] = $this->comment->getProjectScenarioAttribute($value['id'], $scenarioID, $projectID);
+            foreach ($row['cells'] as $cellKey => $cell) {
+                $ratings = $this->rating->getProjectScenarioAttributeArtifact($row['id'], $scenarioID, $cellKey, $projectID);
+                foreach ($ratings as $ratingKey => $rating) {
+                    $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
+                    $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
+                }
+                $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
+            }
         }
 
         echoJSON($final, true);
@@ -113,14 +128,24 @@ class Stats extends CI_Controller {
 
         $this->load->model('screenshot_model', 'screenshot');
         $this->load->model('comment_model', 'comment');
+        $this->load->model('rating_model', 'rating');
         $this->load->model('response_model', 'response');
 
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getAssessment($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
-            $final['rows'][$key]['screenshots'] = $this->screenshot->getProjectConfigurationAttribute($value['id'], $configurationID, $projectID);
-            $final['rows'][$key]['comments'] = $this->comment->getProjectConfigurationAttribute($value['id'], $configurationID, $projectID);
+        foreach ($final['rows'] as $rowKey => $row) {
+            foreach ($row['cells'] as $cellKey => $cell) {
+                // $final['rows'][$rowKey]['cells'][$cellKey]['screenshots'] = $this->screenshot->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
+                // $final['rows'][$rowKey]['cells'][$cellKey]['comments'] = $this->comment->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
+                $ratings = $this->rating->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
+                foreach ($ratings as $ratingKey => $rating) {
+                    $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
+                    $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
+                }
+                $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
+
+            }
         }
 
         echoJSON($final);
@@ -234,7 +259,7 @@ class Stats extends CI_Controller {
                 //         ]
                 //     ];
                 // }
-                if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check' || $questionData['questionType'] == 'Boolean') {
+                // if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check' || $questionData['questionType'] == 'Boolean') {
                     $chartOptions['chart']['type'] = 'discreteBarChart';
                     // $chartOptions['chart']['valueFormat'] = "%%function(d){return d3.format(',.4f')(d);}%%";
                     $chartOptions['chart']['xAxis'] = [
@@ -243,7 +268,7 @@ class Stats extends CI_Controller {
                     $chartOptions['chart']['yAxis'] = [
                         'axisLabel' => 'Count'
                     ];
-                }
+                // }
 
                 $questions[$cell['questionID']]['chartOptions'] = $chartOptions;
             }

@@ -1,6 +1,6 @@
 <!-- <button print-btn>Print</button> -->
 <style>
-  .pivot-table .selected {
+  teds-pivot-table .selected {
     background-color: #ddd;
   }
 
@@ -57,14 +57,14 @@
 <table class="table pivot-table" print-table>
   <thead>
     <th></th>
-    <th class="clickable" ng-class="{selected: selected.column == column}" ng-repeat="column in tedsData.columns" ng-click="selectCol(column)">{{column.name}}</th>
+    <th ng-class="{selected: selected.column == column}" ng-repeat="column in tedsData.columns">{{column.name}}</th>
     <th>Total Average</th>
     <th>Total Standard Deviation</th>
   </thead>
   <tbody>
-    <tr ng-repeat="(rowKey, row) in tedsData.rows | toArray | orderBy: rowOrder : sort.reverse" ng-click="selectRow(row)">
-      <td class="clickable" ng-class="{selected: selected.row == row}">{{row.name}}</td>
-      <td ng-repeat="cell in row.cells">
+    <tr ng-repeat="(rowKey, row) in tedsData.rows | toArray | orderBy: rowOrder : sort.reverse">
+      <td ng-class="{selected: selected.row == row}">{{row.name}}</td>
+      <td class="clickable cell" ng-repeat="(cellKey, cell) in row.cells" ng-class="{selected: selected.cell == cell}" ng-click="selectCell(cell, cellKey, row.id)">
         <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.average - options.min) / dataRange) }"></div>
         <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.average - options.min) / dataRange) }"></div>
         <div class="data" ng-style="{'font-weight': ((cell.average - row.totalAverage | abs) >= 1) && cell.average ? 'bold' : 'normal', 'color': ((cell.average - row.totalAverage >= 0) || (cell.average == undefined) ? 'black' : 'red')}">

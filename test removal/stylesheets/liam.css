@@ -1,8 +1,0 @@
-/*ADMIN_RP_CSS*/
-
-#user_rating_progress_tbl {
-    display: block;
-    max-height: 600px;
-    overflow-y:scroll;
-    overflow-x:hidden;
-}

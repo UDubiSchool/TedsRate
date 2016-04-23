@@ -27,34 +27,47 @@
             <h5>Artifact Type: {{project.selected.artifact.artifactTypeName}}</h5>
             <p>{{project.selected.artifact.artifactDescription}}</p>
             <teds-pivot-table class="clearfix" teds-data="project.selected.artifact.stats" teds-options="pivotOptions" teds-passback="project.selected.artifact.passback">
-              <div ng-show="project.selected.artifact.passback.row">
-                <h3>{{project.selected.artifact.passback.row.name}}</h3>
-                <h5>{{project.selected.artifact.passback.row.desc}}</h5>
-                <h4>Comments</h4>
-                <ul class="list-unstyled">
-                  <li ng-repeat="comment in project.selected.artifact.passback.row.comments">
-                    {{comment.comment}}
-                  </li>
-                </ul>
+              <div class="clearfix" ng-show="project.selected.artifact.passback.cell">
+                <div class="clearfix">
+                  <h3>{{project.selected.artifact.passback.column.name}}</h3>
+                  <h5>{{project.selected.artifact.passback.column.desc}}</h5>
+                  <h4>Questions</h4>
+                  <div class="col-sm-4" ng-repeat="question in project.selected.artifact.passback.column.questions">
+                    <p>{{question.name}}</p>
+                    <h5>{{question.desc}}</h5>
+                    <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                  </div>
+                </div>
 
-                <h4>Screenshots</h4>
-                <div class="col-xs-3" ng-repeat="screenshot in project.selected.artifact.passback.row.screenshots">
-                    <a ng-click="Lightbox.openModal(project.selected.artifact.passback.row.screenshots, $index)">
-                      <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
-                    </a>
+                <div class="divider clearfix"></div>
+
+                <div>
+                  <h3>{{project.selected.artifact.passback.row.name}}</h3>
+                  <h5>{{project.selected.artifact.passback.row.desc}}</h5>
+                </div>
+
+                <div class="divider clearfix"></div>
+
+                <div class="clearfix">
+                  <h4>Ratings</h4>
+                  <ul class="list-unstyled">
+                    <li class="col-sm-4" ng-repeat="rating in project.selected.artifact.passback.cell.ratings">
+                      <h5>ID: {{rating.ratingID}}</h5>
+                      <h5>Value: {{rating.ratingValue}}</h5>
+                      <h5 ng-show="rating.comments.length > 0">Comment: <span>{{rating.comments[0].comment}}</span></h5>
+                      <div class="clearfix" ng-show="rating.screenshots.length > 0">
+                        <h5>Screenshots</h5>
+                        <div class="col-xs-6" ng-repeat="screenshot in rating.screenshots">
+                            <a class="clickable" ng-href="{{screenshot.screenshotPath}}" target="_blank">
+                              <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                            </a>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div class="divider" ng-show="project.selected.artifact.passback.column && project.selected.artifact.passback.row"></div>
-              <div ng-show="project.selected.artifact.passback.column">
-                <h3>{{project.selected.artifact.passback.column.name}}</h3>
-                <h5>{{project.selected.artifact.passback.column.desc}}</h5>
-                <h4>Questions</h4>
-                <div class="col-sm-6" ng-repeat="question in project.selected.artifact.passback.column.questions">
-                  <p>{{question.name}}</p>
-                  <h5>{{question.desc}}</h5>
-                  <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
-                </div>
-              </div>
+
             </teds-pivot-table>
           </teds-filter-list>
 
@@ -92,7 +105,7 @@
                 <h3>{{project.selected.scenario.passback.column.name}}</h3>
                 <h5>{{project.selected.scenario.passback.column.desc}}</h5>
                 <h4>Questions</h4>
-                <div class="col-sm-6" ng-repeat="question in project.selected.scenario.passback.column.questions">
+                <div class="col-sm-4" ng-repeat="question in project.selected.scenario.passback.column.questions">
                   <p>{{question.name}}</p>
                   <h5>{{question.desc}}</h5>
                   <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
