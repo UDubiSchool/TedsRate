@@ -57,9 +57,10 @@ var app = angular.module('teds.directives.filterList', [])
                 });
             });
 
-            $scope.select = function(item){
+            $scope.select = function(item, index){
                 $scope.selected = item;
                 $scope.passback = item.details;
+                $scope.passback.listIndex = index;
             }
 
             $scope.unsetSelected = function() {

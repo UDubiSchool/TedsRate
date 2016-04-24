@@ -58,7 +58,6 @@ class Assessments_api extends REST_Controller {
         $this->load->model('assessment_model', 'assessment');
 
         $data = [
-            'assessmentID' => intval($this->post('assessmentID')),
             'configurationID' => intval($this->post('configurationID')),
             'userID' => intval($this->post('userID'))
         ];
@@ -100,6 +99,27 @@ class Assessments_api extends REST_Controller {
     // deletes a record
     public function api_delete($key = NULL, $xss_clean = NULL)
     {
-        $this->response($this->assessment->delete($key));
+        $this->load->model('comment_model', 'comment');
+        $this->load->model('screenshot_model', 'screenshot');
+        $this->load->model('rating_model', 'rating');
+
+        $status = $this->comment->deleteAssessment($key) && $this->screenshot->deleteAssessment($key);
+        if ($status) {
+            $status = $this->rating->deleteAssessment($key);
+            if ($status) {
+                $status = $this->assessment->delete($key);
+            }
+        }
+        if ($status) {
+            $this->response([
+                        'status' => TRUE,
+                        'message' => 'assessment was deleted successfully'
+                    ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                        'status' => FALSE,
+                        'message' => 'assessment was unable to be deleted'
+                    ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

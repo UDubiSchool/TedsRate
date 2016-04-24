@@ -25,7 +25,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
     $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox) {
+app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService) {
 
     $scope.Lightbox = Lightbox;
     $scope.pivotOptions = {
@@ -299,14 +299,6 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         $scope.users = response.data;
     });
 
-    // $scope.setTargetAssessment = function (project, assessment) {
-    //     project.targetAssessment = assessment;
-    // }
-
-    // $scope.unsetTargetAssessment = function (project) {
-    //     delete project.targetAssessment;
-    // }
-
     $scope.addAlert = alertService.addAlert;
 
     $scope.closeAlert = alertService.closeAlert;
@@ -354,6 +346,17 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         }
     };
 
+    $scope.deleteAssessment = function(assessment, list) {
+        console.log(assessment);
+        assessmentService.delete(assessment.assessmentID).then(function(response){
+            console.log(response);
+            assessment.popoverOpen = false;
+            delete list[assessment.listIndex];
+            assessment = null;
+        });
+    };
+
+
 }]).controller('assessmentsCtrl', ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams){
     // $scope.assessment = $stateParams.assessment;
     // console.log('opened assessmentCtrl');
@@ -362,6 +365,7 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
 }]).controller('addAssessmentCtrl', function($scope, $uibModalInstance, project, assessmentService){
     var newProject = project;
     $scope.project = project;
+    $scope.assessment = {};
 
     $scope.ok = function () {
       $scope.assessment.projectID = project.projectID;

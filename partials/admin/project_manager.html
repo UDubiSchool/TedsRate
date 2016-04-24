@@ -139,7 +139,30 @@
           <div class="menu col-xs-12 clearfix">
               <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
           </div>
-          <teds-filter-list list="project.assessmentsList" passback="project.selected.assignment"></teds-filter-list>
+          <teds-filter-list list="project.assessmentsList" passback="project.selected.assessment">
+            <div class="clearfix">
+              <h4>Assessment - {{project.selected.assessment.assessmentID}}</h4>
+              <h5>Issued: {{project.selected.assessment.issuanceDate}}</h5>
+              <h5>Completed: {{project.selected.assessment.completionDate}}</h5>
+              <h5>Edited: {{project.selected.assessment.LastEditDate}}</h5>
+              <p><b>User</b></p>
+              <h5>{{project.selected.assessment.firstName}} {{project.selected.assessment.lastName}}</h5>
+              <h5>Email: {{project.selected.assessment.email}}</h5>
+
+              <div class="menu col-xs-12 clearfix">
+                  <button uib-popover-template="'deleteAssessmentPopover.html'" popover-title="" type="button" class="btn btn-danger" popover-is-open="project.selected.assessment.popoverOpen" ng-click="project.selected.assessment.popoverOpen = true"><i class="fa fa-trash"></i> Delete</button>
+
+                  <script type="text/ng-template" id="deleteAssessmentPopover.html">
+                      <div>Are you sure you want to delete assessment {{project.selected.assessment.assessmentID}}</div>
+                      <div class="form-group">
+                        <a class="btn btn-success" ng-click="deleteAssessment(project.selected.assessment, project.assessmentsList)">Yes</a>
+                        <a class="btn btn-danger" ng-click="project.selected.assessment.popoverOpen = false">No</a>
+                      </div>
+                  </script>
+              </div>
+
+            </div>
+          </teds-filter-list>
         </teds-dropdown>
 
         <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix">

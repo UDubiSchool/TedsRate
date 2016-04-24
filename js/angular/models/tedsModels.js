@@ -866,11 +866,9 @@ app.service('assessmentService', ['$http', '$q', function ($http, $q) {
     }
 
     this.delete = function(id) {
-        var target = "models/assessment.php?f=delete";
-        var data = {
-            assessmentID: id
-        };
-        return $http.post(target, data, {
+        var target = "CI/index.php/api/assessments/"+id;
+        var data = {};
+        return $http.delete(target, data, {
         }).success(function(response){
             return response;
         }).error(function(response){

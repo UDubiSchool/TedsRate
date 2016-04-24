@@ -104,5 +104,10 @@ class Rating_model extends CI_Model {
                 ->where('ratingID', $id)
                 ->delete('rating');
     }
+
+    public function deleteAssessment ($id)
+    {
+      return $this->db->query("DELETE r FROM  rating r JOIN assessment a ON a.assessmentID = r.assessmentID WHERE a.assessmentID = $id");
+    }
 }
 ?>

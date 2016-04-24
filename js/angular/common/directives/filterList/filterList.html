@@ -39,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="clickable" ng-repeat="item in table | filter: filters track by $index" ng-click="select(item)">
+            <tr class="clickable" ng-repeat="item in table | filter: filters track by $index" ng-click="select(item, $index)">
                 <td ng-repeat="param in item.listData">{{param}}</td>
                 <td ng-repeat="param in item.specialFields">
                     <div ng-if="param.type == 'link'"><a ng-href="{{param.value}}" target="_blank">Link</a></div>

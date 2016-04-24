@@ -158,5 +158,10 @@ class Comment_model extends CI_Model {
                 ->where('commentID', $id)
                 ->delete('comment');
     }
+
+    public function deleteAssessment ($id)
+    {
+      return $this->db->query("DELETE c FROM comment c JOIN rating r ON r.ratingID = c.ratingID JOIN assessment a ON a.assessmentID = r.assessmentID WHERE a.assessmentID = $id");
+    }
 }
 ?>

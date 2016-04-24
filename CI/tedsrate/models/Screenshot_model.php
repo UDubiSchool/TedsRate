@@ -157,5 +157,11 @@ class Screenshot_model extends CI_Model {
                 ->where('screenshotID', $id)
                 ->delete('screenshot');
     }
+
+    public function deleteAssessment ($id)
+    {
+      return $this->db->query("DELETE s FROM screenshot s JOIN rating r ON r.ratingID = s.ratingID JOIN assessment a ON a.assessmentID = r.assessmentID WHERE a.assessmentID = $id");
+
+    }
 }
 ?>
