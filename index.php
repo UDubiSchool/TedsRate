@@ -1,20 +1,10 @@
 <?php
-//require_once "session_inc.php";
-//require_once "header.inc.php";
-//require_once "dbconnect.php";
-
-//set up some SQL statements
-//$sql["language"] = 'SELECT * from languages';
-
-//try {
-//$dbq = db_connect();
-//$dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+// successful login validation
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
     session_regenerate_id();
 }
-if(isset($_SESSION['user_email'])) {    // if there is no valid session
+if(isset($_SESSION['user_email'])) {    // if there is a valid session
     header("Location: admin.php?notice=success");
 }
 
@@ -89,7 +79,6 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
 
 	<!-- Included JS Files -->
 	<script src="js/jquery-1.11.0.min.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/notice.js"></script>
     <?php
         require_once "notice.inc.php";

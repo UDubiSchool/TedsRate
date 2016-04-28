@@ -1,18 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tyemill
- * Date: 4/13/14
- * Time: 1:47 PM
- */
 // ============================== authentication ===============================
-//if (session_status() == PHP_SESSION_NONE) {
-//    session_start();
-//}
-//session_regenerate_id();
-//if(!isset($_SESSION['user_email'])) {    // if there is no valid session
-//    header("Location: index.php?notice=login_first");
-//}
     require_once "session_inc.php";
 // ============================== authentication ===============================
     require_once "dbconnect.php";
@@ -29,62 +16,7 @@
     if ($root_url == 'depts.washington.edu/tedsrate/tedsrate/') {
         $root_url = 'https://' . $root_url;
     }
-
-if (isset($_GET['trigger']) && isset($_GET['type'])) {
-    try {
-        $dbq = db_connect();
-
-        $trigger = $_GET['trigger'];
-        $type = $_GET['type'];
-        $sql = null;
-
-        switch ($type) {
-            case "project_artifact" :
-                // service for projectArtifact
-                $sql = "SELECT a.artifactID AS id, a.artifactName AS Title
-                        FROM projectArtifact pa
-                        join artifact a on a.artifactID = pa.artifactID
-                        where pa.projectID = " . $trigger;
-                break;
-            case "persona_scenario":
-                $sql = "SELECT s.scenarioID as id, s.scenarioName as Title from personaScenario ps
-                        join scenario s on ps.scenarioID = s.scenarioID
-                        join persona p on ps.personaID = p.personaID
-                        where p.personaID = " . $trigger;
-                break;
-            case "persona_user":
-                $sql = "SELECT u.userID as id, CONCAT(u.firstName, ' ', u.lastName) as Title FROM userPersona up
-                        join user u on u.userID = up.userID
-                        join persona p on p.personaID = up.personaID
-                        where up.personaID = " . $trigger;
-                break;
-        }
-
-        if ($sql) {
-//            $result = $dbq->query($sql);
-
-            $query = $dbq->prepare($sql);
-            $query->execute();
-            $rows = array();
-            while($r = $query->fetch(PDO::FETCH_ASSOC)) {
-                $rows[] = $r;
-            }
-            print json_encode($rows);
-
-//            print_r($result);
-        } else {
-            echo("error found");
-        }
-    }
-    catch(PDOException $e){
-        // Report errors
-        // printf ($e->getMessage());
-    }
-
-
-
-//    echo("Trigger is " . $trigger . "; type is " . $type);
-} elseif (isset($_GET['email'])) {
+if (isset($_GET['email'])) {
     try {
         $dbq = db_connect();
 

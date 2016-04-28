@@ -11,13 +11,9 @@
 
     <!-- Page Specific Plugins -->
     <!-- // <script src="js/morris/chart-data-morris.js"></script> -->
-    <script src="js/admin.js"></script>
     <!-- js_objects -->
-    <script src="js/js_objects.js" type="text/javascript"></script>
-    <script src="js/ajax_handler.js" type="text/javascript"></script>
     <script src="js/notice.js" type="text/javascript"></script>
-    <script src="js/main.js" type="text/javascript"></script>
-    <script src="js/form.js" type="text/javascript"></script>
+    <!-- <script src="js/form.js" type="text/javascript"></script> -->
     <!-- /template plugins -->
 	<script type="text/javascript">
 		$(function() {

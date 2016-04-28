@@ -28,25 +28,6 @@ try {
     $dbq = db_connect();
     $dbq->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // set up simple SQL statements for grabbing some intermediate combination IDs to use in the addUserRating SPROC below
-
-    // $sql['psid'] = 'SELECT personaScenarioID from personaScenario WHERE personaID=' . $ids['persona'] . ' AND scenarioID=' . $ids['scenario'];
-    // $sql['upid'] = 'SELECT userPersonaID from userPersona WHERE userID=' . $ids['user'] . ' AND personaID=' . $ids['persona'];
-    // $sql['paid'] = 'SELECT projectArtifactID from projectArtifact WHERE projectID=' . $ids['project'] . ' AND artifactID=' . $ids['artifact'];
-    // $sql['configurationTypeName'] = "SELECT configurationTypeName FROM configurationType ct
-    //                                                     LEFT JOIN configuration c ON c.configurationTypeID = ct.configurationTypeID
-    //                                                     LEFT JOIN assessment a ON a.configurationID = c.configurationID
-    //                                                     WHERE assessmentID = $ids[assessmentID]";
-
-
-
-    // run queries set up above, put values in to $ids array
-
-    // foreach($sql as $k => $v) {
-    //     foreach($dbq->query($v) as $row) {
-    //         $ids[$k] = $row[0];
-    //     }
-    // }
 
     // debug statements
     //  print_r($ids);
@@ -62,10 +43,6 @@ try {
                 $categoryID = intval(str_replace("'", "", $k));
 
                 // prepare PDO statement, addUserRating SPROC is now an INSERT OR UPDATE ON UNIQUE KEY
-                // echo $ids['assessmentID'];
-                // exit;
-                // echo "value: $v";
-                // echo "category: $categoryID";
                 $stmt = $dbq->prepare("CALL addRating(:ratingValue, :attributeID, :assessmentID, @ratingID)");
                 $stmt->bindValue(':ratingValue', $v, PDO::PARAM_STR);
                 $stmt->bindValue(':attributeID', $categoryID, PDO::PARAM_INT);
@@ -102,9 +79,6 @@ try {
                           $screen_sql = "INSERT INTO screenshot (screenshotPath, ratingID) VALUES ('$path' , $ratingID)";
 
                           $dbq->query($screen_sql);
-                          // $screenshot_ID = $dbq->query('SELECT LAST_INSERT_ID();')->fetchColumn();
-                          // $userRating_screen_sql = "INSERT INTO rating_screenshot (ratingID, screenshotID) VALUES ($ratingID , $screenshot_ID)";
-                          // $dbq->query($userRating_screen_sql);
                         } else {
                           // echo "could not upload file at " . $file_tmp;
                           exit;
@@ -132,10 +106,6 @@ try {
                       // echo "inserting";
                       $addComment = $dbq->prepare("INSERT INTO comment (comment, ratingID) VALUES ( :comment , :ratingID)");
                       $addComment->execute(array(':comment' => $_POST['comment'][$k], ':ratingID' => $ratingID ));
-                      // $comment_id = $dbq->query('SELECT LAST_INSERT_ID()')->fetchColumn();
-
-                      // $add_comment_assoc_sql = "INSERT INTO rating_comment (ratingID, commentID) VALUES ($ratingID, $comment_id)";
-                      // $dbq->query($add_comment_assoc_sql);
                     }
                    }
 
@@ -185,12 +155,10 @@ else {
         </div>
         <?php
 
-        // update userRatingProcess table
+        // update assessment table
 
         $urp_update_query = "UPDATE `assessment` SET `completionDate`=NOW()
                             WHERE `assessmentID` = " . $ids['assessmentID'];
-
-        //    echo($urp_update_query);
 
         $stmt = $dbq->query($urp_update_query);
     }

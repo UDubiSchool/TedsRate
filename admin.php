@@ -24,7 +24,7 @@
 <script src="js/angular/common/directives/pivotTable/pivotTable.directive.js"></script>
 <script src="js/angular/common/directives/angularPrint/angularPrint.js"></script>
 <script src="js/angular/common/toArray.js"></script>
-<script src="js/configure.js" type="text/javascript"></script>
+<script src="js/admin.js" type="text/javascript"></script>
 <div id="wrapper" ng-app="administrator" ng-controller="adminCtrl">
      <!-- Sidebar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
