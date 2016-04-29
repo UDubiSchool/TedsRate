@@ -934,7 +934,7 @@ app.service('screenshotService', ['$http', '$q', function ($http, $q) {
 
     //adds a screenshot
     this.put = function(data){
-        var target = "models/screenshot.php?f=put";
+        var target = "CI/index.php/api/screenshots/";
         return $http.post(target, data, {
         }).success(function(response){
             return response;

@@ -139,6 +139,7 @@ class Screenshot_model extends CI_Model {
 
     public function post ($data)
     {
+      $this->db->reset_query();
       $this->db->insert('screenshot', $data);
       return $this->db->insert_id();
     }
