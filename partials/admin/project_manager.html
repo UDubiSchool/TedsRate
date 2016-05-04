@@ -17,12 +17,8 @@
 
         <teds-dropdown title="Artifacts" header-stats="{count: project.artifacts.length}" class="artifacts container col-xs-12" ng-click="project.grids.artifact.gridApi.core.handleWindowResize();">
 
-          <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
-          </div>
 
           <div ng-if="project.grids.artifact.selected" class="clearfix">
-          <!-- {{project.grids.artifact.selected}} -->
             <h2><a ng-href="{{project.grids.artifact.selected.artifactURL}}">{{project.grids.artifact.selected.artifactName}}</a></h2>
             <h5>Artifact Type: {{project.grids.artifact.selected.artifactTypeName}}</h5>
             <p>{{project.grids.artifact.selected.artifactDescription}}</p>
@@ -69,21 +65,21 @@
                 </div>
               </div>
 
-            </teds-pivot-table>
-          <div ng-if="project.loaded" ui-grid="project.grids.artifact.gridOptions" ui-grid-selection class="col-xs-12 row clearfix"></div>
+          </teds-pivot-table>
+          <div class="clearfix">
+            <div ng-if="project.loaded" ui-grid="project.grids.artifact.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+          </div>
 
-         <!--  <teds-filter-list list="project.artifactsList" passback="project.selected.artifact">
-
-          </teds-filter-list> -->
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
+          </div>
 
         </teds-dropdown>
 
 
         <teds-dropdown title="Scenarios" header-stats="{count: project.scenarios.length}" class="scenarios container col-xs-12 clearfix" ng-click="project.grids.scenario.gridApi.core.handleWindowResize();">
 
-          <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
-          </div>
+
 
           <div ng-if="project.grids.scenario.selected" class="clearfix">
             <h4>{{project.grids.scenario.selected.scenarioName}}</h4>
@@ -119,7 +115,12 @@
                 </div>
               </div>
             </teds-pivot-table>
-          <div ng-if="project.loaded" ui-grid="project.grids.scenario.gridOptions" ui-grid-selection class="col-xs-12 clearfix"></div>
+          <div ng-if="project.loaded" ui-grid="project.grids.scenario.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
+          </div>
+
         </teds-dropdown>
 
         <teds-dropdown title="Personas" header-stats="{count: project.personas.length}" class="personas container col-xs-12 clearfix">
@@ -143,9 +144,7 @@
         </teds-dropdown>
 
         <teds-dropdown title="Assessments" header-stats="project.assessmentsStats" class="assessments container col-xs-12 clearfix" ng-click="project.grids.assessment.gridApi.core.handleWindowResize();">
-          <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
-          </div>
+
 
           <div ng-if="project.grids.assessment.selected" class="clearfix">
             <h4>Assessment - {{project.grids.assessment.selected.assessmentID}}</h4>
@@ -168,13 +167,16 @@
                 </script>
             </div>
           </div>
-          <div ng-if="project.loaded" ui-grid="project.grids.assessment.gridOptions" ui-grid-selection class="col-xs-12 clearfix"></div>
+          <div ng-if="project.loaded" ui-grid="project.grids.assessment.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
+          </div>
+
         </teds-dropdown>
 
         <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix" ng-click="project.grids.configuration.gridApi.core.handleWindowResize();">
-           <div class="menu col-xs-12 clearfix">
-               <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
-           </div>
+
 
 
            <div ng-if="project.grids.configuration.selected" class="clearfix">
@@ -254,7 +256,11 @@
                </div>
              </div>
            </teds-pivot-table>
-           <div ng-if="project.loaded" ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="col-xs-12 clearfix"></div>
+           <div ng-if="project.loaded" ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+           <div class="menu col-xs-12 clearfix">
+               <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
+           </div>
 
         </teds-dropdown>
       </div>

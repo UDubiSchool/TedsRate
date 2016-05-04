@@ -50,3 +50,11 @@ teds-pivot-table .rating {
 .w10 {
     width: 100%;
 }
+
+.teds-grid {
+    /*width:95%;*/
+}
+
+.menu {
+    padding:25px 15px;
+}
