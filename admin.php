@@ -2,29 +2,8 @@
     require_once "session_inc.php";
     require_once "header.inc.php";
 ?>
-<script src="js/d3.min.js"></script>
-<script src="js/nv.d3.min.js"></script>
-<script src="js/angular/angular.min.js" type="text/javascript"></script>
-<script src="js/angular/angular-animate.js" type="text/javascript"/></script>
-<script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
-<script src="js/angular/angular-ui-router.min.js" type="text/javascript"/></script>
-<script src="js/angular/elastic.js" type="text/javascript" /></script>
-<script src="js/angular/validate.js" type="text/javascript" /></script>
-<script src="js/angular/angular-cookies.js"></script>
-<script src="js/angular/angular-bootstrap-lightbox.js"></script>
-<script src="js/angular/ng-file-upload-shim.min.js"></script>
-<script src="js/angular/ng-file-upload.min.js"></script>
-<script src="js/angular/angular-nvd3.min.js"></script>
-<script src="js/angular/angular-spinners.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/ui-grid.min.css">
 
-
-<script src="js/angular/models/tedsModels.js"></script>
-<script src="js/angular/common/directives/dropdown/dropdown.directive.js"></script>
-<script src="js/angular/common/directives/filterList/filterList.directive.js"></script>
-<script src="js/angular/common/directives/pivotTable/pivotTable.directive.js"></script>
-<script src="js/angular/common/directives/angularPrint/angularPrint.js"></script>
-<script src="js/angular/common/toArray.js"></script>
-<script src="js/admin.js" type="text/javascript"></script>
 <div id="wrapper" ng-app="administrator" ng-controller="adminCtrl">
      <!-- Sidebar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -60,3 +39,28 @@
     </nav>
      <div id=page-wrapper ui-view></div>
 </div>
+
+<script src="js/d3.min.js"></script>
+<script src="js/nv.d3.min.js"></script>
+<script src="js/angular/angular.min.js" type="text/javascript"></script>
+<script src="js/angular/angular-animate.js" type="text/javascript"/></script>
+<script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
+<script src="js/angular/angular-ui-router.min.js" type="text/javascript"/></script>
+<script src="js/angular/elastic.js" type="text/javascript" /></script>
+<script src="js/angular/validate.js" type="text/javascript" /></script>
+<script src="js/angular/angular-cookies.js"></script>
+<script src="js/angular/angular-bootstrap-lightbox.js"></script>
+<script src="js/angular/ng-file-upload-shim.min.js"></script>
+<script src="js/angular/ng-file-upload.min.js"></script>
+<script src="js/angular/angular-nvd3.min.js"></script>
+<script src="js/angular/angular-spinners.min.js"></script>
+<script src="js/angular/ui-grid.min.js"></script>
+
+
+<script src="js/angular/models/tedsModels.js"></script>
+<script src="js/angular/common/directives/dropdown/dropdown.directive.js"></script>
+<script src="js/angular/common/directives/filterList/filterList.directive.js"></script>
+<script src="js/angular/common/directives/pivotTable/pivotTable.directive.js"></script>
+<script src="js/angular/common/directives/angularPrint/angularPrint.js"></script>
+<script src="js/angular/common/toArray.js"></script>
+<script src="js/admin.js" type="text/javascript"></script>
