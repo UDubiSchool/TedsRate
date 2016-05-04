@@ -128,7 +128,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                             // create a blank rating to attach screenshot
                             return $scope.save.rating(attribute).then(function(ratingID) {
                                 var data = {
-                                    path: filePath,
+                                    screenshotPath: filePath,
                                     ratingID: attribute.ratingID
                                 };
                                 console.log(data);
@@ -141,7 +141,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                             });
                         } else {
                             var data = {
-                                path: filePath,
+                                screenshotPath: filePath,
                                 ratingID: attribute.ratingID
                             };
                             console.log(data);
