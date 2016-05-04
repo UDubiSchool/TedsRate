@@ -73,6 +73,8 @@ class Stats extends CI_Controller {
         $tmp = $this->stats->byScenario($projectID, $scenarioID);
         $final = $this->sortPivot($tmp, $column, $row);
 
+
+
         $this->load->model('screenshot_model', 'screenshot');
         $this->load->model('comment_model', 'comment');
         $this->load->model('rating_model', 'rating');
@@ -81,7 +83,7 @@ class Stats extends CI_Controller {
         foreach ($final['columns'] as $key => $value) {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getArtifact($value['id']));
         }
-        foreach ($final['rows'] as $key => $value) {
+        foreach ($final['rows'] as $rowKey => $row) {
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectScenarioAttributeArtifact($row['id'], $scenarioID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -92,7 +94,7 @@ class Stats extends CI_Controller {
             }
         }
 
-        echoJSON($final, true);
+        echoJSON($final);
     }
 
     // unfinished
