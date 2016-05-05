@@ -25,8 +25,33 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
     $scope.closeAlert = alertService.closeAlert;
 }]);
 
-app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', 'uiGridConstants', '$interval', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService, uiGridConstants, $interval) {
+app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', 'uiGridConstants', '$interval', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService, uiGridConstants, $interval) {
 
+    // get initial project data for page load
+    if(!projectService.hasBasics) {
+        projectService.getBasic().then(function(response){
+            var deferred = $q.defer();
+            var tmp = response.data;
+            angular.forEach(tmp, function(project, projectKey){
+                project.collapsed = true;
+                project.loaded = false;
+                project.loading = false;
+            });
+            deferred.resolve(tmp);
+            return deferred.promise;
+        }).then(function(processed){
+            $scope.projects = processed;
+        });
+    } else {
+            console.log("we have basics, not reloading");
+            $scope.projects = projectService.projects;
+    }
+
+
+
+
+
+}]).controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', 'uiGridConstants', '$interval', '$stateParams', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService, uiGridConstants, $interval, $stateParams) {
     $scope.Lightbox = Lightbox;
     $scope.pivotOptions = {
         colorize: true,
@@ -35,7 +60,7 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         minColor: 'yellow',
         maxColor: 'green'
     };
-
+    $scope.loaded = false;
     $scope.sampleChartOptions = {
         chart: {
             type: 'discreteBarChart',
@@ -81,554 +106,485 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         }
     };
 
-    // get initial project data for page load
-    projectService.getBasic().then(function(response){
+    projectService.load($stateParams.id).then(function(response){
         var deferred = $q.defer();
-        var tmp = response.data;
-        angular.forEach(tmp, function(project, projectKey){
-            project.collapsed = true;
-            project.loaded = false;
-            project.loading = false;
+        var project = response;
+
+        $scope.$watch(function () {
+            return project.grids.artifact.selected;
+        }, function(artifact){
+            if(artifact != undefined && artifact !=null && artifact !='') {
+                statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
+                    project.grids.artifact.selected.stats = stats.data;
+                });
+                console.log('a change happened!');
+            }
+        }, false);
+
+        $scope.$watch(function () {
+            return project.grids.scenario.selected;
+        }, function(scenario){
+            if(scenario != undefined && scenario !=null && scenario !='') {
+                statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
+                    project.grids.scenario.selected.stats = stats.data;
+                });
+                console.log('a change happened!');
+            }
+        }, false);
+
+        $scope.$watch(function () {
+            return project.grids.configuration.selected;
+        }, function(configuration){
+            if(configuration != undefined && configuration !=null && configuration !='') {
+                statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
+                    project.grids.configuration.selected.stats = stats.data;
+                });
+                console.log('a change happened!');
+            }
+        }, false);
+
+        project.grids = {
+            artifact: {},
+            scenario: {},
+            assessment: {},
+            configuration: {}
+        };
+
+        var selectOptions = {
+            artifact: {
+                name: [],
+                desc: [],
+                type: [],
+                url: [],
+            },
+            scenario: {
+                name: [],
+                desc: [],
+            },
+            assessment: {
+                artifact: [],
+                scenario: [],
+                persona: [],
+                role: [],
+                user: [],
+                confID: []
+            },
+            configuration: {
+                atrConf: [],
+                queConf: [],
+                uiConf: [],
+                artifact: [],
+                scenario: [],
+                persona: [],
+                role: []
+            }
+        };
+
+        project.grids.artifact.gridOptions = {
+            enableFiltering: true,
+            enableSorting: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false
+        };
+        project.grids.artifact.gridOptions.onRegisterApi = function(gridApi){
+          project.grids.artifact.gridApi = gridApi;
+          // $interval( function() {
+          //     project.grids.artifact.gridApi.core.handleWindowResize();
+          // }, 500, 10);
+          gridApi.selection.on.rowSelectionChanged($scope,function(row){
+            var msg = 'row selected ' + row.isSelected;
+            project.grids.artifact.selected = row.entity;
+            project.grids.artifact.selected.passback = {};
+          });
+        };
+
+        project.grids.artifact.gridOptions.columnDefs = [
+            {
+                name: 'Name',
+                field: 'artifactName',
+                enableFiltering: false,
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.artifact.name
+                }
+            },
+            {
+                name: 'Description',
+                field: 'artifactDescription',
+                enableFiltering: false,
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.artifact.desc
+                }
+            },
+            {
+                name: 'Type',
+                field: 'artifactTypeName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.artifact.type
+                }
+            },
+            {
+                name: 'URL',
+                field: 'artifactURL',
+                cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="{{COL_FIELD CUSTOM_FILTERS}}">Link</a></div>',
+                enableFiltering: false,
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.artifact.url
+                }
+            }
+        ];
+
+
+
+
+        project.grids.scenario.gridOptions = {
+            enableFiltering: true,
+            enableSorting: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false
+        };
+        project.grids.scenario.gridOptions.onRegisterApi = function(gridApi){
+          project.grids.scenario.gridApi = gridApi;
+          // $interval( function() {
+          //     project.grids.scenario.gridApi.core.handleWindowResize();
+          // }, 500, 10);
+          gridApi.selection.on.rowSelectionChanged($scope,function(row){
+            var msg = 'row selected ' + row.isSelected;
+            project.grids.scenario.selected = row.entity;
+            project.grids.scenario.selected.passback = {};
+          });
+        };
+
+        project.grids.scenario.gridOptions.columnDefs = [
+            {
+                name: 'Name',
+                field: 'scenarioName',
+                enableFiltering: false,
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.scenario.name
+                }
+            },
+            {
+                name: 'Description',
+                enableFiltering: false,
+                field: 'scenarioDescription',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.scenario.desc
+                }
+            },
+        ];
+
+
+        project.grids.configuration.gridOptions = {
+            enableFiltering: true,
+            enableSorting: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false
+        };
+        project.grids.configuration.gridOptions.onRegisterApi = function(gridApi){
+          project.grids.configuration.gridApi = gridApi;
+          // $interval( function() {
+          //     project.grids.configuration.gridApi.core.handleWindowResize();
+          // }, 500, 10);
+          gridApi.selection.on.rowSelectionChanged($scope,function(row){
+            var msg = 'row selected ' + row.isSelected;
+            project.grids.configuration.selected = row.entity;
+            project.grids.configuration.selected.passback = {};
+          });
+        };
+
+        project.grids.configuration.gridOptions.columnDefs = [
+            {
+                name: 'Attributes',
+                field: 'attributeConfigurationName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.atrConf
+                }
+            },
+            {
+                name: 'Questions',
+                field: 'questionConfigurationName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.queConf
+                }
+            },
+            {
+                name: 'Interface',
+                field: 'uiConfigurationName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.uiConf
+                }
+            },
+            {
+                name: 'Artifact',
+                field: 'artifactName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.artifact
+                }
+            },
+            {
+                name: 'Scenario',
+                field: 'scenarioName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.scenario
+                }
+            },
+            {
+                name: 'Persona',
+                field: 'personaName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.persona
+                }
+            },
+            {
+                name: 'Role',
+                field: 'roleName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.configuration.role
+                }
+            },
+            {
+                name: 'Start Link',
+                field: 'configurationIDHashed',
+                enableFiltering: false,
+                cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="start.php?c={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
+            }
+        ];
+
+        project.grids.assessment.gridOptions = {
+            enableFiltering: true,
+            enableSorting: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false
+        };
+        project.grids.assessment.gridOptions.onRegisterApi = function(gridApi){
+            project.grids.assessment.gridApi = gridApi;
+            // $interval( function() {
+            //     project.grids.assessment.gridApi.core.handleWindowResize();
+            // }, 500, 10);
+            gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                var msg = 'row selected ' + row.isSelected;
+                project.grids.assessment.selected = row.entity;
+                project.grids.assessment.selected.passback = {};
+            });
+        };
+
+        project.grids.assessment.gridOptions.columnDefs = [
+            {
+                name: 'Artifact',
+                field: 'artifactName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.artifact
+                }
+            },
+            {
+                name: 'Scenario',
+                field: 'scenarioName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.scenario
+                }
+            },
+            {
+                name: 'Persona',
+                field: 'personaName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.persona
+                }
+            },
+            {
+                name: 'Role',
+                field: 'roleName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.role
+                }
+            },
+            {
+                name: 'User',
+                field: 'email',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.user
+                }
+            },
+            {
+                name: 'Configuration ID',
+                field: 'configurationID',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.assessment.confID
+                }
+            },
+            {
+                name: 'Asessment Link',
+                field: 'assessmentIDHashed',
+                enableFiltering: false,
+                cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="assessment.php?a={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
+            },
+            {
+                name: 'Issued',
+                field: 'issuanceDate',
+                cellFilter: 'date',
+                filters: [
+                    {
+                      condition: uiGridConstants.filter.GREATER_THAN,
+                      placeholder: 'greater than'
+                    },
+                    {
+                      condition: uiGridConstants.filter.LESS_THAN,
+                      placeholder: 'less than'
+                    }
+                ]
+            },
+             {
+                name: 'Edited',
+                field: 'lastEditDate',
+                cellFilter: 'date',
+                filters: [
+                    {
+                      condition: uiGridConstants.filter.GREATER_THAN,
+                      placeholder: 'greater than'
+                    },
+                    {
+                      condition: uiGridConstants.filter.LESS_THAN,
+                      placeholder: 'less than'
+                    }
+                ]
+            },
+             {
+                name: 'Completed',
+                field: 'completionDate',
+                cellFilter: 'date',
+                filters: [
+                    {
+                      condition: uiGridConstants.filter.GREATER_THAN,
+                      placeholder: 'greater than'
+                    },
+                    {
+                      condition: uiGridConstants.filter.LESS_THAN,
+                      placeholder: 'less than'
+                    }
+                ]
+            },
+        ];
+
+
+        project.artifactsStats = {
+            Count: project.artifacts.length
+        };
+        angular.forEach(project.artifacts, function(artifact, artifactKey) {
+            if(artifact !== undefined && artifact !== null && artifact !== '') {
+                var type = {value:artifact.artifactTypeName, label: artifact.artifactTypeName};
+                if(selectOptions.artifact.type.selectOptionIndex(type) == -1) {
+                    selectOptions.artifact.type.push(type);
+                }
+            }
         });
-        deferred.resolve(tmp);
+
+        project.scenariosStats = {
+            Count: project.scenarios.length
+        };
+
+        project.assessmentsStats = {
+            Count: project.assessments.length
+        };
+        angular.forEach(project.assessments, function(assessment, assessmentKey) {
+            if(assessment !== undefined && assessment !== null && assessment !== '') {
+                var artifact = {value:assessment.artifactName, label: assessment.artifactName};
+                var scenario = {value:assessment.scenarioName, label: assessment.scenarioName};
+                var persona = {value:assessment.personaName, label: assessment.personaName};
+                var role = {value:assessment.roleName, label: assessment.roleName};
+                var user = {value:assessment.email, label: assessment.email};
+                var confID = {value:assessment.configurationID, label: assessment.configurationID};
+                if(selectOptions.assessment.artifact.selectOptionIndex(artifact) == -1) {
+                    selectOptions.assessment.artifact.push(artifact);
+                }
+                if(selectOptions.assessment.scenario.selectOptionIndex(scenario) == -1) {
+                    selectOptions.assessment.scenario.push(scenario);
+                }
+                if(selectOptions.assessment.persona.selectOptionIndex(persona) == -1) {
+                    selectOptions.assessment.persona.push(persona);
+                }
+                if(selectOptions.assessment.role.selectOptionIndex(role) == -1) {
+                    selectOptions.assessment.role.push(role);
+                }
+                if(selectOptions.assessment.user.selectOptionIndex(user) == -1) {
+                    selectOptions.assessment.user.push(user);
+                }
+                 if(selectOptions.assessment.confID.selectOptionIndex(confID) == -1) {
+                    selectOptions.assessment.confID.push(confID);
+                }
+            }
+        });
+
+        project.configurationsStats = {
+            Count: project.configurations.length
+        };
+        angular.forEach(project.configurations, function(configuration, configurationKey) {
+            if(configuration !== undefined && configuration !== null && configuration !== '') {
+                var atrConf = {value:configuration.attributeConfigurationName, label: configuration.attributeConfigurationName};
+                var queConf = {value:configuration.questionConfigurationName, label: configuration.questionConfigurationName};
+                var uiConf = {value:configuration.uiConfigurationName, label: configuration.uiConfigurationName};
+                var artifact = {value:configuration.artifactName, label: configuration.artifactName};
+                var scenario = {value:configuration.scenarioName, label: configuration.scenarioName};
+                var persona = {value:configuration.personaName, label: configuration.personaName};
+                var role = {value:configuration.roleName, label: configuration.roleName};
+                if(selectOptions.configuration.atrConf.selectOptionIndex(atrConf) == -1) {
+                    selectOptions.configuration.atrConf.push(atrConf);
+                }
+                if(selectOptions.configuration.queConf.selectOptionIndex(queConf) == -1) {
+                    selectOptions.configuration.queConf.push(queConf);
+                }
+                if(selectOptions.configuration.uiConf.selectOptionIndex(uiConf) == -1) {
+                    selectOptions.configuration.uiConf.push(uiConf);
+                }
+                if(selectOptions.configuration.artifact.selectOptionIndex(artifact) == -1) {
+                    selectOptions.configuration.artifact.push(artifact);
+                }
+                if(selectOptions.configuration.scenario.selectOptionIndex(scenario) == -1) {
+                    selectOptions.configuration.scenario.push(scenario);
+                }
+                if(selectOptions.configuration.persona.selectOptionIndex(persona) == -1) {
+                    selectOptions.configuration.persona.push(persona);
+                }
+                if(selectOptions.configuration.role.selectOptionIndex(role) == -1) {
+                    selectOptions.configuration.role.push(role);
+                }
+            }
+        });
+
+
+        project.grids.artifact.gridOptions.data = project.artifacts;
+        project.grids.scenario.gridOptions.data = project.scenarios;
+        project.grids.assessment.gridOptions.data = project.assessments;
+        project.grids.configuration.gridOptions.data = project.configurations;
+
+        project.loaded = true;
+        project.loading = false;
+
+        deferred.resolve(project);
         return deferred.promise;
-    }).then(function(processed){
-        $scope.projects = processed;
+
+    }).then(function(processed) {
+        $scope.project = processed;
+        $scope.loaded = true;
     });
 
-    $scope.loadProject = function (project, index) {
-        if(!project.loaded) {
-            // get all data after intial project data load
-            $scope.projects[index].loading = true;
-            projectService.get(project.projectID).then(function(response) {
-                var deferred = $q.defer();
-
-                console.log('loading a project');
-                console.log(response);
-
-                var tmp = response.data;
-                angular.forEach(tmp, function(project, projectKey){
-                    project.collapsed = true;
-                    project.selected ={
-                        artifact: '',
-                        scenario: '',
-                        persona: '',
-                        role: '',
-                        assessment: '',
-                        configuration: ''
-                    };
-
-
-                    $scope.$watch(function () {
-                        return project.grids.artifact.selected;
-                    }, function(artifact){
-                        if(artifact != undefined && artifact !=null && artifact !='') {
-                            statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
-                                project.grids.artifact.selected.stats = stats.data;
-                            });
-                            console.log('a change happened!');
-                        }
-                    }, false);
-
-                    $scope.$watch(function () {
-                        return project.grids.scenario.selected;
-                    }, function(scenario){
-                        if(scenario != undefined && scenario !=null && scenario !='') {
-                            statService.byScenario(project.projectID, scenario.scenarioID).then(function(stats){
-                                project.grids.scenario.selected.stats = stats.data;
-                            });
-                            console.log('a change happened!');
-                        }
-                    }, false);
-
-                    $scope.$watch(function () {
-                        return project.grids.configuration.selected;
-                    }, function(configuration){
-                        if(configuration != undefined && configuration !=null && configuration !='') {
-                            statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
-                                project.grids.configuration.selected.stats = stats.data;
-                            });
-                            console.log('a change happened!');
-                        }
-                    }, false);
-
-                    project.grids = {
-                        artifact: {},
-                        scenario: {},
-                        assessment: {},
-                        configuration: {}
-                    };
-
-                    var selectOptions = {
-                        artifact: {
-                            name: [],
-                            desc: [],
-                            type: [],
-                            url: [],
-                        },
-                        scenario: {
-                            name: [],
-                            desc: [],
-                        },
-                        assessment: {
-                            artifact: [],
-                            scenario: [],
-                            persona: [],
-                            role: [],
-                            user: []
-                        },
-                        configuration: {
-                            atrConf: [],
-                            queConf: [],
-                            uiConf: [],
-                            artifact: [],
-                            scenario: [],
-                            persona: [],
-                            role: []
-                        }
-                    };
-
-                    project.grids.artifact.gridOptions = {
-                        enableFiltering: true,
-                        enableSorting: true,
-                        enableRowHeaderSelection: false,
-                        multiSelect: false
-                    };
-                    project.grids.artifact.gridOptions.onRegisterApi = function(gridApi){
-                      project.grids.artifact.gridApi = gridApi;
-                      $interval( function() {
-                          project.grids.artifact.gridApi.core.handleWindowResize();
-                      }, 500, 10);
-                      gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'row selected ' + row.isSelected;
-                        project.grids.artifact.selected = row.entity;
-                        project.grids.artifact.selected.passback = {};
-                      });
-                    };
-
-                    project.grids.artifact.gridOptions.columnDefs = [
-                          // default
-                          // { name: 'Name', field: 'name', headerCellClass: $scope.highlightFilteredHeader },
-                          // pre-populated search field
-                        {
-                            name: 'Name',
-                            field: 'artifactName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                // selectOptions: [ { value: '1', label: 'male' }, { value: '2', label: 'female' }]
-                                selectOptions: selectOptions.artifact.name
-                            }
-                        },
-                        {
-                            name: 'Description',
-                            field: 'artifactDescription',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.artifact.desc
-                            }
-                        },
-                        {
-                            name: 'Type',
-                            field: 'artifactTypeName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.artifact.type
-                            }
-                        },
-                        {
-                            name: 'URL',
-                            field: 'artifactURL',
-                            cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="{{COL_FIELD CUSTOM_FILTERS}}">Link</a></div>',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.artifact.url
-                            }
-                        }
-                    ];
-
-
-
-
-                    project.grids.scenario.gridOptions = {
-                        enableFiltering: true,
-                        enableSorting: true,
-                        enableRowHeaderSelection: false,
-                        multiSelect: false
-                    };
-                    project.grids.scenario.gridOptions.onRegisterApi = function(gridApi){
-                      project.grids.scenario.gridApi = gridApi;
-                      $interval( function() {
-                          project.grids.scenario.gridApi.core.handleWindowResize();
-                      }, 500, 10);
-                      gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'row selected ' + row.isSelected;
-                        project.grids.scenario.selected = row.entity;
-                        project.grids.scenario.selected.passback = {};
-                      });
-                    };
-
-                    project.grids.scenario.gridOptions.columnDefs = [
-                        {
-                            name: 'Name',
-                            field: 'scenarioName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.scenario.name
-                            }
-                        },
-                        {
-                            name: 'Description',
-                            field: 'scenarioDescription',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.scenario.desc
-                            }
-                        },
-                    ];
-
-
-                    project.grids.configuration.gridOptions = {
-                        enableFiltering: true,
-                        enableSorting: true,
-                        enableRowHeaderSelection: false,
-                        multiSelect: false
-                    };
-                    project.grids.configuration.gridOptions.onRegisterApi = function(gridApi){
-                      project.grids.configuration.gridApi = gridApi;
-                      $interval( function() {
-                          project.grids.configuration.gridApi.core.handleWindowResize();
-                      }, 500, 10);
-                      gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'row selected ' + row.isSelected;
-                        project.grids.configuration.selected = row.entity;
-                        project.grids.configuration.selected.passback = {};
-                      });
-                    };
-
-                    project.grids.configuration.gridOptions.columnDefs = [
-                        {
-                            name: 'Attributes',
-                            field: 'attributeConfigurationName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.atrConf
-                            }
-                        },
-                        {
-                            name: 'Questions',
-                            field: 'questionConfigurationName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.queConf
-                            }
-                        },
-                        {
-                            name: 'Interface',
-                            field: 'uiConfigurationName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.uiConf
-                            }
-                        },
-                        {
-                            name: 'Artifact',
-                            field: 'artifactName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.artifact
-                            }
-                        },
-                        {
-                            name: 'Scenario',
-                            field: 'scenarioName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.scenario
-                            }
-                        },
-                        {
-                            name: 'Persona',
-                            field: 'personaName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.persona
-                            }
-                        },
-                        {
-                            name: 'Role',
-                            field: 'roleName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.configuration.role
-                            }
-                        },
-                        {
-                            name: 'Start Link',
-                            field: 'configurationIDHashed',
-                            enableFiltering: false,
-                            cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="start.php?c={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
-
-                            // filter: {
-                            //     type: uiGridConstants.filter.SELECT,
-                            //     selectOptions: []
-                            // }
-                        }
-                    ];
-
-                    project.grids.assessment.gridOptions = {
-                        enableFiltering: true,
-                        enableSorting: true,
-                        enableRowHeaderSelection: false,
-                        multiSelect: false
-                    };
-                    project.grids.assessment.gridOptions.onRegisterApi = function(gridApi){
-                        project.grids.assessment.gridApi = gridApi;
-                        $interval( function() {
-                            project.grids.assessment.gridApi.core.handleWindowResize();
-                        }, 500, 10);
-                        gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                            var msg = 'row selected ' + row.isSelected;
-                            project.grids.assessment.selected = row.entity;
-                            project.grids.assessment.selected.passback = {};
-                        });
-                    };
-
-                    project.grids.assessment.gridOptions.columnDefs = [
-                        {
-                            name: 'Artifact',
-                            field: 'artifactName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.assessment.artifact
-                            }
-                        },
-                        {
-                            name: 'Scenario',
-                            field: 'scenarioName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.assessment.scenario
-                            }
-                        },
-                        {
-                            name: 'Persona',
-                            field: 'personaName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.assessment.persona
-                            }
-                        },
-                        {
-                            name: 'Role',
-                            field: 'roleName',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.assessment.role
-                            }
-                        },
-                        {
-                            name: 'User',
-                            field: 'email',
-                            filter: {
-                                type: uiGridConstants.filter.SELECT,
-                                selectOptions: selectOptions.assessment.user
-                            }
-                        },
-                        {
-                            name: 'Asessment Link',
-                            field: 'assessmentIDHashed',
-                            enableFiltering: false,
-                            cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="assessment.php?a={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
-
-                            // filter: {
-                            //     type: uiGridConstants.filter.SELECT,
-                            //     selectOptions: []
-                            // }
-                        },
-                        {
-                            name: 'Issued',
-                            field: 'issuanceDate',
-                            cellFilter: 'date',
-                            filters: [
-                                {
-                                  condition: uiGridConstants.filter.GREATER_THAN,
-                                  placeholder: 'greater than'
-                                },
-                                {
-                                  condition: uiGridConstants.filter.LESS_THAN,
-                                  placeholder: 'less than'
-                                }
-                            ]
-                        },
-                         {
-                            name: 'Edited',
-                            field: 'lastEditDate',
-                            cellFilter: 'date',
-                            filters: [
-                                {
-                                  condition: uiGridConstants.filter.GREATER_THAN,
-                                  placeholder: 'greater than'
-                                },
-                                {
-                                  condition: uiGridConstants.filter.LESS_THAN,
-                                  placeholder: 'less than'
-                                }
-                            ]
-                        },
-                         {
-                            name: 'Completed',
-                            field: 'completionDate',
-                            cellFilter: 'date',
-                            filters: [
-                                {
-                                  condition: uiGridConstants.filter.GREATER_THAN,
-                                  placeholder: 'greater than'
-                                },
-                                {
-                                  condition: uiGridConstants.filter.LESS_THAN,
-                                  placeholder: 'less than'
-                                }
-                            ]
-                        },
-                        // date filter
-                        // { field: 'mixedDate', cellFilter: 'date', width: '15%', filter: {
-                        //   condition: uiGridConstants.filter.LESS_THAN,
-                        //   placeholder: 'less than',
-                        //   term: nextWeek
-                        // }, headerCellClass: $scope.highlightFilteredHeader
-                        // },
-                        // { field: 'mixedDate', displayName: "Long Date", cellFilter: 'date:"longDate"', filterCellFiltered:true, width: '15%',
-                        // }
-                    ];
-
-
-                    project.artifactsStats = {
-                        Count: project.artifacts.length
-                    };
-                    angular.forEach(project.artifacts, function(artifact, artifactKey) {
-                        if(artifact !== undefined && artifact !== null && artifact !== '') {
-                            var name = {value:artifact.artifactName, label: artifact.artifactName};
-                            var desc = {value:artifact.artifactDescription, label: artifact.artifactDescription};
-                            var type = {value:artifact.artifactTypeName, label: artifact.artifactTypeName};
-                            var url = {value:artifact.artifactURL, label: artifact.artifactURL};
-                            if(selectOptions.artifact.name.selectOptionIndex(name) == -1) {
-                                selectOptions.artifact.name.push(name);
-                            }
-                            if(selectOptions.artifact.desc.selectOptionIndex(desc) == -1) {
-                                selectOptions.artifact.desc.push(desc);
-                            }
-                            if(selectOptions.artifact.type.selectOptionIndex(type) == -1) {
-                                selectOptions.artifact.type.push(type);
-                            }
-                            if(selectOptions.artifact.url.selectOptionIndex(url) == -1) {
-                                selectOptions.artifact.url.push(url);
-                            }
-                        }
-                    });
-
-                    project.scenariosStats = {
-                        Count: project.scenarios.length
-                    };
-                    angular.forEach(project.scenarios, function(scenario, scenarioKey) {
-                        if(scenario !== undefined && scenario !== null && scenario !== '') {
-                            var name = {value:scenario.scenarioName, label: scenario.scenarioName};
-                            var desc = {value:scenario.scenarioDescription, label: scenario.scenarioDescription};
-                            if(selectOptions.scenario.name.selectOptionIndex(name) == -1) {
-                                selectOptions.scenario.name.push(name);
-                            }
-                            if(selectOptions.scenario.desc.selectOptionIndex(desc) == -1) {
-                                selectOptions.scenario.desc.push(desc);
-                            }
-                            selectOptions.scenario.name.push({value:scenario.scenarioName, label: scenario.scenarioName});
-                            selectOptions.scenario.desc.push({value:scenario.scenarioDescription, label: scenario.scenarioDescription});
-                        }
-                    });
-
-                    project.assessmentsStats = {
-                        Count: project.assessments.length
-                    };
-                    angular.forEach(project.assessments, function(assessment, assessmentKey) {
-                        if(assessment !== undefined && assessment !== null && assessment !== '') {
-                            var artifact = {value:assessment.artifactName, label: assessment.artifactName};
-                            var scenario = {value:assessment.scenarioName, label: assessment.scenarioName};
-                            var persona = {value:assessment.personaName, label: assessment.personaName};
-                            var role = {value:assessment.roleName, label: assessment.roleName};
-                            var user = {value:assessment.email, label: assessment.email};
-                            if(selectOptions.assessment.artifact.selectOptionIndex(artifact) == -1) {
-                                selectOptions.assessment.artifact.push(artifact);
-                            }
-                            if(selectOptions.assessment.scenario.selectOptionIndex(scenario) == -1) {
-                                selectOptions.assessment.scenario.push(scenario);
-                            }
-                            if(selectOptions.assessment.persona.selectOptionIndex(persona) == -1) {
-                                selectOptions.assessment.persona.push(persona);
-                            }
-                            if(selectOptions.assessment.role.selectOptionIndex(role) == -1) {
-                                selectOptions.assessment.role.push(role);
-                            }
-                            if(selectOptions.assessment.user.selectOptionIndex(user) == -1) {
-                                selectOptions.assessment.user.push(user);
-                            }
-                        }
-                    });
-
-                    project.configurationsStats = {
-                        Count: project.configurations.length
-                    };
-                    angular.forEach(project.configurations, function(configuration, configurationKey) {
-                        if(configuration !== undefined && configuration !== null && configuration !== '') {
-                            var atrConf = {value:configuration.attributeConfigurationName, label: configuration.attributeConfigurationName};
-                            var queConf = {value:configuration.questionConfigurationName, label: configuration.questionConfigurationName};
-                            var uiConf = {value:configuration.uiConfigurationName, label: configuration.uiConfigurationName};
-                            var artifact = {value:configuration.artifactName, label: configuration.artifactName};
-                            var scenario = {value:configuration.scenarioName, label: configuration.scenarioName};
-                            var persona = {value:configuration.personaName, label: configuration.personaName};
-                            var role = {value:configuration.roleName, label: configuration.roleName};
-                            if(selectOptions.configuration.atrConf.selectOptionIndex(atrConf) == -1) {
-                                selectOptions.configuration.atrConf.push(atrConf);
-                            }
-                            if(selectOptions.configuration.queConf.selectOptionIndex(queConf) == -1) {
-                                selectOptions.configuration.queConf.push(queConf);
-                            }
-                            if(selectOptions.configuration.uiConf.selectOptionIndex(uiConf) == -1) {
-                                selectOptions.configuration.uiConf.push(uiConf);
-                            }
-                            if(selectOptions.configuration.artifact.selectOptionIndex(artifact) == -1) {
-                                selectOptions.configuration.artifact.push(artifact);
-                            }
-                            if(selectOptions.configuration.scenario.selectOptionIndex(scenario) == -1) {
-                                selectOptions.configuration.scenario.push(scenario);
-                            }
-                            if(selectOptions.configuration.persona.selectOptionIndex(persona) == -1) {
-                                selectOptions.configuration.persona.push(persona);
-                            }
-                            if(selectOptions.configuration.role.selectOptionIndex(role) == -1) {
-                                selectOptions.configuration.role.push(role);
-                            }
-                        }
-                    });
-
-
-                    project.grids.artifact.gridOptions.data = project.artifacts;
-                    project.grids.scenario.gridOptions.data = project.scenarios;
-                    project.grids.assessment.gridOptions.data = project.assessments;
-                    project.grids.configuration.gridOptions.data = project.configurations;
-
-                    project.loaded = true;
-                    project.collapsed = false;
-                    project.loading = false;
-                }); // end foreach project
-
-                deferred.resolve(tmp);
-                return deferred.promise;
-            }).then(function(processed){
-
-                $scope.projects[index] = processed[0];
-            });
-        } else {
-            $scope.projects[index].collapsed = !$scope.projects[index].collapsed;
-        }
-    };
 
 
     userService.getAll().then(function(response){
@@ -682,8 +638,8 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
         }
     };
 
-    $scope.deleteAssessment = function(assessment, list) {
-        console.log(assessment);
+    $scope.deleteAssessment = function(assessment, list, key) {
+        console.log(key);
         assessmentService.delete(assessment.assessmentID).then(function(response){
             console.log(response);
             assessment.popoverOpen = false;
@@ -691,7 +647,6 @@ app.controller('projectCtrl', ['$scope', '$http', '$animate', 'projectService', 
             assessment = null;
         });
     };
-
 
 }]).controller('assessmentsCtrl', ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams){
     // $scope.assessment = $stateParams.assessment;
@@ -1005,7 +960,7 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
   };
 });
 
-app.config(function($stateProvider, $urlRouterProvider, LightboxProvider) {
+app.config(function($stateProvider, $urlRouterProvider, LightboxProvider, projectServiceProvider, $stateParamsProvider, statServiceProvider) {
   //
     LightboxProvider.templateUrl = 'partials/lightbox.html';
     LightboxProvider.fullScreenMode = true;
@@ -1016,8 +971,17 @@ app.config(function($stateProvider, $urlRouterProvider, LightboxProvider) {
   $stateProvider
     .state('projects', {
       url: "/projects",
-      templateUrl: "partials/admin/project_manager.html",
-      controller: 'projectCtrl'
+      templateUrl: "js/angular/partials/admin/projects.html",
+      controller: 'projectsCtrl'
+    })
+    .state('project', {
+      url: "/projects/{id:int}",
+      templateUrl: "js/angular/partials/admin/project.html",
+      controller: 'projectCtrl',
+      resolve: {id: function($stateParams) {return $stateParams.id}},
+      // onEnter: function ($stateParams, projectService, statService, $scope) {
+
+      // }
     });
     // .state('projects.assessmentDetails', {
     //   url: "/assessments/:id",

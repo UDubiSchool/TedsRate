@@ -63,7 +63,12 @@ app.service('statService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
-app.service('projectService', ['$http', '$q', function ($http, $q) {
+app.service('projectService', ['$http', '$q', 'uiGridConstants', function ($http, $q, uiGridConstants, $interval) {
+    this.projects = {};
+    this.overviews = {};
+    this.current = {};
+    var projectService = this;
+
     this.get = function(id) {
         var target = "CI/index.php/api/projects/"+id;
         var data = {};
@@ -72,15 +77,22 @@ app.service('projectService', ['$http', '$q', function ($http, $q) {
             return response;
         }).error(function(response){
             return response;
+        }).then(function(response2){
+            projectService.projects[response2.data[0].projectID] = response2.data[0];
+            projectService.current =  projectService.projects[response2.data[0].projectID];
+            return response2;
         });
+
     }
 
     this.getAll = function() {
         var target = "CI/index.php/api/projects/";
         var data = {};
+        var projectService = this;
         return $http.get(target, data, {
         }).success(function(response){
-            return response;
+            projectService.projects = response;
+            return projectService.projects;
         }).error(function(response){
             return response;
         });
@@ -89,9 +101,15 @@ app.service('projectService', ['$http', '$q', function ($http, $q) {
     this.getBasic = function() {
         var target = "CI/index.php/project/getBasic";
         var data = {};
+        var projectService = this;
         return $http.get(target, data, {
         }).success(function(response){
-            return response;
+
+            angular.forEach(response, function(project, projectKey) {
+                projectService.projects[project.projectID] = project;
+            });
+            projectService.hasBasics = true;
+            return projectService.projects;
         }).error(function(response){
             return response;
         });
@@ -142,6 +160,40 @@ app.service('projectService', ['$http', '$q', function ($http, $q) {
             return response;
         });
     }
+    this.load = function (id) {
+        var deferredOuter = $q.defer();
+        if(Object.keys(projectService.projects).length > 0 && projectService.projects[id].initialLoad) {
+            projectService.current = projectService.projects[id];
+            deferredOuter.resolve(projectService.current);
+            return deferredOuter.promise;
+        } else{
+            // get all data after intial project data load
+            console.log('Project not loaded. Loading now....')
+            // projectService.projects[index].loading = true;
+            return projectService.get(id).then(function(response) {
+                // console.log(projectService.current);
+                var deferred = $q.defer();
+                var project = response.data[0];
+                project.initialLoad = true;
+                project.selected ={
+                    artifact: '',
+                    scenario: '',
+                    persona: '',
+                    role: '',
+                    assessment: '',
+                    configuration: ''
+                };
+                deferred.resolve(project);
+                return deferred.promise;
+            }).then(function(processed){
+
+                projectService.projects[id] = processed;
+                projectService.current = projectService.projects[id];
+                deferredOuter.resolve(projectService.current);
+                return deferredOuter.promise;
+            });
+        }
+    };
 }]);
 
 app.service('artifactService', ['$http', '$q', function ($http, $q) {

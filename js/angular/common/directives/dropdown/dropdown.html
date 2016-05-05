@@ -1,4 +1,4 @@
-<div class="section-header clearfix clickable" ng-click="collapsed = !collapsed">
+<div class="section-header clearfix clickable" ng-class="{open : !collapsed}" ng-click="collapsed = !collapsed">
     <h4 class="pull-left">
         <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !collapsed}"></i></span>
         {{title | capitalize}}

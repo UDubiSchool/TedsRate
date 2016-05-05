@@ -56,5 +56,37 @@ teds-pivot-table .rating {
 }
 
 .menu {
-    padding:25px 15px;
+    padding:10px 15px;
+    margin:10px 0px;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+.admin-loader {
+    font-size: 8em;
+}
+
+.project > teds-dropdown {
+    border-bottom: 1px solid #dfdfdf;
+    padding:0px;
+}
+
+.project > teds-dropdown > .collapsable{
+    padding:10px 15px;
+}
+
+.project > teds-dropdown > .section-header {
+    padding:5px 15px;
+    transition: background-color .3s linear;
+}
+
+.project > teds-dropdown > .open {
+    background-color: #fafafa;
+    /*margin:5px 0px;*/
+    /*padding: 0px 15px;*/
+    border-bottom: 1px solid #dfdfdf;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.project-info {
+    padding-left:3em;
 }

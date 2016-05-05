@@ -2,18 +2,15 @@
     <div id="alert-wrapper">
         <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
     </div>
-   <div ng-repeat="(projectKey, project) in projects" class="row clearfix project">
-
-       <div class="section-header clearfix clickable" ng-click="loadProject(project, projectKey)">
-           <h3 class="pull-left">
-               <span ng-show="!project.loading"><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.collapsed}"></i></span>
-               <span ng-show="project.loading"><i class="fa fa-circle-o-notch spin"></i></span>
-               {{project.projectName}}
-           </h3>
-           <h5 class="pull-left">Assessments: {{project.counts.assessments}}</h5>
-           <h5 class="pull-left">Completion Rate: {{project.counts.assessments ? ((project.counts.completed / project.counts.assessments) * 100 |number:1) + '%'  : 'No Assessments'}}</h5>
-       </div>
-      <div class="collapsable clearfix" uib-collapse="project.collapsed">
+        <div ng-if="!loaded" class="col-xs-12 admin-loader text-center"><i class="fa fa-circle-o-notch spin"></i></div>
+      <div ng-if="project.loaded" class="clearfix project">
+          <div class="menu col-xs-12 clearfix">
+                <a ui-sref="projects" class="btn btn-primary"><i class="fa fa-chevron-left"></i> Back to Projects</a>
+          </div>
+          <div class="project-info">
+                <h1>{{project.projectName}}</h1>
+                <h3>{{project.projectDescription}}</h3>
+          </div>
 
         <teds-dropdown title="Artifacts" header-stats="{count: project.artifacts.length}" class="artifacts container col-xs-12" ng-click="project.grids.artifact.gridApi.core.handleWindowResize();">
 
@@ -161,7 +158,7 @@
                 <script type="text/ng-template" id="deleteAssessmentPopover.html">
                     <div>Are you sure you want to delete assessment {{project.grids.assessment.selected.assessmentID}}</div>
                     <div class="form-group">
-                      <a class="btn btn-success" ng-click="deleteAssessment(project.selected.assessment, project.assessmentsList)">Yes</a>
+                      <a class="btn btn-success" ng-click="deleteAssessment(project.grids.assessment.selected, project.assessments, project.grids.assessment.selected.$key)">Yes</a>
                       <a class="btn btn-danger" ng-click="project.grids.assessment.selected.popoverOpen = false">No</a>
                     </div>
                 </script>
@@ -266,5 +263,4 @@
       </div>
 
 
-   </div>
 </div>
