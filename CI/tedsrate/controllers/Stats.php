@@ -219,6 +219,7 @@ class Stats extends CI_Controller {
     private function sortResponses($data) {
         $questions=[];
         $chartOptions = null;
+
         foreach ($data as $key => $cell) {
             if(!array_key_exists($cell['questionID'], $questions)) {
                 $questions[$cell['questionID']] = [
@@ -235,38 +236,17 @@ class Stats extends CI_Controller {
 
                 $chartOptions = [
                     'chart' => [
-                        // 'type' => 'pieChart',
                         'height' => 500,
-                        // 'x' => "%%function(d){return d.key;}%%",
-                        // 'y' => "%%function(d){return d.value;}%%",
                         'duration' => 500,
                     ]
                 ];
-
-                // if($questionData['questionType'] == 'Boolean') {
-                //     $chartOptions['chart']['type'] = 'pieChart';
-                //     $chartOptions['chart']['showLabels'] = true;
-                //     $chartOptions['chart']['labelThreshold'] = 0.01;
-                //     $chartOptions['chart']['labelSunbeamLayout'] = true;
-                //     $chartOptions['chart']['legend'] = [
-                //         'margin' => [
-                //             'top' => 5,
-                //             'right' => 35,
-                //             'bottom' => 5,
-                //             'left' => 0
-                //         ]
-                //     ];
-                // }
-                // if($questionData['questionType'] == 'Select' || $questionData['questionType'] == 'Radio' || $questionData['questionType'] == 'Check' || $questionData['questionType'] == 'Boolean') {
-                    $chartOptions['chart']['type'] = 'discreteBarChart';
-                    // $chartOptions['chart']['valueFormat'] = "%%function(d){return d3.format(',.4f')(d);}%%";
-                    $chartOptions['chart']['xAxis'] = [
-                        'axisLabel' => 'Answer'
-                    ];
-                    $chartOptions['chart']['yAxis'] = [
-                        'axisLabel' => 'Count'
-                    ];
-                // }
+                $chartOptions['chart']['type'] = 'discreteBarChart';
+                $chartOptions['chart']['xAxis'] = [
+                    'axisLabel' => ''
+                ];
+                $chartOptions['chart']['yAxis'] = [
+                    'axisLabel' => 'Count'
+                ];
 
                 $questions[$cell['questionID']]['chartOptions'] = $chartOptions;
             }
@@ -295,12 +275,14 @@ class Stats extends CI_Controller {
             }
 
             if($question['chartOptions']['chart']['type'] == 'discreteBarChart') {
+                $xDomain = [];
                 foreach ($tmp as $key => $value) {
                     $toPush = [
-                        'label' => $key,
-                        'value' => $value
+                        'x' => $key,
+                        'y' => $value
                     ];
                     array_push($questions[$questionKey]['chartData'], $toPush);
+                    array_push($xDomain, $toPush['x']);
                 }
                 $questions[$questionKey]['chartData'] = [
                     [
@@ -315,8 +297,14 @@ class Stats extends CI_Controller {
                         'y' => $value
                     ];
                     array_push($questions[$questionKey]['chartData'], $toPush);
+                    array_push($xDomain, $toPush['x']);
+
                 }
             }
+
+            $questions[$questionKey]['chartOptions']['chart']['xDomain'] = $xDomain;
+            // $questions[$questionKey]['chartOptions']['chart']['xRange'] = [0, 1];
+
         }
         return $questions;
     }

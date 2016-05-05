@@ -23,6 +23,15 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
 
     $scope.addAlert = alertService.addAlert;
     $scope.closeAlert = alertService.closeAlert;
+
+    $scope.$on('$locationChangeStart', function(event) {
+        window.nv.charts = {};
+        window.nv.graphs = [];
+        window.nv.logs = {};
+        // remove resize listeners
+        window.onresize = null;
+    });
+
 }]);
 
 app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', 'uiGridConstants', '$interval', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService, uiGridConstants, $interval) {
@@ -61,50 +70,8 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
         maxColor: 'green'
     };
     $scope.loaded = false;
-    $scope.sampleChartOptions = {
-        chart: {
-            type: 'discreteBarChart',
-            height: 300,
-            width:400,
-            margin : {
-                top: 20,
-                right: 20,
-                bottom: 50,
-                left: 55
-            },
-            x: function(d){return d.label;},
-            y: function(d){return d.value;},
-            showValues: true,
-            tooltips: false,
-            valueFormat: function(d){
-                return d3.format(',.0f')(d);
-            },
-            duration: 500,
-            xAxis: {
-                axisLabel: 'Answer'
-            },
-            yAxis: {
-                axisLabel: 'Count',
-                axisLabelDistance: -15,
-                margin: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0
-                }
-            },
-            discretebar: {
-                width: 100,
-                height: 100,
-                margin: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0
-                }
-            }
-        }
-    };
+
+
 
     projectService.load($stateParams.id).then(function(response){
         var deferred = $q.defer();
@@ -116,6 +83,7 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             if(artifact != undefined && artifact !=null && artifact !='') {
                 statService.byArtifact(project.projectID, artifact.artifactID).then(function(stats){
                     project.grids.artifact.selected.stats = stats.data;
+                    // project.grids.artifact.selected = formatStats(project.grids.artifact.selected);
                 });
                 console.log('a change happened!');
             }
@@ -202,20 +170,12 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             {
                 name: 'Name',
                 field: 'artifactName',
-                enableFiltering: false,
-                filter: {
-                    type: uiGridConstants.filter.SELECT,
-                    selectOptions: selectOptions.artifact.name
-                }
+                filter: {}
             },
             {
                 name: 'Description',
                 field: 'artifactDescription',
-                enableFiltering: false,
-                filter: {
-                    type: uiGridConstants.filter.SELECT,
-                    selectOptions: selectOptions.artifact.desc
-                }
+                filter: {}
             },
             {
                 name: 'Type',
@@ -262,20 +222,12 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             {
                 name: 'Name',
                 field: 'scenarioName',
-                enableFiltering: false,
-                filter: {
-                    type: uiGridConstants.filter.SELECT,
-                    selectOptions: selectOptions.scenario.name
-                }
+                filter: {}
             },
             {
                 name: 'Description',
-                enableFiltering: false,
                 field: 'scenarioDescription',
-                filter: {
-                    type: uiGridConstants.filter.SELECT,
-                    selectOptions: selectOptions.scenario.desc
-                }
+                filter: {}
             },
         ];
 
@@ -1024,4 +976,68 @@ Array.prototype.selectOptionIndex = function (o) {
         }
     }
     return -1;
+}
+
+function formatStats (entity) {
+    for (var col in entity.stats.columns) {
+      if (entity.stats.columns.hasOwnProperty(col)) {
+        // console.log(entity.stats.columns[col]);
+        if(entity.stats.columns[col].questions.length > 0) {
+            entity.stats.columns[col].questions.forEach(function(question){
+                var domainOptions = [];
+                question.responses.forEach(function(response){
+                    domainOptions.push(response.answer);
+                });
+
+                question.chartOptions = {
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 300,
+                        width:400,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 55
+                        },
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showValues: true,
+                        tooltips: false,
+                        valueFormat: function(d){
+                            return d3.format(',.0f')(d);
+                        },
+                        duration: 500,
+                        xAxis: {
+                            domain: domainOptions
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: -15,
+                            margin: {
+                                top: 0,
+                                right: 0,
+                                bottom: 0,
+                                left: 0
+                            }
+                        },
+                        discretebar: {
+                            width: 100,
+                            height: 100,
+                            margin: {
+                                top: 0,
+                                right: 0,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    }
+                };
+            });
+        }
+
+      }
+    }
+    console.log(entity);
+    return entity;
 }

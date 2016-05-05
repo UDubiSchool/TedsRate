@@ -29,7 +29,7 @@
                   <div class="col-sm-4" ng-repeat="question in project.grids.artifact.selected.passback.column.questions">
                     <p>{{question.name}}</p>
                     <h5>{{question.desc}}</h5>
-                    <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                    <nvd3 ng-if="question.responses.length > 0" options="question.chartOptions" data="question.chartData"></nvd3>
                   </div>
                 </div>
 
@@ -108,7 +108,7 @@
                 <div class="col-sm-4" ng-repeat="question in project.grids.scenario.selected.passback.column.questions">
                   <p>{{question.name}}</p>
                   <h5>{{question.desc}}</h5>
-                  <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3>
+                  <nvd3 options="question.chartOptions" data="question.chartData"></nvd3>
                 </div>
               </div>
             </teds-pivot-table>
@@ -249,7 +249,7 @@
                  <p>{{question.name}}</p>
                  <h5>{{question.desc}}</h5>
                  <h6>Answer: {{question.responses[0].answer}}</h6>
-                 <!-- <nvd3 options="sampleChartOptions" data="question.chartData"></nvd3> -->
+                 <!-- <nvd3 options="question.chartOptions" data="question.chartData"></nvd3> -->
                </div>
              </div>
            </teds-pivot-table>
