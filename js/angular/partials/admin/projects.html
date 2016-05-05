@@ -3,7 +3,7 @@
     <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
     </div>
 
-    <div ng-repeat="(projectKey, project) in projects" class="row clearfix project">
+    <div ng-repeat="(projectKey, project) in projects | orderObjectInt: 'projectID' : true" class="row clearfix project">
 
         <div class="section-header clearfix clickable" ui-sref="project({id: project.projectID})">
         <h3 class="pull-left">

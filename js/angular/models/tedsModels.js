@@ -88,7 +88,6 @@ app.service('projectService', ['$http', '$q', 'uiGridConstants', function ($http
     this.getAll = function() {
         var target = "CI/index.php/api/projects/";
         var data = {};
-        var projectService = this;
         return $http.get(target, data, {
         }).success(function(response){
             projectService.projects = response;
@@ -101,13 +100,13 @@ app.service('projectService', ['$http', '$q', 'uiGridConstants', function ($http
     this.getBasic = function() {
         var target = "CI/index.php/project/getBasic";
         var data = {};
-        var projectService = this;
         return $http.get(target, data, {
         }).success(function(response){
 
             angular.forEach(response, function(project, projectKey) {
                 projectService.projects[project.projectID] = project;
             });
+            // projectService.projects.reverse();
             projectService.hasBasics = true;
             return projectService.projects;
         }).error(function(response){

@@ -39,20 +39,24 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
     // get initial project data for page load
     if(!projectService.hasBasics) {
         projectService.getBasic().then(function(response){
-            var deferred = $q.defer();
-            var tmp = response.data;
-            angular.forEach(tmp, function(project, projectKey){
-                project.collapsed = true;
-                project.loaded = false;
-                project.loading = false;
-            });
-            deferred.resolve(tmp);
-            return deferred.promise;
-        }).then(function(processed){
-            $scope.projects = processed;
+            // var deferred = $q.defer();
+            // var tmp = response.data;
+            // angular.forEach(tmp, function(project, projectKey){
+            //     project.collapsed = true;
+            //     project.loaded = false;
+            //     project.loading = false;
+            // });
+            // deferred.resolve(tmp);
+            // return deferred.promise;
+            $scope.projects = response.data;
+            console.log(projectService.projects);
+            // console.log(response.data);
+
+
         });
     } else {
             console.log("we have basics, not reloading");
+            console.log(projectService.projects);
             $scope.projects = projectService.projects;
     }
 
@@ -978,66 +982,16 @@ Array.prototype.selectOptionIndex = function (o) {
     return -1;
 }
 
-function formatStats (entity) {
-    for (var col in entity.stats.columns) {
-      if (entity.stats.columns.hasOwnProperty(col)) {
-        // console.log(entity.stats.columns[col]);
-        if(entity.stats.columns[col].questions.length > 0) {
-            entity.stats.columns[col].questions.forEach(function(question){
-                var domainOptions = [];
-                question.responses.forEach(function(response){
-                    domainOptions.push(response.answer);
-                });
-
-                question.chartOptions = {
-                    chart: {
-                        type: 'discreteBarChart',
-                        height: 300,
-                        width:400,
-                        margin : {
-                            top: 20,
-                            right: 20,
-                            bottom: 50,
-                            left: 55
-                        },
-                        x: function(d){return d.label;},
-                        y: function(d){return d.value;},
-                        showValues: true,
-                        tooltips: false,
-                        valueFormat: function(d){
-                            return d3.format(',.0f')(d);
-                        },
-                        duration: 500,
-                        xAxis: {
-                            domain: domainOptions
-                        },
-                        yAxis: {
-                            axisLabel: 'Count',
-                            axisLabelDistance: -15,
-                            margin: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        },
-                        discretebar: {
-                            width: 100,
-                            height: 100,
-                            margin: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    }
-                };
-            });
-        }
-
-      }
-    }
-    console.log(entity);
-    return entity;
-}
+app.filter('orderObjectInt', function() {
+  return function(items, field, reverse) {
+    var filtered = [];
+    angular.forEach(items, function(item) {
+      filtered.push(item);
+    });
+    filtered.sort(function (a, b) {
+      return (a[field] > b[field] ? 1 : -1);
+    });
+    if(reverse) filtered.reverse();
+    return filtered;
+  };
+});
