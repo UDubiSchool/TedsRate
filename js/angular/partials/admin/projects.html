@@ -3,6 +3,10 @@
     <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
     </div>
 
+    <div class="menu clearfix" style="margin-left:-15px">
+        <a class="btn btn-primary" ng-click="modals.open('project')"><i class="fa fa-plus"></i> Start a project</a>
+    </div>
+
     <div ng-repeat="(projectKey, project) in projects | orderObjectInt: 'projectID' : true" class="row clearfix project">
 
         <div class="section-header clearfix clickable" ui-sref="project({id: project.projectID})">

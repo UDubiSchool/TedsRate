@@ -36,6 +36,8 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '
 
 app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService', '$q', 'Upload', '$uibModal', 'languageService', 'alertService', 'userService', 'statService', 'Lightbox', 'assessmentService', 'uiGridConstants', '$interval', function($scope, $http, $animate, projectService, $q, Upload, $uibModal, languageService, alertService, userService, statService, Lightbox, assessmentService, uiGridConstants, $interval) {
 
+    languageService.getAll();
+
     // get initial project data for page load
     if(!projectService.hasBasics) {
         projectService.getBasic().then(function(response){
@@ -59,6 +61,33 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             console.log(projectService.projects);
             $scope.projects = projectService.projects;
     }
+
+    var modalTemplates = {
+        project: 'partials/admin/modals/add_project.html',
+    };
+
+    var modalControllers = {
+        project: 'addProjectCtrl',
+    };
+
+    $scope.modals = {
+        open: function(target) {
+            var modalInstance = $uibModal.open({
+                  animation: true,
+                  templateUrl: modalTemplates[target],
+                  controller: modalControllers[target],
+                  size: 'lg',
+                  // resolve: {
+                  //   project: project,
+                  // },
+                  scope: $scope
+            });
+
+            modalInstance.result.then(function () {
+              $scope.projects = projectService.projects;
+            }, function () {});
+        }
+    };
 
 
 
@@ -614,6 +643,14 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
     $scope.project = project;
     $scope.assessment = {};
 
+    $scope.$watch(function () {
+        return $scope.project.grids.configuration.selected;
+    }, function(configuration){
+        if(configuration != undefined && configuration !=null && configuration !='') {
+            $scope.assessment.configurationID = configuration.configurationID;
+        }
+    }, false);
+
     $scope.ok = function () {
       $scope.assessment.projectID = project.projectID;
       var filteredData = {
@@ -681,14 +718,22 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
     };
 });
 
-app.controller('addProjectCtrl', function ($scope, $uibModalInstance, project) {
-
-  $scope.project = project;
-  console.log(project);
-
+app.controller('addProjectCtrl', function ($scope, $uibModalInstance, projectService, languageService) {
+  $scope.languages = languageService.languages;
   $scope.ok = function () {
-    // add project then return to main ctrl to add to DOM
-    $uibModalInstance.close($scope.selected.item);
+
+    // add project to db and to project list then return
+    projectService.post($scope.project).then(function(response){
+        if(response.status) {
+            projectService.getBasic(response.data);
+            // projectService.hasBasics = false;
+            $scope.$parent.addAlert('The project has successfully been added to the database.', 'success');
+            $uibModalInstance.close();
+        } else {
+            $scope.$parent.addAlert('The project could not be added to the database.', 'danger');
+            $uibModalInstance.dismiss('cancel');
+        }
+    });
   };
 
   $scope.cancel = function () {

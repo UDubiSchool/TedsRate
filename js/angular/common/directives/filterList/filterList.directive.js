@@ -17,7 +17,7 @@ var app = angular.module('teds.directives.filterList', [])
             $scope.filters= {};
             $scope.table = $scope.list;
             angular.forEach($scope.table, function(listItem, rowKey){
-                console.log(listItem);
+                // console.log(listItem);
                 angular.forEach(listItem.listData, function(paramValue, paramKey){
                     if($scope.options[paramKey] !== undefined) {
                         if($scope.options[paramKey].indexOf(paramValue) === -1) {

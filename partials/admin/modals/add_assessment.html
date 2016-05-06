@@ -14,7 +14,9 @@
             </select> -->
             <!-- {{assessment}} -->
             <input class="form-control" type="text" ng-model="assessment.configurationID" ng-value="assessment.configurationID" required disabled>
-            <teds-filter-list list="project.configurationsList" passback="assessment"></teds-filter-list>
+            <div ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+            <!-- <teds-filter-list list="project.configurations" passback="assessment"></teds-filter-list> -->
 
             <label for="">User</label>
             <select class="form-control" ng-model="assessment.userID" required>

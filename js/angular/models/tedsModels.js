@@ -97,8 +97,8 @@ app.service('projectService', ['$http', '$q', 'uiGridConstants', function ($http
         });
     }
 
-    this.getBasic = function() {
-        var target = "CI/index.php/project/getBasic";
+    this.getBasic = function(id) {
+        var target = "CI/index.php/project/getBasic/" + id;
         var data = {};
         return $http.get(target, data, {
         }).success(function(response){
@@ -334,6 +334,8 @@ app.service('artifactTypeService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 app.service('languageService', ['$http', '$q', function ($http, $q) {
+    this.languages = [];
+    var languageService = this;
     this.get = function(id) {
         var target = "CI/index.php/api/languages/"+id;
         var data = {};
@@ -350,6 +352,7 @@ app.service('languageService', ['$http', '$q', function ($http, $q) {
         var data = {};
         return $http.get(target, data, {
         }).success(function(response){
+            languageService.languages = response;
             return response;
         }).error(function(response){
             return response;
