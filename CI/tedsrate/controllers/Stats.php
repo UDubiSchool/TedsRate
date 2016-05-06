@@ -232,14 +232,30 @@ class Stats extends CI_Controller {
                     'chartData' => [],
                     'chartOptions' => []
                 ];
-                $questionData = json_decode($cell['questionData'], TRUE);
 
                 $chartOptions = [
                     'chart' => [
-                        'height' => 500,
+                        'height' => 300,
                         'duration' => 500,
                     ]
                 ];
+
+                $questionData = json_decode($cell['questionData'], TRUE);
+                $xDomain = [];
+
+                if ($questionData['questionType'] = "Select") {
+                    foreach ($questionData[$questionData['questionType']]['options'] as $optionKey => $option) {
+                        array_push($xDomain, $option);
+                    }
+                }
+                if($cell['questionName'] === 'Geographic Region') {
+                    $xDomain = null;
+                }
+                $chartOptions['chart']['xDomain'] = $xDomain;
+
+
+
+
                 $chartOptions['chart']['type'] = 'discreteBarChart';
                 $chartOptions['chart']['xAxis'] = [
                     'axisLabel' => ''
@@ -275,14 +291,13 @@ class Stats extends CI_Controller {
             }
 
             if($question['chartOptions']['chart']['type'] == 'discreteBarChart') {
-                $xDomain = [];
                 foreach ($tmp as $key => $value) {
                     $toPush = [
                         'x' => $key,
                         'y' => $value
                     ];
                     array_push($questions[$questionKey]['chartData'], $toPush);
-                    array_push($xDomain, $toPush['x']);
+                    // array_push($xDomain, $toPush['x']);
                 }
                 $questions[$questionKey]['chartData'] = [
                     [
@@ -297,12 +312,11 @@ class Stats extends CI_Controller {
                         'y' => $value
                     ];
                     array_push($questions[$questionKey]['chartData'], $toPush);
-                    array_push($xDomain, $toPush['x']);
+                    // array_push($xDomain, $toPush['x']);
 
                 }
             }
 
-            $questions[$questionKey]['chartOptions']['chart']['xDomain'] = $xDomain;
             // $questions[$questionKey]['chartOptions']['chart']['xRange'] = [0, 1];
 
         }

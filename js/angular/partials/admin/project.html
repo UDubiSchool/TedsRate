@@ -26,7 +26,7 @@
                   <h3>{{project.grids.artifact.selected.passback.column.name}}</h3>
                   <h5>{{project.grids.artifact.selected.passback.column.desc}}</h5>
                   <h4>Questions</h4>
-                  <div class="col-sm-4" ng-repeat="question in project.grids.artifact.selected.passback.column.questions">
+                  <div class="col-xs-12 pull-left" style="max-width: 100%;" ng-style="{width: '{{(question.chartOptions.chart.xDomain ? question.chartOptions.chart.xDomain.length : 2) * 8}}em'}" ng-repeat="question in project.grids.artifact.selected.passback.column.questions">
                     <p>{{question.name}}</p>
                     <h5>{{question.desc}}</h5>
                     <nvd3 ng-if="question.responses.length > 0" options="question.chartOptions" data="question.chartData"></nvd3>
