@@ -272,11 +272,13 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                     // this form belonged to a temp user it is takeable
                                     assessmentService.updateUser({userID: user.userID, assessmentID: $scope.assessment.assessmentID}).then(function(response) {
                                         if(response.data.updated) {
+
                                             userService.delete($scope.assessment.user.userID).then(function(response) {
                                                 if(response.data.deleted) {
                                                     console.log("temp user was deleted.");
                                                     $scope.assessment.user = user;
                                                     $scope.next();
+                                                    console.log("validated, you have taken ownership of the assessment");
                                                     $timeout(function() {
                                                         $scope.userValidated = true;
                                                         $scope.panel--;
@@ -307,6 +309,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                                         }, 500);
                                                         $location.search('a', assessment.assessmentIDHashed);
                                                         $location.replace();
+                                                        console.log("validated, you have been transfered to your assessment!");
+
                                                     });
                                                 }
                                             });
@@ -323,6 +327,8 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                         }, 500);
                                         $location.search('a', assessment.assessmentIDHashed);
                                         $location.replace();
+                                        console.log("validated, you have been transfered to your assessment.");
+
                                     });
                                 }
 
