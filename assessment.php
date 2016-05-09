@@ -36,8 +36,11 @@
 
                 <div class="panel active col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                     <h2>Welcome</h2>
-                    <p>
+                    <!-- <p>
                         This assessment is a component of the Purposeful Sampling Research Project and the University of Washington Information School. The work group’s aim is to refine a methodology to measure the usability of content and information artifacts. It has been used to evaluate mobile applications with a concentration on professional sport team mobile applications, but it is now being adapted to evaluate emergency management information systems, specifically WebEOC. The methodology is based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework.
+                    </p> -->
+                    <p>
+                        This assessment is a component of the Purposeful Sampling Research Project and the University of Washington Information School. The work group’s aim is to refine a methodology to measure the usability of content and information artifacts. The methodology is based on the Taylor-Eisenberg-Dirks-Scholl (TEDS) information artifact value factorization framework.
                     </p>
                     <p>Although these assessments are short, you do not need the do them all at once. Your changes are saved so you can take as much time as you need!</p>
                     <br>
@@ -56,7 +59,7 @@
                     <h5 ng-if="!assessment.user.email">Please complete your <a ng-click="$parent.showSignin = false">registration</a> or, if you have already registered with us before, <a ng-click="$parent.showSignin = true">sign in</a></h5>
 
                     <div ng-if="!showSignin" id="signup">
-                        <p>Please provide us with an email and password so that we may track you across individual ratings.</p>
+                        <p>Please use a valid email and password to be used for credentials to your survey data. The email alias will not be shared and we will delete all data at the conclusion of this study. However if your completed survey earns some reward, then we need a valid email alias to contact you.</p>
                         <form novalidate name='signupForm' ng-submit="addUser(signupForm) && signupForm.$valid && signupForm.$dirty">
 
                             <div class="form-group">
@@ -149,7 +152,7 @@
 
                     <div class="clearfix bottom-line scenario">
                         <div class="pull-right">
-                            <h4 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h4>
+                            <h3 class="text-right">Scenario - <b>{{assessment.scenario.name}}</b></h3>
                             <p>{{assessment.scenario.description}}</p>
                         </div>
                     </div>
