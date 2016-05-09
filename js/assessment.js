@@ -305,7 +305,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                                             $scope.userValidated = true;
                                                             $scope.panel--;
                                                         }, 500);
-                                                        $location.search('asid', assessment.assessmentIDHashed);
+                                                        $location.search('a', assessment.assessmentIDHashed);
                                                         $location.replace();
                                                     });
                                                 }
@@ -321,7 +321,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
                                             $scope.userValidated = true;
                                             $scope.panel--;
                                         }, 500);
-                                        $location.search('asid', assessment.assessmentIDHashed);
+                                        $location.search('a', assessment.assessmentIDHashed);
                                         $location.replace();
                                     });
                                 }
