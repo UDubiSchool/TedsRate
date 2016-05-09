@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -6,12 +7,12 @@
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/angular-bootstrap-lightbox.css">
         <link rel="stylesheet" href="css/assessment.css">
-        <script src="js/jquery-1.11.0.min.js" type="text/javascript"/></script>
-        <script src="js/angular/angular.min.js" type="text/javascript"/></script>
-        <script src="js/angular/angular-animate.js" type="text/javascript"/></script>
-        <script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"/></script>
-        <script src="js/angular/elastic.js" type="text/javascript" /></script>
-        <script src="js/angular/validate.js" type="text/javascript" /></script>
+        <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+        <script src="js/angular/angular.min.js" type="text/javascript"></script>
+        <script src="js/angular/angular-animate.js" type="text/javascript"></script>
+        <script src="js/angular/ui-bootstrap-tpls-1.1.2.min.js" type="text/javascript"></script>
+        <script src="js/angular/elastic.js" type="text/javascript"></script>
+        <script src="js/angular/validate.js" type="text/javascript"></script>
         <script src="js/angular/angular-cookies.js"></script>
         <script src="js/angular/angular-bootstrap-lightbox.js"></script>
         <script src="js/angular/ng-file-upload-shim.min.js"></script>
