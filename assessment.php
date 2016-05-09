@@ -22,7 +22,7 @@
         <base href="/tedsrate/tedsrate/">
     </head>
     <body>
-        <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['asid']?>">
+        <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['a']?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
             <div id="header" class="clearfix header">
                 <div class="clearfix pull-left">
@@ -44,7 +44,7 @@
                     </p>
                     <p>Although these assessments are short, you do not need the do them all at once. Your changes are saved so you can take as much time as you need!</p>
                     <br>
-                    <p>The focus of this assessment is to analyze the <a ng-href="{{assessment.artifact.url}}">{{assessment.artifact.name}}</a></p>
+                    <p ng-show="assessment.artifact.url">The focus of this assessment is to analyze the <a ng-href="{{assessment.artifact.url}}">{{assessment.artifact.name}}</a></p>
                     <br>
                     <p>Thank you in advance for taking the time to take part in this evaluation!</p>
                     <p>The TEDS Purposeful Sampling Research Group</p>
