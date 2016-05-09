@@ -22,7 +22,7 @@
         <base href="/tedsrate/tedsrate/">
     </head>
     <body>
-        <input type="hidden" id='asid' name='asid' value="<?php echo $_GET['a']?>">
+        <input type="hidden" id='asid' name='asid' value="<?php if(isset($_GET['a'])){echo $_GET['a']}elseif(isset($_GET['asid'])){echo $_GET['asid']}?>">
         <div class="container-fluid clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
             <div id="header" class="clearfix header">
                 <div class="clearfix pull-left">

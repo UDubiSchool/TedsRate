@@ -89,7 +89,7 @@ function makeAssessment($dbq, $userID, $configurationID) {
 
     $hash = hash('sha256', $assessmentID);
 
-    $targetURL = "assessment.php?&asid=" . $hash;
+    $targetURL = "assessment.php?&a=" . $hash;
     $fullUrl = $root_url;
     $fullUrl .= $targetURL;
 
