@@ -33,6 +33,7 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
         $scope.assessment = response;
         if($scope.assessment.user.userID === authCookie && authCookie !== undefined) {
             $scope.userValidated = true;
+            console.log("You still have a valid authentication cookie. no login required!");
         } else {
             console.log('not valid');
              $scope.userValidated = false;
