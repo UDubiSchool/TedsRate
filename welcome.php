@@ -70,12 +70,12 @@
                     <p>
                         Please use the following link to evaluate the "Player Information" features. (Roster, player card, player stats, etc):
                         <br>
-                         <a href="start.php?c=04a8708c3a481ced13845a30de522486895de0592222c29326d9139ec2b9df25">http://depts.washington.edu/tedsrate/tedsrate/start.php?c=04a8708c3a481ced13845a30de522486895de0592222c29326d9139ec2b9df25</a>
+                         <a href="start.php?c=04a8708c3a481ced13845a30de522486895de0592222c29326d9139ec2b9df25">Player Information</a>
                     </p>
                     <p>
                         Please use the following link to evaluate "Schedule, Results and League" features (Schedule calendar, game stats, recap, the table, etc):
                         <br>
-                        <a href="start.php?c=09a1b036b82baba3177d83c27c1f7d0beacaac6de1c5fdcc9680c49f638c5fb9">http://depts.washington.edu/tedsrate/tedsrate/start.php?c=09a1b036b82baba3177d83c27c1f7d0beacaac6de1c5fdcc9680c49f638c5fb9</a>
+                        <a href="start.php?c=09a1b036b82baba3177d83c27c1f7d0beacaac6de1c5fdcc9680c49f638c5fb9">Schedule, Results and League</a>
                     </p>
                     <p>
                         No personal data will be shared from these surveys.
