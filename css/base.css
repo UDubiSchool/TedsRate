@@ -201,3 +201,9 @@ form label:first-child {margin-top:0;}
     background-color: none;
     position: relative;
 }
+
+.center-block {
+    float:none;
+    margin:auto;
+    text-align: center;
+}
