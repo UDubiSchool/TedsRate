@@ -29,6 +29,7 @@
                 position: absolute;
                 top:0px;
                 left: 15px;
+                z-index: 20;
             }
 
             .content-wrapper {
@@ -40,6 +41,8 @@
             .banner-img {
                 width: 100%;
                 /*padding-bottom:25px;*/
+                position:relative;
+                margin-top:-20px;
             }
 
             .content {
