@@ -50,7 +50,7 @@
                 text-align: left;
             }
         </style>
-        <div class="clearfix" ng-app="assessmentApp" ng-controller="assessmentController">
+        <div class="clearfix">
          <!--    <div id="header" class="clearfix header">
                 <div class="clearfix pull-left">
                 </div>
