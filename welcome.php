@@ -52,7 +52,7 @@
                 <div class="clearfix pull-left">
                 </div>
             </div> -->
-            <div class="container content-wrapper col-xs-10 col-sm-9 col-md-8 col-lg-7 center-block">
+            <div class="container content-wrapper col-xs-12 col-sm-11 col-md-9 col-lg-8 center-block">
                 <h2 class="banner-header">Welcome to TedsRate</h2>
 
                 <img src="img/soccerBall.jpg" alt="Soccer ball image" class="banner-img">
