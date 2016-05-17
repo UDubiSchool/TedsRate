@@ -54,6 +54,7 @@
   </div>
   <button class="btn btn-primary" style="margin-top:1.5em" ng-click="sort.reverse = !sort.reverse"><i class="fa fa-refresh"></i> Flip</button>
 </div>
+<button class="btn btn-primary" export-to-csv>Download as CSV</button>
 <table class="table pivot-table" print-table>
   <thead>
     <th></th>
@@ -71,8 +72,8 @@
           {{cell.average ? (cell.average | number: 2) : "N/A"}} {{cell.standardDeviation ? ' ± ' + (cell.standardDeviation|number: 2): ''}}
         </div>
       </td>
-      <td>{{row.totalAverage | number: 2}}</td>
-      <td>{{row.totalStandardDeviation ? (row.totalStandardDeviation | number: 2) : "N/A"}}</td>
+      <td><div class="data">{{row.totalAverage | number: 2}}</div></td>
+      <td><div class="data">{{row.totalStandardDeviation ? (row.totalStandardDeviation | number: 2) : "N/A"}}</div></td>
 
     </tr>
   </tbody>

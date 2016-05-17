@@ -1018,6 +1018,7 @@ app.filter('capitalize', function() {
     }
 });
 
+
 Array.prototype.selectOptionIndex = function (o) {
     for (var i = 0; i < this.length; i++) {
         if (this[i].value == o.value && this[i].label == o.label) {

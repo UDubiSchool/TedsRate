@@ -49,7 +49,7 @@ if (isset($_GET['email'])) {
                 $email_message = "Invalid email! Please try again!";
                 // sending email function
                 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $to  = (string)$email;
+                    $to = (string)$email;
 
                     // subject
                     $subject = 'You are invited: please help us fill out this evaluation form -- TEDS';
