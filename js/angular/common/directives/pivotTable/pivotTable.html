@@ -62,12 +62,14 @@
       <th ng-class="{selected: selected.column == column}" colspan="3" ng-repeat="column in tedsData.columns">{{column.name}}</th>
       <th >Total Average</th>
       <th>Total Standard Deviation</th>
+      <th>Total Count</th>
     </tr>
     <tr>
       <td></td>
       <td ng-class="{selected: selected.column == column}" ng-repeat-start="column in tedsData.columns">Average</td>
       <td ng-class="{selected: selected.column == column}">Std. Dev.</td>
       <td ng-class="{selected: selected.column == column}" ng-repeat-end>Count</td>
+      <td></td>
       <td></td>
       <td></td>
     </tr>
@@ -98,6 +100,7 @@
       </td>
       <td><div class="data">{{row.totalAverage | number: 2}}</div></td>
       <td><div class="data">{{row.totalStandardDeviation ? (row.totalStandardDeviation | number: 2) : "N/A"}}</div></td>
+      <td><div class="data">{{row.totalCount ? row.totalCount: "N/A"}}</div></td>
 
     </tr>
   </tbody>

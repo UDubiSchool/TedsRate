@@ -39,6 +39,7 @@ class Stats extends CI_Controller {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getScenario($value['id']));
         }
         foreach ($final['rows'] as $rowKey => $row) {
+            $rowCount=0;
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectArtifactAttributeScenario($row['id'], $artifactID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -54,10 +55,13 @@ class Stats extends CI_Controller {
                     $stats['standardDeviation'] = $cell['standardDeviation'];
                 }
                 $stats['count'] = count($ratings);
+                $rowCount += count($ratings);
                 $final['rows'][$rowKey]['cells'][$cellKey]['stats'] = $stats;
 
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
+            $final['rows'][$rowKey]['totalCount'] = $rowCount;
+
         }
 
         echoJSON($final);
@@ -95,6 +99,7 @@ class Stats extends CI_Controller {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getArtifact($value['id']));
         }
         foreach ($final['rows'] as $rowKey => $row) {
+            $rowCount=0;
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectScenarioAttributeArtifact($row['id'], $scenarioID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -111,10 +116,13 @@ class Stats extends CI_Controller {
                     $stats['standardDeviation'] = $cell['standardDeviation'];
                 }
                 $stats['count'] = count($ratings);
+                $rowCount += count($ratings);
                 $final['rows'][$rowKey]['cells'][$cellKey]['stats'] = $stats;
 
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
+            $final['rows'][$rowKey]['totalCount'] = $rowCount;
+
         }
 
         echoJSON($final);
@@ -159,6 +167,7 @@ class Stats extends CI_Controller {
             $final['columns'][$key]['questions'] = $this->sortResponses($this->response->getAssessment($value['id']));
         }
         foreach ($final['rows'] as $rowKey => $row) {
+            $rowCount = 0;
             foreach ($row['cells'] as $cellKey => $cell) {
                 $ratings = $this->rating->getProjectConfigurationAttributeAssessment($row['id'], $configurationID, $cellKey, $projectID);
                 foreach ($ratings as $ratingKey => $rating) {
@@ -175,10 +184,12 @@ class Stats extends CI_Controller {
                     $stats['standardDeviation'] = $cell['standardDeviation'];
                 }
                 $stats['count'] = count($ratings);
+                $rowCount+=count($ratings);
                 $final['rows'][$rowKey]['cells'][$cellKey]['stats'] = $stats;
 
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
+            $final['rows'][$rowKey]['totalCount'] = $rowCount;
         }
 
         echoJSON($final);
