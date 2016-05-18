@@ -141,7 +141,7 @@ class Stats extends CI_Controller {
             'identifier' => 'assessmentID',
             'fields' => [
                 'id' => 'assessmentID',
-                'name' => 'assessmentID',
+                'name' => 'email',
                 'userID' => 'userID',
                 'completionDate' => 'completionDate',
                 'email' => 'email'

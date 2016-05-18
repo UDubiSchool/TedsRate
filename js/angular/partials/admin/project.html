@@ -47,6 +47,7 @@
                   <ul class="list-unstyled">
                     <li class="col-sm-4 rating" ng-repeat="rating in project.grids.artifact.selected.passback.cell.ratings">
                       <h5>ID: {{rating.ratingID}}</h5>
+                      <h5>Email: {{rating.email}}</h5>
                       <h5>Value: {{rating.ratingValue}}</h5>
                       <h5 ng-show="rating.comments.length > 0">Comment: <span>{{rating.comments[0].comment}}</span></h5>
                       <div class="clearfix" ng-show="rating.screenshots.length > 0">
