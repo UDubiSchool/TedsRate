@@ -41,8 +41,8 @@
     <span>Stat to sort by:</span>
     <select class="form-control" ng-model="sort.stat">
       <option value=""></option>
-      <option value="average">Average</option>
-      <option value="standardDeviation">Standard Deviation</option>
+      <option value="stats.average">Average</option>
+      <option value="stats.standardDeviation">Standard Deviation</option>
     </select>
   </div>
   <div class="pull-left">
@@ -57,19 +57,43 @@
 <button class="btn btn-primary" export-to-csv>Download as CSV</button>
 <table class="table pivot-table" print-table>
   <thead>
-    <th></th>
-    <th ng-class="{selected: selected.column == column}" ng-repeat="column in tedsData.columns">{{column.name}}</th>
-    <th>Total Average</th>
-    <th>Total Standard Deviation</th>
+    <tr>
+      <th></th>
+      <th ng-class="{selected: selected.column == column}" colspan="3" ng-repeat="column in tedsData.columns">{{column.name}}</th>
+      <th >Total Average</th>
+      <th>Total Standard Deviation</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td ng-class="{selected: selected.column == column}" ng-repeat-start="column in tedsData.columns">Average</td>
+      <td ng-class="{selected: selected.column == column}">Std. Dev.</td>
+      <td ng-class="{selected: selected.column == column}" ng-repeat-end>Count</td>
+      <td></td>
+      <td></td>
+    </tr>
   </thead>
   <tbody>
     <tr ng-repeat="(rowKey, row) in tedsData.rows | toArray | orderBy: rowOrder : sort.reverse">
       <td ng-class="{selected: selected.row == row}">{{row.name}}</td>
-      <td class="clickable cell" ng-repeat="(cellKey, cell) in row.cells" ng-class="{selected: selected.cell == cell}" ng-click="selectCell(cell, cellKey, row.id)">
-        <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.average - options.min) / dataRange) }"></div>
-        <div ng-if="options.colorize && cell.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.average - options.min) / dataRange) }"></div>
-        <div class="data" ng-style="{'font-weight': ((cell.average - row.totalAverage | abs) >= 1) && cell.average ? 'bold' : 'normal', 'color': ((cell.average - row.totalAverage >= 0) || (cell.average == undefined) ? 'black' : 'red')}">
-          {{cell.average ? (cell.average | number: 2) : "N/A"}} {{cell.standardDeviation ? ' ± ' + (cell.standardDeviation|number: 2): ''}}
+      <td class="clickable cell" ng-repeat-start="(cellKey, cell) in row.cells" ng-class="{selected: selected.cell == cell}" ng-click="selectCell(cell, cellKey, row.id)">
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.stats.average - options.min) / dataRange) }"></div>
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.stats.average - options.min) / dataRange) }"></div>
+        <div class="data" ng-style="{'font-weight': ((cell.stats.average - row.totalAverage | abs) >= 1) && cell.stats.average ? 'bold' : 'normal', 'color': ((cell.stats.average - row.totalAverage >= 0) || (cell.average == undefined) ? 'black' : 'red')}">
+          {{cell.stats.average ? (cell.stats.average | number: 2) : "N/A"}}
+        </div>
+      </td>
+      <td  class="clickable cell" ng-class="{selected: selected.cell == cell}" ng-click="selectCell(cell, cellKey, row.id)">
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.stats.average - options.min) / dataRange) }"></div>
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.stats.average - options.min) / dataRange) }"></div>
+        <div class="data" ng-style="{'font-weight': ((cell.stats.average - row.totalAverage | abs) >= 1) && cell.stats.average ? 'bold' : 'normal', 'color': ((cell.stats.average - row.totalAverage >= 0) || (cell.average == undefined) ? 'black' : 'red')}">
+          {{cell.stats.standardDeviation ? (cell.stats.standardDeviation|number: 2): 'N/A'}}
+        </div>
+      </td>
+      <td  class="clickable cell" ng-class="{selected: selected.cell == cell}" ng-click="selectCell(cell, cellKey, row.id)" ng-repeat-end>
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.minColor, 'opacity': (1 - (cell.stats.average - options.min) / dataRange) }"></div>
+        <div ng-if="options.colorize && cell.stats.average" class="overlay clearfix" ng-style="{ 'background-color': options.maxColor, 'opacity': ((cell.stats.average - options.min) / dataRange) }"></div>
+        <div class="data" ng-style="{'font-weight': ((cell.stats.average - row.totalAverage | abs) >= 1) && cell.stats.average ? 'bold' : 'normal', 'color': ((cell.stats.average - row.totalAverage >= 0) || (cell.average == undefined) ? 'black' : 'red')}">
+          {{cell.stats.count ? cell.stats.count: 'N/A'}}
         </div>
       </td>
       <td><div class="data">{{row.totalAverage | number: 2}}</div></td>

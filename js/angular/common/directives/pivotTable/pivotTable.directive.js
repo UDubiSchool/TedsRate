@@ -101,6 +101,12 @@ var app = angular.module('teds.directives.pivotTable', ['AngularPrint'])
                     for(var j=0; j<rowData.length;j++){
                         if(i == 0 || j == 0) {
                             csvString = csvString + rowData[j].innerHTML + ",";
+                            if(rowData[j].hasAttribute('colspan')) {
+                                var span = rowData[j].getAttribute('colspan');
+                                for(var k=0; k < span -1;k++) {
+                                    csvString = csvString + ',';
+                                }
+                            }
                         } else {
                             csvString = csvString + rowData[j].innerText.replace(/[\n\r]/g, '') + ",";
                         }
