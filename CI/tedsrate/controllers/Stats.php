@@ -101,6 +101,18 @@ class Stats extends CI_Controller {
                     $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
                     $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
                 }
+
+                $stats = ['average', 'standardDeviation'];
+
+                if(isset($cell['average'])) {
+                    $stats['average'] = $cell['average'];
+                }
+                if(isset($cell['standardDeviation'])) {
+                    $stats['standardDeviation'] = $cell['standardDeviation'];
+                }
+                $stats['count'] = count($ratings);
+                $final['rows'][$rowKey]['cells'][$cellKey]['stats'] = $stats;
+
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
         }
@@ -153,6 +165,18 @@ class Stats extends CI_Controller {
                     $ratings[$ratingKey]['comments'] = $this->comment->getRating($rating['ratingID']);
                     $ratings[$ratingKey]['screenshots'] = $this->screenshot->getRating($rating['ratingID']);
                 }
+
+                $stats = ['average', 'standardDeviation'];
+
+                if(isset($cell['average'])) {
+                    $stats['average'] = $cell['average'];
+                }
+                if(isset($cell['standardDeviation'])) {
+                    $stats['standardDeviation'] = $cell['standardDeviation'];
+                }
+                $stats['count'] = count($ratings);
+                $final['rows'][$rowKey]['cells'][$cellKey]['stats'] = $stats;
+
                 $final['rows'][$rowKey]['cells'][$cellKey]['ratings'] = $ratings;
             }
         }
