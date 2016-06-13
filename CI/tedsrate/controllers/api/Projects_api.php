@@ -76,6 +76,7 @@ class Projects_api extends REST_Controller {
         $this->load->model('role_model', 'role');
         $this->load->model('assessment_model', 'assessment');
         $this->load->model('configuration_model', 'configuration');
+        $this->load->model('group_model', 'group');
         $this->load->model('question_model', 'question');
 
         $this->load->model('rating_model', 'rating');
@@ -107,6 +108,10 @@ class Projects_api extends REST_Controller {
         $project['configurations'] = $this->configuration->getProject($project['projectID']);
         foreach($project['configurations'] as $key => $configuration) {
             $project['configurations'][$key]['questions'] = $this->question->getQuestionConfiguration($configuration['questionConfigurationID']);
+        }
+        $project['groups'] = $this->group->getProject($project['projectID']);
+        foreach($project['groups'] as $key => $group) {
+            $project['groups'][$key]['configurations'] = $this->group->getConfigurations($group['groupID']);
         }
         return $project;
     }

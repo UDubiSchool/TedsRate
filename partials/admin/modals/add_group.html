@@ -1,0 +1,70 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add a Group to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addPersonaForm" novalidate>
+        <div class="new">
+            <h4>Add a New Group</h4>
+
+            <label for="">Name</label>
+            <input type="text" class="form-control" ng-model="group.groupName" required></input>
+
+            <label for="">Description</label>
+            <input type="text" class="form-control" ng-model="group.groupDesc" required></input>
+
+            <label for="">Type</label>
+            <select class="form-control" ng-model="group.groupTypeID" required>
+                <option ng-repeat="type in types" ng-value="type.groupTypeID">{{type.groupTypeName}}</option>
+            </select>
+            <div ng-if="group.groupTypeID == 1">
+                <h5>Lottery Info</h5>
+
+                <label>Jackpot Prize</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryJackpot"></input>
+
+                <label>Second Place Prizes</label>
+                <input type="number" min="0" step="1" ng-model="group.lotterySecond"></input>
+
+                <label>Number of Second Place Winners</label>
+                <input type="number" min="0" step="1" ng-model="group.lotterySecondAmount"></input>
+
+                <label>Third Place Prize</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryThird"></input>
+
+                <label>Number of Third Place Winners</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryThirdAmount"></input>
+                <div class="date-group">
+                    <div class="clearfix" style="min-height:200px;">
+                        <label>Start Date</label>
+                        <uib-datepicker class="well well-sm" ng-model="group.lotteryStartDate"></uib-datepicker>
+                    </div>
+
+                    <div class="clearfix" style="min-height:200px">
+                        <label>End Date</label>
+                        <uib-datepicker class="well well-sm" ng-model="group.lotteryEndDate"></uib-datepicker>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <label for="">Welcome page Template</label>
+            <!-- <input type="text" class="form-control" ng-model="group.groupWelcomeTemplate" required></input> -->
+            <div text-angular ng-model="group.groupWelcomeTemplate" class="clearfix"></div>
+
+            <label>Selected Configurations</label>
+            <div style="min-height:75px">
+                <p ng-repeat="configuration in grid.selected" style="display:inline-block;">{{configuration.configurationID}}, </p>
+            </div>
+           <div ng-if="loaded" ui-grid="grid.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

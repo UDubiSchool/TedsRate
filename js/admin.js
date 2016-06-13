@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint', 'toArray', 'nvd3', 'angularSpinners', 'ui.grid', 'ui.grid.selection']);
+var app = angular.module('administrator', ['ngAnimate', 'ui.bootstrap', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ui.router', 'teds.directives.dropdown', 'teds.directives.filterList', 'teds.directives.pivotTable', 'AngularPrint', 'toArray', 'nvd3', 'angularSpinners', 'ui.grid', 'ui.grid.selection', 'textAngular']);
 
 app.service('alertService', function(){
     this.alerts = [];
@@ -144,11 +144,23 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             }
         }, false);
 
+        $scope.$watch(function () {
+            return project.grids.configuration.selected;
+        }, function(configuration){
+            if(configuration != undefined && configuration !=null && configuration !='') {
+                statService.byConfiguration(project.projectID, configuration.configurationID).then(function(stats){
+                    project.grids.configuration.selected.stats = stats.data;
+                });
+                console.log('a change happened!');
+            }
+        }, false);
+
         project.grids = {
             artifact: {},
             scenario: {},
             assessment: {},
-            configuration: {}
+            configuration: {},
+            group: {}
         };
 
         var selectOptions = {
@@ -178,6 +190,9 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
                 scenario: [],
                 persona: [],
                 role: []
+            },
+            group: {
+                type: []
             }
         };
 
@@ -348,6 +363,85 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             }
         ];
 
+
+
+        project.grids.group.gridOptions = {
+            enableFiltering: true,
+            enableSorting: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false
+        };
+        project.grids.group.gridOptions.onRegisterApi = function(gridApi){
+          project.grids.group.gridApi = gridApi;
+          // $interval( function() {
+          //     project.grids.configuration.gridApi.core.handleWindowResize();
+          // }, 500, 10);
+          gridApi.selection.on.rowSelectionChanged($scope,function(row){
+            var msg = 'row selected ' + row.isSelected;
+            project.grids.group.selected = row.entity;
+            project.grids.group.selected.passback = {};
+          });
+        };
+
+        project.grids.group.gridOptions.columnDefs = [
+            {
+                name: 'Group ID',
+                field: 'groupID',
+            },
+            {
+                name: 'Group Name',
+                field: 'groupName',
+            },
+            {
+                name: 'Group Type',
+                field: 'groupTypeName',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    selectOptions: selectOptions.group.type
+                }
+            },
+            {
+                name: 'Lottery Start Date',
+                field: 'lotteryStartDate',
+                cellFilter: 'date',
+                filters: [
+                    {
+                      condition: uiGridConstants.filter.GREATER_THAN,
+                      placeholder: 'greater than'
+                    },
+                    {
+                      condition: uiGridConstants.filter.LESS_THAN,
+                      placeholder: 'less than'
+                    }
+                ]
+            },
+            {
+                name: 'Lottery End Date',
+                field: 'lotteryEndDate',
+                cellFilter: 'date',
+                filters: [
+                    {
+                      condition: uiGridConstants.filter.GREATER_THAN,
+                      placeholder: 'greater than'
+                    },
+                    {
+                      condition: uiGridConstants.filter.LESS_THAN,
+                      placeholder: 'less than'
+                    }
+                ]
+            },
+            {
+                name: 'Welcome Link',
+                field: 'groupID',
+                enableFiltering: false,
+                cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="welcome.php?g={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
+            }
+        ];
+
+        project.groupStats = {
+            Count: project.groups.length
+        };
+
         project.grids.assessment.gridOptions = {
             enableFiltering: true,
             enableSorting: true,
@@ -469,6 +563,9 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
         ];
 
 
+
+
+
         project.artifactsStats = {
             Count: project.artifacts.length
         };
@@ -554,10 +651,21 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
         });
 
 
+        angular.forEach(project.groups, function(group, groupKey) {
+            if(group !== undefined && group !== null && group !== '') {
+                var type = {value:group.groupTypeName, label: group.groupTypeName};
+                if(selectOptions.group.type.selectOptionIndex(type) == -1) {
+                    selectOptions.group.type.push(type);
+                }
+            }
+        });
+
+
         project.grids.artifact.gridOptions.data = project.artifacts;
         project.grids.scenario.gridOptions.data = project.scenarios;
         project.grids.assessment.gridOptions.data = project.assessments;
         project.grids.configuration.gridOptions.data = project.configurations;
+        project.grids.group.gridOptions.data = project.groups;
 
         project.loaded = true;
         project.loading = false;
@@ -591,7 +699,8 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
         persona: 'partials/admin/modals/add_persona.html',
         role: 'partials/admin/modals/add_role.html',
         configuration: 'partials/admin/modals/add_configuration.html',
-        assessment: 'partials/admin/modals/add_assessment.html'
+        assessment: 'partials/admin/modals/add_assessment.html',
+        group: 'partials/admin/modals/add_group.html'
     };
 
     var modalControllers = {
@@ -601,11 +710,12 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
         persona: 'addPersonaCtrl',
         role: 'addRoleCtrl',
         configuration: 'addConfigurationCtrl',
-        assessment: 'addAssessmentCtrl'
+        assessment: 'addAssessmentCtrl',
+        group: 'addGroupCtrl'
     };
 
     $scope.modals = {
-        open: function(target, project, index) {
+        open: function(target, project, options, index) {
             var modalInstance = $uibModal.open({
                   animation: true,
                   templateUrl: modalTemplates[target],
@@ -613,6 +723,7 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
                   size: 'lg',
                   resolve: {
                     project: project,
+                    options: options
                   },
                   scope: $scope
             });
@@ -950,6 +1061,196 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, projectSer
             }
         } else {
             $scope.$parent.addAlert('The configuration could not be added to the database.', 'danger');
+            $uibModalInstance.dismiss('cancel');
+
+        }
+    });
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+}).controller('addGroupCtrl', function ($scope, $uibModalInstance, project, options, groupService, uiGridConstants, $interval) {
+    // console.log($scope.$parent);
+  $scope.loaded = false;
+  $scope.currentDate= new Date();
+
+  var newProject = project;
+  $scope.project = project;
+  $scope.group = {};
+  $scope.group.configurations = [];
+
+  var selectOptions = {
+        configuration: {
+            atrConf: [],
+            queConf: [],
+            uiConf: [],
+            artifact: [],
+            scenario: [],
+            persona: [],
+            role: []
+        }
+    };
+
+  $scope.grid = {
+    gridOptions: {
+          enableFiltering: true,
+          enableSorting: true,
+          enableRowHeaderSelection: true,
+          multiSelect: true,
+          data: project.configurations,
+          columnDefs: [
+                {
+                    name: 'ID',
+                    field: 'configurationID',
+                    enableFiltering: false
+                },
+                {
+                    name: 'Attributes',
+                    field: 'attributeConfigurationName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.atrConf
+                    }
+                },
+                {
+                    name: 'Questions',
+                    field: 'questionConfigurationName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.queConf
+                    }
+                },
+                {
+                    name: 'Interface',
+                    field: 'uiConfigurationName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.uiConf
+                    }
+                },
+                {
+                    name: 'Artifact',
+                    field: 'artifactName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.artifact
+                    }
+                },
+                {
+                    name: 'Scenario',
+                    field: 'scenarioName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.scenario
+                    }
+                },
+                {
+                    name: 'Persona',
+                    field: 'personaName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.persona
+                    }
+                },
+                {
+                    name: 'Role',
+                    field: 'roleName',
+                    filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: selectOptions.configuration.role
+                    }
+                },
+                {
+                    name: 'Start Link',
+                    field: 'configurationIDHashed',
+                    enableFiltering: false,
+                    cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"> <a href="start.php?c={{COL_FIELD CUSTOM_FILTERS}}" target="_blank">Link</a></div>'
+                }
+            ]
+      },
+      selected: []
+  };
+   $scope.grid.gridOptions.onRegisterApi = function(gridApi){
+      $scope.grid.gridApi = gridApi;
+
+      gridApi.selection.on.rowSelectionChanged($scope,function(row){
+          var msg = 'row selected ' + row.isSelected;
+          $scope.grid.selected.push(row.entity);
+          $scope.group.configurations.push(row.entity);
+          // $scope.grid.selected.passback = {};
+      });
+  };
+
+  angular.forEach(project.configurations, function(configuration, configurationKey) {
+      if(configuration !== undefined && configuration !== null && configuration !== '') {
+          var atrConf = {value:configuration.attributeConfigurationName, label: configuration.attributeConfigurationName};
+          var queConf = {value:configuration.questionConfigurationName, label: configuration.questionConfigurationName};
+          var uiConf = {value:configuration.uiConfigurationName, label: configuration.uiConfigurationName};
+          var artifact = {value:configuration.artifactName, label: configuration.artifactName};
+          var scenario = {value:configuration.scenarioName, label: configuration.scenarioName};
+          var persona = {value:configuration.personaName, label: configuration.personaName};
+          var role = {value:configuration.roleName, label: configuration.roleName};
+          if(selectOptions.configuration.atrConf.selectOptionIndex(atrConf) == -1) {
+              selectOptions.configuration.atrConf.push(atrConf);
+          }
+          if(selectOptions.configuration.queConf.selectOptionIndex(queConf) == -1) {
+              selectOptions.configuration.queConf.push(queConf);
+          }
+          if(selectOptions.configuration.uiConf.selectOptionIndex(uiConf) == -1) {
+              selectOptions.configuration.uiConf.push(uiConf);
+          }
+          if(selectOptions.configuration.artifact.selectOptionIndex(artifact) == -1) {
+              selectOptions.configuration.artifact.push(artifact);
+          }
+          if(selectOptions.configuration.scenario.selectOptionIndex(scenario) == -1) {
+              selectOptions.configuration.scenario.push(scenario);
+          }
+          if(selectOptions.configuration.persona.selectOptionIndex(persona) == -1) {
+              selectOptions.configuration.persona.push(persona);
+          }
+          if(selectOptions.configuration.role.selectOptionIndex(role) == -1) {
+              selectOptions.configuration.role.push(role);
+          }
+      }
+  });
+
+
+  console.log($scope.grid);
+
+$scope.loaded = true;
+
+  groupService.getTypes().then(function(response){
+    $scope.types = response.data;
+  });
+
+  $scope.ok = function () {
+    // $scope.group.projectID = project.projectID;
+
+    // add group to db and to project then return altered project to main ctrl to add to DOM
+    console.log($scope.group);
+    groupService.post($scope.group).then(function(response){
+        if(response.status) {
+            if ($scope.group.groupID) {
+                groupService.get($scope.group.groupID).then(function(response){
+                    newProject.groups.push(response.data[0]);
+                    $scope.$parent.addAlert('The group has successfully been associated with the project.', 'success');
+                    $uibModalInstance.close(newProject);
+                });
+            } else {
+                var id = response.data.data.id;
+                groupService.get(id).then(function(response){
+                    var group = response.data[0];
+                    newProject.groups.push(group);
+                    newProject.configurationsStats.Count++;
+
+                    $scope.$parent.addAlert('The group has successfully been added to the database.', 'success');
+                    $uibModalInstance.close(newProject);
+                });
+
+            }
+        } else {
+            $scope.$parent.addAlert('The group could not be added to the database.', 'danger');
             $uibModalInstance.dismiss('cancel');
 
         }

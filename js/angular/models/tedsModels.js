@@ -744,6 +744,88 @@ app.service('configurationService', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
+app.service('groupService', ['$http', '$q', function ($http, $q) {
+    this.get = function(id) {
+        var target = "CI/index.php/api/groups/"+id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getProject = function(id) {
+        var target = "CI/index.php/group/getProject/" + id;
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+
+    this.getTypes = function(id) {
+        var target = "CI/index.php/group/getTypes/";
+        var data = {};
+        return $http.get(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.post = function(data) {
+        var target = "CI/index.php/api/groups/";
+        var data = data;
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.put = function(data) {
+        var target = "CI/index.php/api/groups/"+ data.groupID;
+        var data = data;
+        return $http.put(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.patch = function(data) {
+        var target = "CI/index.php/api/groups/"+ data.groupID;
+        var data = data;
+        return $http.patch(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.delete = function(id) {
+        var target = "CI/index.php/api/groups/"+ id;
+        var data = {
+            id: id
+        };
+        return $http.delete(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+}]);
+
 
 
 // old vanilla services

@@ -55,6 +55,10 @@
 <script src="js/angular/angular-nvd3.min.js"></script>
 <script src="js/angular/angular-spinners.min.js"></script>
 <script src="js/angular/ui-grid.min.js"></script>
+<script src='js/angular/textAngular-rangy.min.js'></script>
+<script src='js/angular/textAngular-sanitize.min.js'></script>
+<script src='js/angular/textAngular.min.js'></script>
+<link rel='stylesheet' href='css/textAngular.css'>
 
 
 <script src="js/angular/models/tedsModels.js"></script>

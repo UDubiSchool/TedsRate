@@ -261,6 +261,65 @@
            </div>
 
         </teds-dropdown>
+
+        <teds-dropdown title="Groups" header-stats="project.groupStats" class="groups container col-xs-12 clearfix" ng-click="project.grids.group.gridApi.core.handleWindowResize();">
+
+
+
+           <div ng-if="project.grids.group.selected" class="clearfix">
+                {{project.grids.group.selected}}
+               <h4>
+                 Configuration - {{project.grids.configuration.selected.artifactName}}, {{project.grids.configuration.selected.scenarioName}}
+               </h4>
+               <div class="col-xs-6">
+                 <h5>Assessment Configuration</h5>
+                 <dl>
+                   <dt>Artifact</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.artifactName}} - {{project.grids.configuration.selected.artifactTypeName}}</h6>
+                     <h6>{{project.grids.configuration.selected.artifactDescription}}</h6>
+                   </dd>
+                   <dt>Scenario</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.scenarioName}}</h6>
+                     <h6>{{project.grids.configuration.selected.scenarioDescription}}</h6>
+                   </dd>
+                   <dt>Persona</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.personaName}}</h6>
+                     <h6>{{project.grids.configuration.selected.personaDescription}}</h6>
+                   </dd>
+                   <dt>Role</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.roleName}}</h6>
+                     <h6>{{project.grids.configuration.selected.roleDesc}}</h6>
+                   </dd>
+                 </dl>
+               </div>
+               <div class="col-xs-6">
+                 <h5>Attribute Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.attributeConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.attributeConfigurationDesc}}</h6>
+               </div>
+               <div class="col-xs-6">
+                 <h5>Question Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.questionConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.questionConfigurationDesc}}</h6>
+               </div>
+               <div class="col-xs-6">
+                 <h5>UI Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.uiConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.uiConfigurationDesc}}</h6>
+               </div>
+           </div>
+
+           <div ng-if="project.loaded" ui-grid="project.grids.group.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+           <div class="menu col-xs-12 clearfix">
+               <span class="btn btn-primary" ng-click="modals.open('group', project, {configurations: project.grids.configuration}, $index)"><i class="fa fa-plus"></i> Add a Group</span>
+           </div>
+
+        </teds-dropdown>
       </div>
 
 
