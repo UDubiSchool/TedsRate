@@ -779,6 +779,28 @@ app.service('groupService', ['$http', '$q', function ($http, $q) {
         });
     }
 
+    this.getUser = function(groupID, userID) {
+        var target = "CI/index.php/group/getUser/"+groupID + "/" + userID;
+        var data = {};
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
+    this.getUserStats = function(groupID, userID) {
+        var target = "CI/index.php/group/getUserStats/"+groupID + "/" + userID;
+        var data = {};
+        return $http.post(target, data, {
+        }).success(function(response){
+            return response;
+        }).error(function(response){
+            return response;
+        });
+    }
+
     this.post = function(data) {
         var target = "CI/index.php/api/groups/";
         var data = data;

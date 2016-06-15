@@ -33,6 +33,7 @@
     $configurationID = $flag[0]['configurationID'];
     $configurationIDHashed = $flag[0]['configurationIDHashed'];
     $uiConfigurationID = $flag[0]['uiConfigurationID'];
+    $groupID = $flag[0]['groupID'];
 
     $fName = $flag[0]['firstName'];
     $lName = $flag[0]['lastName'];
@@ -48,6 +49,7 @@
         'assessmentID' => $assessmentID,
         'configurationID' => $configurationID,
         'configurationIDHashed' => $configurationIDHashed,
+        'groupID' => $groupID,
         'user' => [],
         'configuration' => [],
         'questions' => []

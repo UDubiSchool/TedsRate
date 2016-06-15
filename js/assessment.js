@@ -1,22 +1,7 @@
 'use strict';
 var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models']);
-app.directive('fileModel', ['$parse', function ($parse) {
-    return {
-       restrict: 'A',
-       link: function(scope, element, attrs) {
-          var model = $parse(attrs.fileModel);
-          var modelSetter = model.assign;
 
-          element.bind('change', function(){
-             scope.$apply(function(){
-                modelSetter(scope, element[0].files[0]);
-             });
-          });
-       }
-    };
- }]);
-
-app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', 'Upload', function($scope, $http, $animate, $timeout, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService, Upload) {
+app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', 'Upload', 'groupService', function($scope, $http, $animate, $timeout, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService, Upload, groupService) {
     $scope.asid = document.getElementById("asid").value;
     $scope.files = {};
     $scope.panel = 0;
@@ -61,6 +46,13 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             }
             assessmentService.finish(data).then(function(response) {
                 $scope.finished = true;
+            });
+            groupService.getUserStats($scope.assessment.groupID, $scope.assessment.user.userID).then(function(response){
+                var stats = response.data[0];
+                if($scope.group.groupTypeName == "Lottery") {
+                    stats.tickets = ($scope.group.lotteryTicketsPerAssessment * stats.numCompleted) + ($scope.group.lotteryTicketsPerComment* stats.numComments) + ($scope.group.lotteryTicketsPerScreenshot * stats.numScreenshots);
+                }
+                $scope.group.stats = stats;
             });
         },
         rating: function(attribute) {
@@ -422,6 +414,11 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             assessment.scenario.description = decodeURIComponent(assessment.scenario.description);
             assessment.configuration.uiConfiguration.attributeTitles = parseInt(assessment.configuration.uiConfiguration.attributeTitles);
             console.log(assessment);
+
+            groupService.getUser(assessment.groupID, assessment.user.userID).then(function(response) {
+                $scope.group = response.data[0];
+                console.log($scope.group);
+            });
 
 
             // assemble question data and calculate completed and required questions

@@ -60,6 +60,16 @@ class Configuration_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getUserAssessment ($configurationID, $userID)
+    {
+        return $this->db
+                                ->from("assessment a")
+                                ->where('configurationID', $configurationID)
+                                ->where('userID', $userID)
+                                ->get()
+                                ->result_array();
+    }
+
 
     public function post ($data)
     {

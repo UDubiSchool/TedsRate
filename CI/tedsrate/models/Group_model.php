@@ -18,9 +18,31 @@ class Group_model extends CI_Model {
                                 ->result_array();
     }
 
-        public function getConfigurations ($id)
+    // gets all items of a group for a particular user
+    public function getUser ($groupID, $userID)
     {
         return $this->db
+                                ->from("group g")
+                                ->join('lottery l', 'l.groupID = g.groupID', 'left')
+                                ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
+                                ->join('group_configuration gc', 'gc.groupID = g.groupID')
+                                ->join('configuration c', 'c.configurationID = gc.configurationID')
+                                ->join('assessment a', "a.configurationID = c.configurationID and a.userID = $userID", 'left')
+                                ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+                                ->join('project p', 'p.projectID = ac.projectID')
+                                ->join('artifact art', 'art.artifactID = ac.artifactID')
+                                ->join('scenario s', 's.scenarioID = ac.scenarioID')
+                                ->join('persona per', 'per.personaID = ac.personaID')
+                                ->join('role r', 'r.roleID = ac.roleID')
+                                ->where('g.groupID', $groupID)
+                                ->get()
+                                ->result_array();
+    }
+
+    public function getConfigurations ($id)
+    {
+        return $this->db
+                                ->select("c.configurationID, c.configurationIDHashed, art.artifactName, s.scenarioName, per.personaName, r.roleName, p.projectName")
                                 ->from("group g")
                                 ->join('lottery l', 'l.groupID = g.groupID', 'left')
                                 ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
@@ -52,6 +74,22 @@ class Group_model extends CI_Model {
                               ->join('project p', 'p.projectID = ac.projectID')
                               ->where("p.projectID", $projectID)
                               ->group_by('g.groupID')
+                              ->get()
+                              ->result_array();
+    }
+
+    public function getUserStats ($groupID, $userID)
+    {
+        return $this->db
+                              ->select("count(distinct a.assessmentID) as numCompleted, count(distinct s.screenshotID) as numScreenshots, count(distinct c.commentID) as numComments")
+                              ->from("assessment a")
+                              ->join('rating r', 'r.assessmentID = a.assessmentID', 'left')
+                              ->join('comment c', 'c.ratingID = r.ratingID', 'left')
+                              ->join('screenshot s', 's.ratingID = r.ratingID', 'left')
+                              ->where("a.groupID", $groupID)
+                              ->where("a.userID", $userID)
+                              ->where("a.completionDate is NOT NULL")
+                              ->group_by('a.groupID')
                               ->get()
                               ->result_array();
     }
@@ -98,5 +136,7 @@ class Group_model extends CI_Model {
                 ->where('groupID', $id)
                 ->delete('group');
     }
+
+
 }
 ?>

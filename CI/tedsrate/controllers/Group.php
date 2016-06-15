@@ -20,4 +20,25 @@ class Group extends CI_Controller {
         $tmp = $this->group->getTypes();
         echoJSON($tmp);
     }
+
+    public function getUser($groupID, $userID)
+    {
+        $this->load->model('configuration_model', 'configuration');
+        $tmp = $this->group->get($groupID);
+        foreach ($tmp as $key => $value) {
+            $tmp[$key]['configurations'] = $this->group->getconfigurations($groupID);
+            foreach ($tmp[$key]['configurations'] as $key2 => $value2) {
+                $assessment = $this->configuration->getUserAssessment($value2['configurationID'], $userID);
+                $tmp[$key]['configurations'][$key2]['assessment'] = ($assessment ? $assessment[0] : null);
+            }
+
+        }
+        echoJSON($tmp);
+    }
+
+    public function getUserStats($groupID, $userID)
+    {
+        $tmp = $this->group->getUserStats($groupID, $userID);
+        echoJSON($tmp);
+    }
 }

@@ -49,6 +49,9 @@
                 padding:25px 15px;
                 text-align: left;
             }
+            .content .configuration-btn {
+                margin:5px 0px;
+            }
         </style>
         <div class="clearfix">
          <!--    <div id="header" class="clearfix header">
@@ -61,6 +64,45 @@
                 <img src="img/soccerBall.jpg" alt="Soccer ball image" class="banner-img">
 
                 <div class="content">
+                    <?php
+                    if(isset($_GET['g'])) {
+                        require_once "dbconnect.php";
+                        $dbq = db_connect();
+
+
+                        // echo 'was set';
+                        $group_query = $dbq->prepare("SELECT * FROM `group` g
+                                                INNER JOIN group_configuration gc on gc.groupID = g.groupID
+                                                INNER JOIN configuration ON configuration.configurationID = gc.configurationID
+                                                INNER JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
+                                                INNER JOIN artifact ON artifact.artifactID = assessmentConfiguration.artifactID
+                                                INNER JOIN scenario ON scenario.scenarioID = assessmentConfiguration.scenarioID
+                                                WHERE g.groupID = :groupID");
+                        $group_query->bindValue(':groupID', intval($_GET['g']), PDO::PARAM_STR);
+                        $group_query->execute();
+
+                        $group = $group_query->fetchAll();
+
+                        foreach ($group as $key => $value) {
+                        ?>
+                            <div class="col-xs-6 configuration-btn">
+                                <a class="btn btn-primary btn-block" href="start.php?c=<?php echo $value['configurationIDHashed']?>">Start <?php echo "$value[artifactName] - $value[scenarioName]";?></a>
+
+                            </div>
+                        <?php
+                        }
+                    ?>
+
+                    <div class="welcome-text col-xs-12">
+                        <br>
+                        <?php
+                            echo $group[0]['groupWelcomeTemplate'];
+                        ?>
+                    </div>
+                    <?php
+                    } else {
+                    ?>
+
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-block" href="start.php?c=04a8708c3a481ced13845a30de522486895de0592222c29326d9139ec2b9df25">Start Player Information</a>
 
@@ -76,7 +118,7 @@
                         The Sounders FC application is one of 11 mobile soccer applications from around the world we are comparing in this study. In addition to the academic study, the analysis and data collected will be anonymized and presented to the Sounders to assist in improving their application.
                     </p>
                     <p>
-                        We are analyzing 2 scenarios in this study, “Player Information”, and “Schedule, Results and League”. We’d love your opinion on both scenarios if possible, but if you only do one, that’s fine too.  Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion.   The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
+                        We are analyzing 2 scenarios in this study, "Player Information", and "Schedule, Results and League". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too.  Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion.   The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
                     </p>
                     <!-- <p>
                         Please use the following link to evaluate the "Player Information" features. (Roster, player card, player stats, etc):
@@ -95,6 +137,11 @@
                         <br>
                         <i>The Teds Team</i>
                     </p>
+
+                    <?php
+                    }
+                    ?>
+
                 </div>
 
             </div>

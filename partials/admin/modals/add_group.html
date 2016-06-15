@@ -46,6 +46,18 @@
 
                 </div>
 
+                <label>Number of Tickets Per Assessment</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryTicketsPerAssessment"></input>
+
+                <label>Number of Tickets Per Share</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryTicketsPerShare"></input>
+
+                <label>Number of Tickets Per Comment</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryTicketsPerComment"></input>
+
+                <label>Number of Tickets Per Screenshot</label>
+                <input type="number" min="0" step="1" ng-model="group.lotteryTicketsPerScreenshot"></input>
+
             </div>
 
 
@@ -55,10 +67,10 @@
             <!-- <input type="text" class="form-control" ng-model="group.groupWelcomeTemplate" required></input> -->
             <div text-angular ng-model="group.groupWelcomeTemplate" class="clearfix"></div>
 
-            <label>Selected Configurations</label>
-            <div style="min-height:75px">
+            <h3>Select configurations for this group</h3>
+ <!--            <div style="min-height:75px">
                 <p ng-repeat="configuration in grid.selected" style="display:inline-block;">{{configuration.configurationID}}, </p>
-            </div>
+            </div> -->
            <div ng-if="loaded" ui-grid="grid.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
 
         </div>

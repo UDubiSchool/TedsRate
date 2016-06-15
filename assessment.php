@@ -298,8 +298,24 @@
                 <!-- END ATTRIBUTE PANELS -->
 
                 <div class="panel hidden col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 finished-panel">
-                    <h2>Thank you for completing our survey</h2>
-                    <p>{{finished ? "Your assessment has been saved. You may safely close this page." : "Your assessment is being saved. Please do not close this page."}}</p>
+                    <h2>Thank you for completing this survey</h2>
+                    <p>{{finished ? "Your results have been saved. You may safely close this page." : "Your results are being saved. Please do not close this page."}}</p>
+                    <div ng-if="group.groupID != null">
+                        <h3>This survey is part of a {{group.groupTypeName}}</h3>
+                        <p ng-if="group.groupTypeName">Each survey earns you {{group.lotteryTicketsPerAssessment}} tickets to be entered in our drawing</p>
+
+                        <h4>You currently have {{group.stats.tickets}} Tickets! Here are some other surveys you can participate in to earn more.</h4>
+
+                        <a class="col-xs-12" style="margin:10px 0px; border-bottom: 1px solid #efefef;" ng-repeat="configuration in group.configurations" ng-if="configuration.configurationID != assessment.configurationID && configuration.assessment.completionDate == null" href="start.php?c={{configuration.configurationIDHashed}}" target="_blank">
+                        <h4 class="pull-left" >
+                                {{configuration.artifactName}} - {{configuration.scenarioName}}
+                            </h4>
+                        <h5 class="pul-right" ng-style="{'color': {{configuration.assessment.completionDate ? 'green' : 'red'}}}">{{configuration.assessment.completionDate ? "Completed" : "Incomplete"}}</h5>
+                        </a>
+
+                    </div>
+                    <br>
+                    <br>
                     <div class="navigation">
                         <div class="col-xs-2">
                             <a class="btn btn-block btn-primary prev" ng-click="prev()" scroll scroll-target="#header">Back</a>

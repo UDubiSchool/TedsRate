@@ -84,7 +84,11 @@ class Groups_api extends REST_Controller {
                     'lotterySecondAmount' => $this->post('lotterySecondAmount'),
                     'lotteryThirdAmount' => $this->post('lotteryThirdAmount'),
                     'lotteryStartDate' => $this->post('lotteryStartDate'),
-                    'lotteryEndDate' => $this->post('lotteryEndDate')
+                    'lotteryEndDate' => $this->post('lotteryEndDate'),
+                    'lotteryTicketsPerAssessment' => $this->post('lotteryTicketsPerAssessment'),
+                    'lotteryTicketsPerShare' => $this->post('lotteryTicketsPerShare'),
+                    'lotteryTicketsPerComment' => $this->post('lotteryTicketsPerComment'),
+                    'lotteryTicketsPerScreenshot' => $this->post('lotteryTicketsPerScreenshot')
                 ];
                 $groupID = $this->group->addLottery($lotteryData);
 

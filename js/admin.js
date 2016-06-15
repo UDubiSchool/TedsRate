@@ -1242,7 +1242,7 @@ $scope.loaded = true;
                 groupService.get(id).then(function(response){
                     var group = response.data[0];
                     newProject.groups.push(group);
-                    newProject.configurationsStats.Count++;
+                    newProject.groupStats.Count++;
 
                     $scope.$parent.addAlert('The group has successfully been added to the database.', 'success');
                     $uibModalInstance.close(newProject);
