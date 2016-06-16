@@ -223,3 +223,14 @@ body {
     overflow: auto;
     margin:10px 0px;
 }
+
+.clickable {
+    cursor: pointer;
+}
+
+
+.center-block {
+    float:none;
+    margin:auto;
+    text-align: center;
+}

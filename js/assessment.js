@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models']);
+var app = angular.module('assessmentApp', ['ngAnimate', 'ui.bootstrap', 'monospaced.elastic', 'bootstrapLightbox', 'ui.validate', 'ngCookies', 'ngFileUpload', 'teds.models', 'ngSanitize']);
 
 app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout', 'Lightbox', '$location', '$anchorScroll', '$cookies', '$interval', 'assessmentService', 'userService', '$q', 'ratingService', 'responseService', 'commentService', 'screenshotService', 'Upload', 'groupService', function($scope, $http, $animate, $timeout, Lightbox, $location, $anchorScroll, $cookies, $interval, assessmentService, userService, $q, ratingService, responseService, commentService, screenshotService, Upload, groupService) {
     $scope.asid = document.getElementById("asid").value;

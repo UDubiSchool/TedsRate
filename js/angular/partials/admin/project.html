@@ -267,49 +267,58 @@
 
 
            <div ng-if="project.grids.group.selected" class="clearfix">
-                {{project.grids.group.selected}}
+              <a class="btn btn-primary" ng-click="project.grids.group.selected = undefined">Back</a>
                <h4>
-                 Configuration - {{project.grids.configuration.selected.artifactName}}, {{project.grids.configuration.selected.scenarioName}}
+                 Group - {{project.grids.group.selected.groupName}}, {{project.grids.group.selected.groupDesc}}
                </h4>
-               <div class="col-xs-6">
-                 <h5>Assessment Configuration</h5>
+               <div class="col-xs-6" ng-if="project.grids.group.selected.groupTypeName == 'Lottery'">
+                 <h5>Lottery Configuration</h5>
                  <dl>
-                   <dt>Artifact</dt>
+                    <dt>Start Date</dt>
+                    <dd>
+                      <h6>{{project.grids.group.selected.lotteryStartDate}}</h6>
+                    </dd>
+                    <dt>End Date</dt>
                    <dd>
-                     <h6>{{project.grids.configuration.selected.artifactName}} - {{project.grids.configuration.selected.artifactTypeName}}</h6>
-                     <h6>{{project.grids.configuration.selected.artifactDescription}}</h6>
+                     <h6>{{project.grids.group.selected.lotteryEndDate}}</h6>
                    </dd>
-                   <dt>Scenario</dt>
+                   <dt>Jackpot</dt>
                    <dd>
-                     <h6>{{project.grids.configuration.selected.scenarioName}}</h6>
-                     <h6>{{project.grids.configuration.selected.scenarioDescription}}</h6>
+                     <h6>{{project.grids.group.selected.lotteryJackpot}}</h6>
                    </dd>
-                   <dt>Persona</dt>
+                   <dt>Second Place</dt>
                    <dd>
-                     <h6>{{project.grids.configuration.selected.personaName}}</h6>
-                     <h6>{{project.grids.configuration.selected.personaDescription}}</h6>
+                     <h6>{{project.grids.group.selected.lotterySecond}}</h6>
+                     <h6>Winners: {{project.grids.group.selected.lotterySecondAmount}}</h6>
                    </dd>
-                   <dt>Role</dt>
+                   <dt>Third Place</dt>
                    <dd>
-                     <h6>{{project.grids.configuration.selected.roleName}}</h6>
-                     <h6>{{project.grids.configuration.selected.roleDesc}}</h6>
+                     <h6>{{project.grids.group.selected.lotteryThird}}</h6>
+                     <h6>Winners: {{project.grids.group.selected.lotteryThirdAmount}}</h6>
+                   </dd>
+                   <dt>Tickets Per Assessment</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerAssessment}}</h6>
+                   </dd>
+                   <dt>Tickets Per Share</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerShare}}</h6>
+                   </dd>
+                   <dt>Tickets Per Comment</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerComment}}</h6>
+                   </dd>
+                   <dt>Tickets Per Screenshot</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerScreenshot}}</h6>
                    </dd>
                  </dl>
                </div>
-               <div class="col-xs-6">
-                 <h5>Attribute Configuration</h5>
-                 <h6><b>{{project.grids.configuration.selected.attributeConfigurationName}}</b></h6>
-                 <h6>{{project.grids.configuration.selected.attributeConfigurationDesc}}</h6>
-               </div>
-               <div class="col-xs-6">
-                 <h5>Question Configuration</h5>
-                 <h6><b>{{project.grids.configuration.selected.questionConfigurationName}}</b></h6>
-                 <h6>{{project.grids.configuration.selected.questionConfigurationDesc}}</h6>
-               </div>
-               <div class="col-xs-6">
-                 <h5>UI Configuration</h5>
-                 <h6><b>{{project.grids.configuration.selected.uiConfigurationName}}</b></h6>
-                 <h6>{{project.grids.configuration.selected.uiConfigurationDesc}}</h6>
+               <div class="col-xs-6 group-configurations">
+                  <h4>Attached Configurations</h4>
+                 <div ng-repeat="(key, config) in project.grids.group.selected.configurations">
+                    <h5>#{{key+1}}: {{config.artifactName}} - {{config.scenarioName}} - {{config.personaName}}</h5>
+                 </div>
                </div>
            </div>
 
