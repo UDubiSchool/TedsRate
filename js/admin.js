@@ -715,7 +715,7 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
     };
 
     $scope.modals = {
-        open: function(target, project, options, index) {
+        open: function(target, project, options) {
             var modalInstance = $uibModal.open({
                   animation: true,
                   templateUrl: modalTemplates[target],
@@ -729,7 +729,7 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
             });
 
             modalInstance.result.then(function (newProject) {
-              $scope.projects[index] = newProject;
+              $scope.project = newProject;
             }, function () {});
         }
     };
@@ -777,40 +777,6 @@ app.controller('projectsCtrl', ['$scope', '$http', '$animate', 'projectService',
                   var assessment = response.data[0];
                   newProject.assessments.push(assessment);
                   newProject.assessmentsStats.Count++;
-                  var tmp = {
-                      details: assessment,
-                        listData: {
-                            project: assessment.projectName,
-                            artifact: assessment.artifactName,
-                            persona: assessment.personaName,
-                            role: assessment.roleName,
-                            scenario: assessment.scenarioName,
-                            user: assessment.email,
-                            configuration: assessment.attributeConfigurationName,
-                        },
-                        specialFields: {
-                            link: {
-                                value: 'assessment.php?asid=' + assessment.assessmentIDHashed,
-                                type: 'link'
-                            },
-                            issued: {
-                                value: assessment.issuanceDate,
-                                preface: 'Issued on',
-                                type: 'date'
-                            },
-                            completion: {
-                                value: assessment.completionDate,
-                                preface: 'Completed on',
-                                type: 'date'
-                            },
-                            edited: {
-                                value: assessment.lastEditDate,
-                                preface: 'Last Edited on',
-                                type: 'date'
-                            }
-                        }
-                  };
-                  newProject.assessmentsList.push(tmp);
                   $scope.$parent.addAlert('The assessment has successfully been added to the database.', 'success');
                   $uibModalInstance.close(newProject);
               });
@@ -1024,7 +990,6 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, projectSer
             if ($scope.configuration.configurationID) {
                 configurationService.get($scope.configuration.configurationID).then(function(response){
                     newProject.configurations.push(response.data[0]);
-                    newProject.configurationsList.push(response.data[0]);
                     $scope.$parent.addAlert('The configuration has successfully been associated with the project.', 'success');
                     $uibModalInstance.close(newProject);
                 });
@@ -1034,26 +999,6 @@ app.controller('addProjectCtrl', function ($scope, $uibModalInstance, projectSer
                     var configuration = response.data[0];
                     newProject.configurations.push(configuration);
                     newProject.configurationsStats.Count++;
-                    var tmp = {
-                        details: configuration,
-                        listData: {
-                            // configuration: configuration.configurationName,
-                            attributes: configuration.attributeConfigurationName,
-                            questions: configuration.questionConfigurationName,
-                            interface: configuration.uiConfigurationName,
-                            artifact: configuration.artifactName,
-                            scenario: configuration.scenarioName,
-                            persona: configuration.personaName,
-                            role: configuration.roleName,
-                        },
-                        specialFields: {
-                            link: {
-                                value: 'start.php?c=' + configuration.configurationIDHashed,
-                                type: 'link'
-                            }
-                        }
-                    };
-                    newProject.configurationsList.push(tmp);
                     $scope.$parent.addAlert('The configuration has successfully been added to the database.', 'success');
                     $uibModalInstance.close(newProject);
                 });
@@ -1238,8 +1183,10 @@ $scope.loaded = true;
                     $uibModalInstance.close(newProject);
                 });
             } else {
+                console.log("adding new group");
                 var id = response.data.data.id;
                 groupService.get(id).then(function(response){
+                    console.log(response);
                     var group = response.data[0];
                     newProject.groups.push(group);
                     newProject.groupStats.Count++;

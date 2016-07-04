@@ -9,13 +9,24 @@ class Group_model extends CI_Model {
     public function get ($id)
     {
         return $this->db
+                                ->select("g.groupID, g.groupName, g.groupDesc, gt.groupTypeID, g.groupWelcomeTemplate, gt.groupTypeName, gt.groupTypeDesc, l.lotteryJackpot, l.lotterySecond, l.lotteryThird, l.lotterySecondAmount, l.lotteryThirdAmount, l.lotteryStartDate, l.lotteryEndDate, l.lotteryTicketsPerAssessment, l.lotteryTicketsPerShare, l.lotteryTicketsPerComment, l.lotteryTicketsPerScreenshot")
                                 ->from("group g")
-                                ->join('lottery l', 'l.groupID = g.groupID', 'left')
+                                ->join('lottery l', 'g.groupID = l.groupID', 'left')
                                 ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
                                 ->where('g.groupID', $id)
-                                ->group_by('g.groupID')
                                 ->get()
                                 ->result_array();
+    }
+
+    public function getAll ()
+    {
+        return $this->db
+            ->select("g.groupID, g.groupName, g.groupDesc, gt.groupTypeID, g.groupWelcomeTemplate, gt.groupTypeName, gt.groupTypeDesc, l.lotteryJackpot, l.lotterySecond, l.lotteryThird, l.lotterySecondAmount, l.lotteryThirdAmount, l.lotteryStartDate, l.lotteryEndDate, l.lotteryTicketsPerAssessment, l.lotteryTicketsPerShare, l.lotteryTicketsPerComment, l.lotteryTicketsPerScreenshot")
+            ->from("group g")
+            ->join('lottery l', 'g.groupID = l.groupID', 'left')
+            ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
+            ->get()
+            ->result_array();
     }
 
     // gets all items of a group for a particular user
@@ -23,7 +34,7 @@ class Group_model extends CI_Model {
     {
         return $this->db
                                 ->from("group g")
-                                ->join('lottery l', 'l.groupID = g.groupID', 'left')
+                                ->join('lottery l', 'g.groupID = l.groupID', 'left')
                                 ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
                                 ->join('group_configuration gc', 'gc.groupID = g.groupID')
                                 ->join('configuration c', 'c.configurationID = gc.configurationID')

@@ -69,7 +69,7 @@
           </div>
 
           <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('artifact', project, $index)"><i class="fa fa-plus"></i> Add a Artifact</span>
+              <span class="btn btn-primary" ng-click="modals.open('artifact', project, {})"><i class="fa fa-plus"></i> Add a Artifact</span>
           </div>
 
         </teds-dropdown>
@@ -116,7 +116,7 @@
           <div ng-if="project.loaded" ui-grid="project.grids.scenario.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
 
           <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('scenario', project, $index)"><i class="fa fa-plus"></i> Add a Scenario</span>
+              <span class="btn btn-primary" ng-click="modals.open('scenario', project, {})"><i class="fa fa-plus"></i> Add a Scenario</span>
           </div>
 
         </teds-dropdown>
@@ -137,7 +137,7 @@
               <h6 class="desc">{{role.roleDesc}}</h6>
           </div>
           <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('role', project, $index)"><i class="fa fa-plus"></i> Add a Role</span>
+              <span class="btn btn-primary" ng-click="modals.open('role', project, {})"><i class="fa fa-plus"></i> Add a Role</span>
           </div>
         </teds-dropdown>
 
@@ -168,7 +168,7 @@
           <div ng-if="project.loaded" ui-grid="project.grids.assessment.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
 
           <div class="menu col-xs-12 clearfix">
-              <span class="btn btn-primary" ng-click="modals.open('assessment', project, $index)"><i class="fa fa-plus"></i> Add an Assessment</span>
+              <span class="btn btn-primary" ng-click="modals.open('assessment', project, {})"><i class="fa fa-plus"></i> Add an Assessment</span>
           </div>
 
         </teds-dropdown>
@@ -257,7 +257,7 @@
            <div ng-if="project.loaded" ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
 
            <div class="menu col-xs-12 clearfix">
-               <span class="btn btn-primary" ng-click="modals.open('configuration', project, $index)"><i class="fa fa-plus"></i> Add a Configuration</span>
+               <span class="btn btn-primary" ng-click="modals.open('configuration', project, {})"><i class="fa fa-plus"></i> Add a Configuration</span>
            </div>
 
         </teds-dropdown>
@@ -325,7 +325,7 @@
            <div ng-if="project.loaded" ui-grid="project.grids.group.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
 
            <div class="menu col-xs-12 clearfix">
-               <span class="btn btn-primary" ng-click="modals.open('group', project, {configurations: project.grids.configuration}, $index)"><i class="fa fa-plus"></i> Add a Group</span>
+               <span class="btn btn-primary" ng-click="modals.open('group', project, {groups: project.grids.group})"><i class="fa fa-plus"></i> Add a Group</span>
            </div>
 
         </teds-dropdown>
