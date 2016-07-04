@@ -23,6 +23,10 @@ class Groups_api extends REST_Controller {
                     'status' => FALSE,
                     'message' => 'No groups were found'
                 ], REST_Controller::HTTP_NOT_FOUND);
+            } else {
+                foreach ($tmp as $groupKey => $group) {
+                    $tmp[$groupKey]['configurations'] = $this->group->getConfigurations($group['groupID']);
+                }
             }
         } else {
             $id = (int) $id;
@@ -35,6 +39,8 @@ class Groups_api extends REST_Controller {
                         'status' => FALSE,
                         'message' => 'group not found'
                     ], REST_Controller::HTTP_NOT_FOUND);
+                } else {
+                    $tmp['configurations'] = $this->group->getConfigurations($id);
                 }
             }
         }
