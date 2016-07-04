@@ -40,7 +40,7 @@ class Groups_api extends REST_Controller {
                         'message' => 'group not found'
                     ], REST_Controller::HTTP_NOT_FOUND);
                 } else {
-                    $tmp['configurations'] = $this->group->getConfigurations($id);
+                    $tmp[0]['configurations'] = $this->group->getConfigurations($id);
                 }
             }
         }
