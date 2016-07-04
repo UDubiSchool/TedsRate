@@ -70,8 +70,8 @@ class Groups_api extends REST_Controller {
 
 
             if($this->post('configurations')) {
-                foreach ($this->post('configurations')as $configurationKey => $configuration) {
-                    $configurationID = $configuration['configurationID'];
+                foreach ($this->post('configurations') as $configurationKey => $configuration) {
+                    $configurationID = intval($configuration['configurationID']);
                     $this->group->addConfiguration(['groupID' => $groupID, 'configurationID' => $configurationID]);
                 }
             }
