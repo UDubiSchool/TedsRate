@@ -11,6 +11,21 @@
         echo $payload;
     }
 
+    function echoCSV ($data, $fileName) {
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=$fileName.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $toEcho = "";
+        foreach ($data as $key => $row) {
+            array_walk($row, create_function('&$str', '$str = "\"$str\"";'));
+            $toEcho .= implode(", ", $row);
+            $toEcho .= "\n";
+        }
+        echo $toEcho;
+
+    }
+
     function dumpArray($array)
     {
         echo '<pre>';

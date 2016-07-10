@@ -34,6 +34,24 @@ class Question_model extends CI_Model {
                               ->result_array();
     }
 
+    public function getInProject ($projectID)
+    {
+        return $this->db
+            ->distinct()
+            ->select("q.questionID, q.questionName, q.questionDesc")
+            ->from("question q")
+            ->join('question_questionConfiguration qqc', 'qqc.questionID = q.questionID')
+            ->join('questionConfiguration qc', 'qc.questionConfigurationID = qqc.questionConfigurationID')
+            ->join('configuration c', 'c.questionConfigurationID = qc.questionConfigurationID')
+            ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
+            ->join('project p', 'p.projectID = ac.projectID')
+            ->where('p.projectID', $projectID)
+            ->get()
+            ->result_array();
+    }
+    
+    
+
     public function post ($data)
     {
       $this->db->insert('question', $data);

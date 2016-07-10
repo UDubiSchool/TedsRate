@@ -44,7 +44,7 @@ INSERT INTO `lottery` (groupID, lotteryJackpot, lotterySecond, lotteryThird, lot
 
 INSERT INTO group_configuration (groupID, configurationID) VALUES (1, 353), (1, 352), (1,  351);
 
-ALTER TABLE assessment ADD COLUMN groupID INT ; ALTER TABLE assessment ADD FOREIGN KEY (groupID) REFERENCES group(groupID);
+ALTER TABLE assessment ADD COLUMN groupID INT ; ALTER TABLE assessment ADD FOREIGN KEY (groupID) REFERENCES `group`(groupID);
 
 
 --Alter add assessment proc

@@ -84,7 +84,7 @@ class Group_model extends CI_Model {
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->join('project p', 'p.projectID = ac.projectID')
                               ->where("p.projectID", $projectID)
-                              ->group_by('g.groupID')
+//                              ->distict()
                               ->get()
                               ->result_array();
     }

@@ -6,6 +6,7 @@
       <div ng-if="project.loaded" class="clearfix project">
           <div class="menu col-xs-12 clearfix">
                 <a ui-sref="projects" class="btn btn-primary"><i class="fa fa-chevron-left"></i> Back to Projects</a>
+                <a ng-href="CI/index.php/project/ExportAssessments/{{project.projectID}}" target="_blank" class="btn btn-primary">Download Assessments <i class="fa fa-download"></i></a>
           </div>
           <div class="project-info clearfix">
                 <h1>{{project.projectName}}</h1>
