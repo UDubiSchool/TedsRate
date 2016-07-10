@@ -1,1 +1,5 @@
-info();
+<?php
+
+phpinfo();
+
+?>
