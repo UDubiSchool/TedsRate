@@ -55,7 +55,7 @@ class Project extends CI_Controller {
         foreach($assessments as $asKey => $assessment) {
             $assessmentRow = [$assessment["assessmentID"], $assessment["email"], $assessment["artifactName"], $assessment["scenarioName"], $assessment["personaName"], $assessment["roleName"]];
             $ratings = $this->rating->getAssessment($assessment["assessmentID"]);
-            $responses = $this->response->getAssessment($assessment["assessmentID"]);
+            $responses = $this->response->getFullAssessment($assessment["assessmentID"]);
             foreach ($attributes as $atKey => $attribute) {
 
                 $ratingKey = array_search($attribute['attributeID'], array_column($ratings, 'attributeID'));
