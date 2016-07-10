@@ -35,7 +35,7 @@
  * @since	Version 1.0.0
  * @filesource
  */
-
+ini_set('memory_limit','1024M');
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
