@@ -75,16 +75,15 @@ class Group_model extends CI_Model {
     public function getProject ($projectID)
     {
         return $this->db
-                              ->select("*")
+                              ->select("g.groupID, g.groupName, g.groupDesc, gt.groupTypeID, g.groupWelcomeTemplate, gt.groupTypeName, gt.groupTypeDesc, l.lotteryJackpot, l.lotterySecond, l.lotteryThird, l.lotterySecondAmount, l.lotteryThirdAmount, l.lotteryStartDate, l.lotteryEndDate, l.lotteryTicketsPerAssessment, l.lotteryTicketsPerShare, l.lotteryTicketsPerComment, l.lotteryTicketsPerScreenshot")
                               ->from("group g")
-                              ->join('lottery l', 'l.groupID = g.groupID', 'left')
+                              ->join('lottery l', 'g.groupID = l.groupID', 'left')
                               ->join('group_configuration gc', 'gc.groupID = g.groupID')
                               ->join('configuration c', 'c.configurationID = gc.configurationID')
                               ->join('groupType gt', 'gt.groupTypeID = g.groupTypeID')
                               ->join('assessmentConfiguration ac', 'ac.assessmentConfigurationID = c.assessmentConfigurationID')
                               ->join('project p', 'p.projectID = ac.projectID')
                               ->where("p.projectID", $projectID)
-//                              ->distict()
                               ->group_by('g.groupID')
                               ->get()
                               ->result_array();
