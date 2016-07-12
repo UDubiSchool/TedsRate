@@ -59,7 +59,7 @@ class Project extends CI_Controller {
             foreach ($attributes as $atKey => $attribute) {
 
                 $ratingKey = array_search($attribute['attributeID'], array_column($ratings, 'attributeID'));
-                $rating = $ratingKey === false ? null : $ratings[$ratingKey]['ratingValue'];
+                $rating = $ratingKey === false ? null : intval($ratings[$ratingKey]['ratingValue']);
                 array_push($assessmentRow, $rating);
             }
             foreach ($questions as $qKey => $question) {
