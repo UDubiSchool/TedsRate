@@ -52,8 +52,7 @@ class Response_model extends CI_Model {
                     INNER JOIN questionConfiguration qc ON qc.questionConfigurationID = qqc.questionConfigurationID
                     AND qc.questionConfigurationID = $assessment[questionConfigurationID]
                     INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
-                    INNER JOIN configuration c ON c.questionConfigurationID = qc.questionConfigurationID
-                    LEFT JOIN assessment a ON c.configurationID = a.configurationID
+                    INNER JOIN assessment a ON a.assessmentID = r.assessmentID
                     AND a.userID = $assessment[userID]
                     LEFT JOIN question_project qp ON q.questionID = qp.questionID
                     AND qp.projectID = $assessment[projectID]
