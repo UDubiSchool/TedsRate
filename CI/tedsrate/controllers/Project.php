@@ -53,7 +53,7 @@ class Project extends CI_Controller {
         // building tuples
 
         foreach($assessments as $asKey => $assessment) {
-            $assessmentRow = [$assessment["assessmentID"], $assessment["email"], $assessment["artifactName"], $assessment["scenarioName"], $assessment["personaName"], $assessment["roleName"]];
+            $assessmentRow = [intval($assessment["assessmentID"]), $assessment["email"], $assessment["artifactName"], $assessment["scenarioName"], $assessment["personaName"], $assessment["roleName"]];
             $ratings = $this->rating->getAssessment($assessment["assessmentID"]);
             $responses = $this->response->getFullAssessment($assessment["assessmentID"]);
             foreach ($attributes as $atKey => $attribute) {
