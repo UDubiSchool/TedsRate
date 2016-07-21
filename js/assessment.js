@@ -402,16 +402,16 @@ app.controller('assessmentController', ['$scope', '$http', '$animate', '$timeout
             $scope.requiredItems = 0;
             $scope.completedItems = 0;
 
-            assessment.project.name = decodeURIComponent(assessment.project.name);
-            assessment.project.description = decodeURIComponent(assessment.project.description);
-            assessment.artifact.name = decodeURIComponent(assessment.artifact.name);
-            assessment.artifact.description = decodeURIComponent(assessment.artifact.description);
-            assessment.persona.name = decodeURIComponent(assessment.persona.name);
-            assessment.persona.description = decodeURIComponent(assessment.persona.description);
-            assessment.role.name = decodeURIComponent(assessment.role.name);
-            assessment.role.description = decodeURIComponent(assessment.role.description);
-            assessment.scenario.name = decodeURIComponent(assessment.scenario.name);
-            assessment.scenario.description = decodeURIComponent(assessment.scenario.description);
+            // assessment.project.name = assessment.project.name;
+            // assessment.project.description = assessment.project.description;
+            // assessment.artifact.name = assessment.artifact.name;
+            // assessment.artifact.description = assessment.artifact.description;
+            // assessment.persona.name = assessment.persona.name;
+            // assessment.persona.description = assessment.persona.description;
+            // assessment.role.name = assessment.role.name;
+            // assessment.role.description = assessment.role.description;
+            // assessment.scenario.name = assessment.scenario.name;
+            // assessment.scenario.description = assessment.scenario.description;
             assessment.configuration.uiConfiguration.attributeTitles = parseInt(assessment.configuration.uiConfiguration.attributeTitles);
             console.log(assessment);
 

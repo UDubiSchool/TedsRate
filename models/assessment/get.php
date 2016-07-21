@@ -72,8 +72,8 @@
     $sth->execute();
     while ($row = $sth->fetch()){
     $tmp = [
-        'name' => rawurlencode($row['name']),
-        'description' => rawurlencode($row['description']),
+        'name' => $row['name'],
+        'description' => $row['description'],
         'url' => $row['URL']
     ];
     $data['artifact'] = $tmp;
@@ -85,8 +85,8 @@
     $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
     while ($row = $sth->fetch()){
      $tmp = [
-         'name' => rawurlencode($row['name']),
-         'description' => rawurlencode($row['description'])
+         'name' => $row['name'],
+         'description' => $row['description']
      ];
      $data['project'] = $tmp;
     }
@@ -96,8 +96,8 @@
     $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => rawurlencode($row['personaName']),
-            'description' => rawurlencode($row['personaDesc'])
+            'name' => $row['personaName'],
+            'description' => $row['personaDesc']
         ];
         $data['persona'] = $tmp;
     }
@@ -107,8 +107,8 @@
     $sth = $dbq->query('SELECT * FROM role where role.roleID = ' . $roleID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => rawurlencode($row['roleName']),
-            'description' => rawurlencode($row['roleDesc'])
+            'name' => $row['roleName'],
+            'description' => $row['roleDesc']
         ];
         $data['role'] = $tmp;
     }
@@ -119,8 +119,8 @@
     $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
     while ($row = $sth->fetch()){
         $tmp = [
-            'name' => rawurlencode($row['scenarioName']),
-            'description' => rawurlencode($row['scenarioDescription'])
+            'name' => $row['scenarioName'],
+            'description' => $row['scenarioDescription']
         ];
         $data['scenario'] = $tmp;
     }
