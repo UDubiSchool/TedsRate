@@ -304,9 +304,11 @@
                     <p>{{finished ? "Your results have been saved. You may safely close this page." : "Your results are being saved. Please do not close this page."}}</p>
                     <div ng-if="group.groupID != null" class="clearfix">
                         <h3>This survey is part of a {{group.groupTypeName}}</h3>
-                        <p ng-if="group.groupTypeName">Each survey earns you {{group.lotteryTicketsPerAssessment}} tickets to be entered in our drawing</p>
+                        <div  ng-if="group.groupTypeName === 'Lottery'">
+                            <p>Each survey earns you {{group.lotteryTicketsPerAssessment}} tickets to be entered in our drawing</p>
+                            <h4>You currently have {{group.stats.tickets}} Tickets! Here are some other surveys you can participate in to earn more.</h4>
+                        </div>
 
-                        <h4>You currently have {{group.stats.tickets}} Tickets! Here are some other surveys you can participate in to earn more.</h4>
 
                         <div class="col-xs-12 col-sm-9 col-md-7 col-lg-5 center-block">
                             <a class="col-xs-12 clickable" style="margin:10px 0px; border-bottom: 1px solid #efefef;" ng-repeat="configuration in group.configurations" ng-if="configuration.configurationID != assessment.configurationID && configuration.assessment.completionDate == null" href="start.php?c={{configuration.configurationIDHashed}}" target="_blank">
