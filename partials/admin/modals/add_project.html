@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h3 class="modal-title">Start a New Project</h3>
+</div>
+<div class="modal-body">
+    <form name="addProjectForm" novalidate>
+        <div class="new">
+            <label for="">Project Name</label>
+            <input type="text" class="form-control" ng-model="project.projectName" placeholder="Project Name" required/>
+            <label for="">Project Description</label>
+            <input type="text" class="form-control" ng-model="project.projectDescription" placeholder="Project Description"/>
+            <label for="">Project Language</label>
+            <select class="form-control" ng-model="project.languageID" required>
+                <option value=""></option>
+                <option ng-repeat="(languageKey, language) in languages" ng-value="language.languageID">{{language.languageName}}</option>
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add an Scenario to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addScenarioForm" novalidate>
+        <div class="new">
+            <h4>Add a New Scenario</h4>
+            <label for="">Scenario Name</label>
+            <input type="text" class="form-control" ng-model="scenario.scenarioName" placeholder="Scenario Name" required/>
+            <label for="">Scenario Description</label>
+            <input type="text" class="form-control" ng-model="scenario.scenarioDescription" placeholder="Scenario Description"/>
+            <label for="">Scenario Language</label>
+            <select class="form-control" ng-model="scenario.languageID" required>
+                <option value=""></option>
+                <option ng-repeat="(languageKey, language) in $parent.languages" ng-value="language.languageID">{{language.languageName}}</option>
+            </select>
+        </div>
+        <div class="existing">
+            <h4>Associate an Existing Scenario</h4>
+            <select class="form-control" ng-model="scenario.scenarioID">
+                <option value=""></option>
+                <option ng-repeat="(scenarioKey, scenario) in scenarios" ng-value="scenario.scenarioID">{{scenario.scenarioName}}</option>
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

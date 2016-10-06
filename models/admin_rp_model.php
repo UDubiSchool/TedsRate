@@ -1,42 +1,38 @@
 <?php
-    require_once "../session_inc.php";
-    require_once "../header.inc.php";
     require_once "../dbconnect.php";
-
-    //set up some SQL statements
-    $sql["project"] = 'SELECT * from project';
-    $sql["project_atft"] = 'SELECT * FROM projectArtifact pa
-                            join project p on p.projectID = pa.projectID
-                            join artifact a on a.artifactID = pa.artifactID';
-    $sql["persona"] = 'select personaeID as perid, personaTitle as perTitle from personae';
 
     try {
         $arrayToSend = [];
         $dbq = db_connect();
-        $pre_result = $dbq->prepare("SELECT pjt.projectTitle as project, a.artifactTitle as artifact,
-                                     p.personaTitle as persona, s.scenarioTitle as scenario,
-                                     CONCAT(upro.firstName, ' ', upro.lastName) as userprofile,
-                                     urp.isComplete as complete,
-                                     urp.completionDate as completionDate,
-                                     upro.email as email,
-                                     urp.userRatingProgressID as urpID
-                                     FROM userRatingProgress urp
-                                     join userProfile upro on urp.userID = upro.userID
-                                     join userPersonae uper on uper.userID = upro.userID
-                                     join personae p on uper.personaeID = p.personaeID
-                                     join personaScenario ps on p.personaeID = ps.personaID
-                                     join scenario s on ps.scenarioID = s.scenarioID
-                                     join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
-                                     join project pjt on pjt.projectID = pa.projectID
-                                     join artifact a on a.artifactID = pa.artifactID
-                                     where upro.userID = urp.userID
-                                     and p.personaeID = urp.personaID
-                                     and s.scenarioID = urp.scenarioID order by completionDate DESC");
+        $pre_result = $dbq->prepare("SELECT pjt.projectName AS project,
+                                     a.artifactName AS artifact,
+                                     p.personaName AS persona,
+                                      s.scenarioName AS scenario,
+                                     CONCAT(u.firstName, ' ', u.lastName) AS name,
+                                     ass.completionDate AS completionDate,
+                                     u.email AS email,
+                                     ass.assessmentID AS assessmentID,
+                                     ass.ratingUrl AS ratingUrl,
+                                     atcon.attributeConfigurationName AS configurationName
+                                     FROM assessment ass
+                                     JOIN user u ON ass.userID = u.userID
+                                     JOIN configuration con ON con.configurationID = ass.configurationID
+                                     JOIN attributeConfiguration atcon ON atcon.attributeConfigurationID = con.attributeConfigurationID
+                                     JOIN assessmentConfiguration ascon ON ascon.assessmentConfigurationID = con.assessmentConfigurationID
+                                     JOIN project pjt ON pjt.projectID = ascon.projectID
+                                     JOIN artifact a ON a.artifactID = ascon.artifactID
+                                     JOIN persona p ON p.personaID = ascon.personaID
+                                     JOIN scenario s ON s.scenarioID = ascon.scenarioID
+                                     WHERE u.userID = ass.userID
+                                     AND p.personaID = ascon.personaID
+                                     AND s.scenarioID = ascon.scenarioID
+                                     ORDER BY completionDate DESC");
         $pre_result->execute();
-        while ($row = $pre_result->fetch(PDO::FETCH_ASSOC)) {
-            $arrayToSend[] = $row;
+        while ($row = $pre_result->fetch()) {
+            array_push($arrayToSend, $row);
         }
-        echo json_encode($arrayToSend);
+        header('Content-Type: application/json');
+        echo json_encode($arrayToSend, TRUE);
         //close connection
         $dbq = NULL;
 

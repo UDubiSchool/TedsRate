@@ -6,16 +6,10 @@ $pid = null; //project id
 $aid = null; //artifact id
 
 
-//get project and artifact IDS from GET variables via <form> submit in index.php
-//if ( isset($_GET['selProject']) && isset($_GET['selArtifact']) ){
-//	$pid = $_GET['selProject'];
-//	$aid = $_GET['selArtifact'];
-//}
-
 require_once "dbconnect.php";
 
 // selLanguage=5&selProject=26&selArtifact=60&selScenario=27&selPersona=20
-if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['selScenario']) && isset($_GET['selPersona']) && isset($_GET['selArtifact'])) {
+if (isset($_GET['asid']) || isset($_GET['urpId'])) {
     foreach ($_GET as $key => $value) {
         if (preg_match("/^\s*$/i", $value)) {
             ?>
@@ -26,7 +20,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <p>If the problem still occurs, contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
                 <p>Sorry for the trouble.</p>
             </div>
-            <?
+            <?php
 
             return;
         }
@@ -34,30 +28,35 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
 
     try {
         $dbq = db_connect();
-        $dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-        $pid = $_GET['selProject'];
-        $aid = $_GET['selArtifact'];
-        $lanID = $_GET['selLanguage'];
-        $personaID = $_GET['selPersona'];
-        $scenarioID = $_GET['selScenario'];
-        $urpID = $_GET['urpId'];
+        $hashedID = $_GET['asid'];
 
-        $authenticate_query =  "SELECT * FROM userRatingProgress urp
-                                join projectArtifact pa on urp.projectArtifactID = pa.projectArtifactID
-                                join userProfile upro on upro.userID = urp.userID
-                                where pa.projectID = " . $pid .
-                                " and pa.artifactID = " . $aid .
-                                " and upro.preferredLanguage = " . $lanID .
-                                " and urp.personaID = " . $personaID .
-                                " and urp.scenarioID = " . $scenarioID .
-                                " and urp.`userRatingProgressID` = " . $urpID;
+        $authenticate_query = $dbq->prepare("SELECT * FROM assessment
+                                LEFT JOIN configuration ON configuration.configurationID = assessment.configurationID
+                                LEFT JOIN assessmentConfiguration ON assessmentConfiguration.assessmentConfigurationID = configuration.assessmentConfigurationID
+                                LEFT JOIN questionConfiguration ON questionConfiguration.questionConfigurationID = configuration.questionConfigurationID
+                                LEFT JOIN uiConfiguration ON uiConfiguration.uiConfigurationID = configuration.uiConfigurationID
+                                LEFT JOIN user ON user.userID = assessment.userID
+                                WHERE assessment.assessmentIDHashed = :hashedID");
+        $authenticate_query->bindValue(':hashedID', $hashedID, PDO::PARAM_STR);
+        $authenticate_query->execute();
 
-//        echo($authenticate_query);
+        $flag = $authenticate_query->fetchAll();;
+        $pid = $flag[0]['projectID'];
+        $aid = $flag[0]['artifactID'];
+        $lanID = $flag[0]['languageID'];
+        $personaID = $flag[0]['personaID'];
+        $scenarioID = $flag[0]['scenarioID'];
+        $assessmentID = $flag[0]['assessmentID'];
 
-        $flag = $dbq->query($authenticate_query)->fetchAll();
-//        print_r($flag);
+        $questionConfigurationID = $flag[0]['questionConfigurationID'];
+        $configurationID = $flag[0]['configurationID'];
+        $uiConfigurationID = $flag[0]['uiConfigurationID'];
+
+        $fName = $flag[0]['firstName'];
+        $lName = $flag[0]['lastName'];
+        $userID = $flag[0]['userID'];
 
         if (!$flag) {
             // authentication failed: user identity mismatch
@@ -68,188 +67,336 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                 <p>Please try again using the original link from your email. </p>
                 <p>And if it still does not work, please contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
             </div>
-        <?
+        <?php
         } else {
-//            print_r($flag[0]['userRatingProgressID']);
-//            echo($flag[0]['userRatingProgressID']);
-//            echo($flag[0]['userID']);
 
             // available variables
             $uid = $flag[0]['userID'];
-            $urpID = $flag[0]['userRatingProgressID'];
+            $assessmentID = $flag[0]['assessmentID'];
+            $data = [
+                'assessmentID' => $assessmentID,
+                'questions' => []
+            ];
+
+
+            //populate site (artifact) title in view toggle
+            $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
+            $sth->execute();
+            while ($row = $sth->fetch()){
+            $tmp = [
+                'name' => $row['name'],
+                'url' => $row['URL']
+            ];
+            $data['artifact'] = $tmp;
+            };
+            $sth->closeCursor();
+
+
+            //populate project title and description
+            $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
+            while ($row = $sth->fetch()){
+             $tmp = [
+                 'name' => $row['name'],
+                 'description' => $row['description']
+             ];
+             $data['project'] = $tmp;
+            }
+            $sth->closeCursor();
+
+
+            //populate personas the "language" value (5) is hard coded!
+            $sth = $dbq->query('SELECT * FROM persona where persona.personaID = ' . $personaID);
+            while ($row = $sth->fetch()){
+                $tmp = [
+                    'personaName' => $row['personaName'],
+                ];
+                $data['persona'] = $tmp;
+            }
+            $sth->closeCursor();
+
+
+            //populate scenarios the "language" value (5) is hard coded!
+            $sth = $dbq->query('SELECT * FROM scenario where scenario.scenarioID = ' . $scenarioID);
+            while ($row = $sth->fetch()){
+                $tmp = [
+                    'scenarioName' => $row['scenarioName'],
+                ];
+                $data['scenario'] = $tmp;
+            }
+            $sth->closeCursor();
+
+            // get the question types
+            $sth = $dbq->query("SELECT * FROM question q
+                                            INNER JOIN question_questionConfiguration qqc ON qqc.questionID = q.questionID
+                                            INNER JOIN questionConfiguration qc ON qc.questionConfigurationID = qqc.questionConfigurationID
+                                            INNER JOIN questionType qt ON qt.questionTypeID = q.questionTypeID
+                                            LEFT JOIN question_project qp ON qp.questionID = q.questionID
+                                            LEFT JOIN question_scenario qs ON qs.questionID = q.questionID
+                                            LEFT JOIN question_attribute qatt ON qatt.questionID = q.questionID
+                                            LEFT JOIN question_artifact qart ON qart.questionID = q.questionID
+                                            WHERE qc.questionConfigurationID = $questionConfigurationID
+                                            AND (qp.projectID = $pid
+                                            OR qs.scenarioID = $scenarioID
+                                            OR qart.artifactID = $aid)
+                                            ");
+            while ($row = $sth->fetch()){
+                array_push($data['questions'], $row);
+            }
+            $sth->closeCursor();
+
+
+            //populate categories the "language" value (1) is hard coded!
+            try {
+                // echo "started retieval";
+                $ratingData = [];
+                $current = "SELECT
+                rating.ratingID,
+                rating.ratingValue,
+                attribute.attributeID,
+                attribute.attributeName,
+                screenshot.screenshotPath,
+                screenshot.screenshotDesc,
+                comment.comment
+                FROM assessment
+                LEFT JOIN rating ON assessment.assessmentID = rating.assessmentID
+                LEFT JOIN attribute ON attribute.attributeID = rating.attributeID
+                LEFT JOIN screenshot ON rating.ratingID = screenshot.ratingID
+                LEFT JOIN comment ON rating.ratingID = comment.ratingID
+                WHERE assessment.assessmentID = $assessmentID;";
+                $current = $dbq->query($current);
+                while ($currentResult = $current->fetch()){
+                    array_push($ratingData, $currentResult);
+                }
+                array_reverse($ratingData);
+                $data['ratingsData']= $ratingData;
+            } catch (PDOException $e) {
+                echo $e;
+            }
+            // echo '<pre>';
+            // print_r($data['ratingsData']);
+            // echo'</pre>';
+
+            // gets categories and attaches ratings comments and files
+            try {
+                $criteria = [];
+                $sth = $dbq->query('CALL getCriteria(5,@cid,@ctitle,@cdesc)');
+                while ($prow = $sth->fetch()){
+                    $criterion = [
+                        'criterionName' => $prow['criterionName'],
+                        'criterionID' => $prow['criterionID'],
+                        'criterionDesc' => $prow['criterionDesc']
+                    ];
+                    $attributes = [];
+
+                    //prints out the ratings attributes and if either the session data is filled or the rating was previously submitted and $ratingsData is populated then fill out with those values. If neither is specified then it will just print the blank fields.
+                    foreach($dbq->query("CALL getConfigurationCriterionAttributes($assessmentID, $prow[criterionID])") as $row) {
+                        $ratingValue = '';
+                        $hasScreenshot = false;
+                        $hasComment = false;
+                        $screenshots = [];
+                        $comment = '';
+
+
+                        if (!empty($data['ratingsData'])) {
+                            // echo "not empty!";
+                            foreach ($data['ratingsData'] as $key => $value) {
+
+                                if ($value['attributeID'] == $row['attributeID']) {
+
+                                    $ratingValue = intval($value['ratingValue']);
+
+                                    if(isset($value['screenshotPath'])) {
+                                        $hasScreenshot = true;
+                                        if(!in_array($value['screenshotPath'], $screenshots)) {
+                                            array_push($screenshots, $value['screenshotPath']);
+                                        }
+                                    }
+                                    // echo $value['comment'];
+                                    if(isset($value['comment'])) {
+                                        $hasComment = true;
+                                        $comment = $value['comment'];
+                                    }
+                                }
+                            }
+                            array_reverse($screenshots);
+                        }
+
+                        $attribute = [
+                            'attributeID' => $row['attributeID'],
+                            'attributeName' => $row['attributeName'],
+                            'attributeDesc' => $row['attributeDesc'],
+                            'ratingValue' => $ratingValue,
+                            'hasScreenshot' => $hasScreenshot,
+                            'hasComment' => $hasComment,
+                            'screenshots' => $screenshots,
+                            'comment' => $comment
+                        ];
+
+                        array_push($attributes, $attribute);
+                    }
+                    array_reverse($attributes);
+                    $criterion['attributes'] = $attributes;
+                    array_push($criteria, $criterion);
+
+                }
+                array_reverse($criteria);
+                $data['criteria'] = $criteria;
+                $sth->closeCursor();
+
+                unset($data['ratingsData']);
+
+            } catch (PDOException $e) {
+                echo $e;
+            }
+            // exit;
+            //close connection
+            $dbq = NULL;
+
         ?>
                 <!-- container -->
+                <link rel="stylesheet" href="css/rater.css">
                 <div id="sitecontainer">
                     <div class="row">
                         <div id="artPane" class="eight columns">
+
                         <form action="process.php" id="rateForm" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="actProject" value="<?echo $pid;?>" class="notEmpty">
-                            <input type="hidden" name="actArtifact" value="<?echo $aid;?>" class="notEmpty">
-                            <input type="hidden" name="userID" value="<?= $uid ?>" class="notEmpty">
-                            <input type="hidden" name="personaID" value="<?= $personaID ?>" class="notEmpty">
-                            <input type="hidden" name="scenarioID" value="<?= $scenarioID ?>" class="notEmpty">
-                            <input type="hidden" name="urpID" value="<?= $urpID ?>" class="notEmpty">
-            <?
-                $sth = $dbq->prepare('CALL getArtifact('.$aid.',@title,@url,@desc,@type)');
-                $sth->execute();
-                while ($row = $sth->fetch()){
-            ?>
-                <dl id="anchorSel" class="sub-nav">
-                  <dt>Active site view:</dt>
-                  <dd class="active"><a href="#">
-            <?
-                //populate site (artifact) title in view toggle
-                printf($row['title']);
-            ?>
-                  </a></dd>
-                  <dd><a href="#">Anchor Site</a></dd>
-                </dl>
 
 
-                <div id="sitePane">
-                    <div id="currRate" class="activeSite">
-            <?
-
-                 printf("<h2>%s: %s</h2>", $row['title'], urldecode($row['URL']));
-                 print_r('<iframe width="100%" scrolling="auto" src="' . urldecode($row['URL']) . '"></iframe>');
-                }
-                $sth->closeCursor();
-            ?>
-                    </div>
-                    <div id="anchor" class="activeSite">
-                        <h2>Anchor Site - Wikipedia.org, http://en.wikipedia.org</h2>
-                        <iframe width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
-                    </div>
-                </div>
+                            <input type="hidden" name="projectID" value="<?php echo $pid;?>" class="notEmpty">
+                            <input type="hidden" name="artifactID" value="<?php echo $aid;?>" class="notEmpty">
+                            <input type="hidden" name="userID" value="<?php echo $uid ?>" class="notEmpty">
+                            <input type="hidden" name="personaID" value="<?php echo $personaID ?>" class="notEmpty">
+                            <input type="hidden" name="scenarioID" value="<?php echo $scenarioID ?>" class="notEmpty">
+                            <input type="hidden" name="assessmentID" value="<?php echo $assessmentID ?>" class="notEmpty">
+                            <dl id="anchorSel" class="sub-nav">
+                              <dt>Active site view:</dt>
+                              <dd class="active"><a href="#"><?php echo $data['artifact']['name']; ?></a></dd>
+                              <dd><a href="#">Anchor Site</a></dd>
+                            </dl>
+                            <div id="sitePane">
+                                <div id="currRate" class="activeSite">
+                                <h2><?php echo $data['artifact']['name'] . ": " . urldecode($data['artifact']['url']); ?></h2>
+                                <input type="hidden" id="activeIframeSrc" value="<?php echo urldecode($data['artifact']['url']); ?>">
+                                <iframe id="activeIframe" scrolling="auto" src=""></iframe>
+                                </div>
+                                <div id="anchor" class="activeSite">
+                                    <h2>Anchor Site - Wikipedia.org, http://en.wikipedia.org</h2>
+                                    <iframe id="anchorIframe" width="100%" scrolling="auto" src="http://en.wikipedia.org"></iframe>
+                                </div>
+                            </div>
                         </div>
-
-
                         <div id="ratePane" class="four columns">
-            <?
-                //populate project title and description
-                $sth = $dbq->query('CALL getProject('.$pid.',@title,@desc)');
-                //printf ("rows/cols returned: %d, %d\n", $sth->rowCount(),$sth->columnCount());
-
-                while ($row = $sth->fetch()){
-                 printf ("<h2>%s</h2><p>%s</p>", $row['title'], $row['description']);
-                }
-                $sth->closeCursor();
-            ?>
+                            <h2><?php echo $data['project']['name']; ?></h2><p><?php echo $data['project']['description']; ?></p>
+                            <h4>Welcome Back <?php echo "$fName $lName";?></h4>
                             <table width="100%">
                                 <tr>
                                     <td>
-            1. Current Persona:
-            <p id="personae">
-            <?
-                //populate personas the "language" value (5) is hard coded!
-                $sth = $dbq->query('select * from personae where personae.personaeID = ' . $personaID);
-                while ($row = $sth->fetch()){
-                    echo($row['personaTitle']);
-                }
-                $sth->closeCursor();
-            ?>
-            </p>
+                                        1. Current Persona:
+                                        <p id="personae"><?php echo $data['persona']['personaName']; ?></p>
                                     </td>
                                     <td>
-            2. Current Scenario
-            <p id="scenario">
-            <?
-            //populate scenarios the "language" value (5) is hard coded!
-
-                $sth = $dbq->query('select * from scenario where scenario.scenarioID = ' . $scenarioID);
-                while ($row = $sth->fetch()){
-                    echo($row['scenarioTitle']);
-                }
-                $sth->closeCursor();
-            ?>
-            </p>
+                                        2. Current Scenario
+                                        <p id="scenario"><?php echo $data['scenario']['scenarioName']; ?></p>
                                     </td>
                                 </tr>
+
                             </table>
+                            <h4>Select User Agent</h4>
+                            <select class="form-control" name="userAgentPicker" id="userAgentPicker">
+                                <option class='default-val'  value="">Default</option>
+                                <option data-width="640" data-height="1136" value="Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3">Chrome, iPhone 5</option>
+                                <option data-width="720" data-height="1280" value="Mozilla/5.0 (Linux; U; Android-4.0.3; en-us; Galaxy Nexus Build/IML74K) AppleWebKit/535.7 (KHTML, like Gecko) CrMo/16.0.912.75 Mobile Safari/535.7">Chrome, Galaxy Nexus</option>
+                                <option  data-width="720" data-height="1280" value="Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0">Firefox, Android</option>
+                            </select>
+                            <br>
+                            <h2>Categories</h2>
 
-                        <h2>Categories</h2>
+                            <ul id="categories">
+                            <?php
+                                foreach ($data['criteria'] as $key => $criterion) {
+                            ?>
+                                <li>
+                                    <b><?php echo $criterion['criterionName']; ?></b>
+                                    <ul>
+                                        <?php
+                                            foreach ($criterion['attributes'] as $key => $attribute) {
+                                        ?>
+                                        <li>
+                                            <div>
+                                                <h5><?php echo $attribute['attributeName']; ?></h5>
+                                                <input class="notEmpty ratingInput" name="rate['<?php echo $attribute['attributeID']; ?>']" type="text" value="<?php echo $attribute['ratingValue']; ?>"/>
+                                                <b class="toggle" data-target="definition">Show Definition</b>
+                                                <b class="toggle" data-target="screenshot">Add Screenshot</b>
+                                                <b class="toggle" data-target="comment">Add Comment</b>
+                                            </div>
+                                            <div>
+                                                <div class="definition toggle-target">
+                                                    <p><?php echo $attribute['attributeDesc']; ?></p>
+                                                </div>
+                                                <div class="screenshot toggle-target">
+                                                    <?php
+                                                    foreach ($attribute['screenshots'] as $key => $value) {
+                                                        echo '<p><a href="' . $value . '" target="_blank">Screenshot ' . $key . '</a></p>';
+                                                    }
+                                                    ?>
+                                                    <input type="file" class="form-control" name="screenshot['<?php echo $attribute['attributeID']; ?>']">
+                                                </div>
+                                                <div class="comment toggle-target">
+                                                    <textarea class="form-control" name="comment['<?php echo $attribute['attributeID']; ?>']"><?php echo $attribute['comment']; ?></textarea>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <?php
+                                            } // end attribute foreach
+                                        ?>
+                                    </ul>
+                                </li>
+                            <?php
+                                } // end groups foreach
+                            ?>
+                            </ul>
+                            <button id="saveForm" class="btn btn-primary">Save Form</button>
+                            <button id="submitForm" class="btn btn-success">Submit Form</button>
 
-            <ul id="categories">
-            <?
-            //populate categories the "language" value (1) is hard coded!
-
-                $sth = $dbq->query('CALL getParentCategories(5,@cid,@ctitle,@cdesc)');
-
-                while ($prow = $sth->fetch()){
-                printf('<li><b>%s</b>', $prow['categoryTitle']);
-            ?>
-                <ul>
-            <?
-                    foreach($dbq->query('CALL getCategoryAndChildren('. $prow['categoryID'] .',@cid,@ctitle,@description)') as $row) {
-                        if (isset($_SESSION['rateform'])){
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" value="' . $_SESSION['rateform'][$row['categoryID']] . '"/><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
-                        } else {
-                            printf('<li>' . $row['categoryTitle'] . '<input class="notEmpty" name="rate[' . $row['categoryID'] .  ']" type="text" /><b class="toggle">Show Definition</b><div class="definition"><p>' . $row['categoryDescription'] . '</p></div></li>');
-                        }
-                    }
-            ?>
-                </ul>
-            <?
-                print "</li>";
-                }
-                $sth->closeCursor();
-
-            //close connection
-            $dbq = NULL;
-        ?>
-            </ul>
-
-            <h2>Descriptive Comments</h2>
-                        <?
-                        if (isset($_SESSION['ratingNarrative'])){
-                            printf('<textarea id="detailrating" name="ratingNarrative">'.$_SESSION['ratingNarrative'].'</textarea>');
-                        } else {
-                            printf('<textarea id="detailrating" name="ratingNarrative"></textarea>');
-                        }
-                        ?>
-
-
-                        <h2>Screenshots</h2>
-                        <input name="scn[]" type="file" />
-                        <input name="scn[]" type="file" />
-
-                        <br /><hr /><br />
-
-                        <a id="saveForm" href="#" class="small white radius button">Save Form</a><input style="margin-left:25px;" type="submit" value="Submit Ratings" />
-
-                        </form>
+                            </form>
+                        </div>
                     </div>
-
                 </div>
-
-
-            </div>
             <!-- sitecontainer -->
-
-            <!-- Included JS Files -->
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-            <script src="javascripts/modernizr.foundation.js"></script>
-            <script src="javascripts/foundation.js"></script>
-            <script src="javascripts/app.js"></script>
 
             <script>
                 $(document).ready(function() {
                     //automatically set height of iframe based on browser window size on page load
+                    var defaultUA = navigator.userAgent;
+                    // console.log(defaultUA);
+                    var defaultUrl = "UAProxy.php?";
+                    // var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  defaultUA;
+                    // $("#activeIframe").attr("src", finalUrl);
                     var ifheight = $(window).height() - $("#sitePane").offset()['top']-50;
                     $("#sitePane iframe").height(ifheight);
+
+                    $('#userAgentPicker .default-val').attr("value", defaultUA);
+                    $('#userAgentPicker .default-val').attr("data-width", "100%");
+                    $('#userAgentPicker .default-val').attr("data-height", ifheight);
+
+                    changeIframe();
+
+
 
                     //toggle category box collapse/expand on click of main category title
                     $("#categories > li b").click(function(){
                         $(this).parent("li").find("ul").toggle();
                     }).click();
 
-                    //ajax call to save current php session, sessions are currently default files and are stored for 4 weeks with clientside cookie reference
-                    $("#saveForm").click(function(){ 
-                        $.post("saveform.php", $("#rateForm").serialize(), function(data) {
-                            //console.log($("#rateForm").serialize());
-                            $('#savemsg').reveal();
-                        });
-                        return false;
+                    //runs process.php and redirects back to this page.
+                    $("#saveForm").click(function(){
+                        $("#rateForm").attr('action', 'process.php?type=save');
+                        $("#rateForm").submit();
+                    });
+
+                    $("#submitForm").click(function(){
+                        $("#rateForm").attr('action', 'process.php?type=submit');
+                        $("#rateForm").submit();
                     });
 
                     //toggle between anchor site display and current rating site
@@ -260,21 +407,49 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
                     });
 
                     $(".toggle").click(function(){
-                        $(this).next(".definition").toggle();
+                        var target = ".";
+                        target = target + $(this).attr('data-target');
+                        $(this).parent().next().children(target).slideToggle();
                     });
-                });
+
+                    $("#userAgentPicker").change(function() {
+                        changeIframe();
+                    });
+
+                    function changeIframe() {
+                        var iframes = [$("#activeIframe")];
+
+                        iframes.forEach(function(iframe) {
+                            var option = $("#userAgentPicker").find(":selected");
+                            var width = option.attr("data-width");
+                            var sitePaneWidth = parseInt($("#sitePane").width());
+                            var windowWidth = parseInt($(window).width());
+                            // var iframe = $("#activeIframe");
+                            if (width == "100%") {
+                                width = $("#sitePane").width();
+                            }
+
+                            var innerWidth = iframe.contents().width();
+                            // var innerWidth = 980;
+                            var scale = (width - 15) / innerWidth ;
+
+
+                            var height = option.attr("data-height");
+                            var finalUrl = defaultUrl + "target=" + $("#activeIframeSrc").val() + "&ua=" +  option.val() + "&w=" + width + "&h=" + height;
+
+
+                            iframe.width(width/scale)
+                            iframe.height(height/scale);
+                            iframe.css("-webkit-transform", "scale(" + scale + ")");
+                            iframe.css("-moz-transform-scale", scale);
+                            iframe.attr("src", finalUrl);
+                        })
+
+                    }
+                }); // END DOC READY
 
             </script>
-            <?
-            printf('existing session: %s', session_id() );
-            ?>
-
-            <div id="savemsg" class="reveal-modal">
-                <h2>Your form been saved</h2>
-                <p>The fields you have filled out so far have been saved, but they have not been submitted. Please submit all results once you are done.</p>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
-<?
+<?php
         }
     } catch (PDOException $e) {
          print ("getMessage(): " . $e->getMessage () . "\n");
@@ -282,7 +457,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
     ?>
 
 
-<?
+<?php
 } else {
 ?>
     <div class="error_container">
@@ -292,7 +467,7 @@ if (isset($_GET['selLanguage']) && isset($_GET['selProject']) && isset($_GET['se
         <p>If the problem still occurs, contact us: <a href="mailto:gaodl@uw.edu">TEDS team</a></p>
         <p>Sorry for the trouble.</p>
     </div>
-<?
+<?php
 }
 ?>
 

@@ -1,12 +1,5 @@
-<?
+<?php
 // ============================== authentication ===============================
-//if (session_status() == PHP_SESSION_NONE) {
-//    session_start();
-//}
-//session_regenerate_id();
-//if(!isset($_SESSION['user_email'])) {    // if there is no valid session
-//    header("Location: index.php?notice=login_first");
-//}
     require_once "session_inc.php";
 // ============================== authentication ===============================
 ?>
@@ -14,25 +7,13 @@
 	<!-- Included JS Files -->
 	<!-- template plugins -->
 	<!-- JavaScript -->
-    <script src="javascripts/jquery-1.11.0.min.js"></script>
-    <script src="javascripts/bootstrap.js"></script>
+
 
     <!-- Page Specific Plugins -->
-    <!-- // <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> -->
-    <!-- // <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script> -->
-    <script src="javascripts/morris/chart-data-morris.js"></script>
-    <script src="javascripts/tablesorter/jquery.tablesorter.js"></script>
-    <script src="javascripts/tablesorter/tables.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<!-- // <script src="javascripts/app.js"></script> -->
-	<script src="javascripts/admin.js"></script>
+    <!-- // <script src="js/morris/chart-data-morris.js"></script> -->
     <!-- js_objects -->
-    <script src="javascripts/js_objects.js" type="text/javascript"></script>
-    <script src="javascripts/ajax_handler.js" type="text/javascript"></script>
-    <script src="javascripts/notice.js" type="text/javascript"></script>
-    <script src="javascripts/main.js" type="text/javascript"></script>
-    <script src="javascripts/form.js" type="text/javascript"></script>
+    <script src="js/notice.js" type="text/javascript"></script>
+    <!-- <script src="js/form.js" type="text/javascript"></script> -->
     <!-- /template plugins -->
 	<script type="text/javascript">
 		$(function() {

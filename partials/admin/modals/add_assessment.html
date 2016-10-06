@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add an Assessment to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addAssessmentForm" novalidate>
+        <div class="new">
+            <h4>Add a New Assessment</h4>
+
+            <label for="">Configuration</label>
+            <p>Use the filter list below to select a configuration</p>
+<!--             <select class="form-control" ng-model="assessment.configurationID" required>
+                <option value=""></option>
+                <option ng-repeat="(configurationKey, configuration) in configurations" ng-value="configuration.configurationID">{{configuration.configuration}}</option>
+            </select> -->
+            <!-- {{assessment}} -->
+            <input class="form-control" type="text" ng-model="assessment.configurationID" ng-value="assessment.configurationID" required disabled>
+            <div ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+            <!-- <teds-filter-list list="project.configurations" passback="assessment"></teds-filter-list> -->
+
+            <label for="">User</label>
+            <select class="form-control" ng-model="assessment.userID" required>
+                <option value=""></option>
+                <option ng-repeat="(userKey, user) in $parent.users" ng-value="user.userID" ng-if="user.email">{{user.email}}</option>
+            </select>
+        </div>
+        <!-- <div class="existing">
+            <h4>Associate an Existing Persona</h4>
+            <select class="form-control" ng-model="persona.personaID">
+                <option value=""></option>
+                <option ng-repeat="(personaKey, persona) in personas" ng-value="persona.personaID">{{persona.personaName}}</option>
+            </select>
+        </div> -->
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

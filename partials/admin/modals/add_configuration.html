@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add an Configuration to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addPersonaForm" novalidate>
+        <div class="new">
+            <h4>Add a New Configuration</h4>
+            <label for="">Attribute Configuration</label>
+            <select class="form-control" ng-model="configuration.attributeConfigurationID" required>
+                <option value=""></option>
+                <option ng-repeat="(attributeConfigurationKey, attributeConfiguration) in attributeConfigurations" ng-value="attributeConfiguration.attributeConfigurationID">{{attributeConfiguration.attributeConfigurationName}}</option>
+            </select>
+            <label for="">Question Configuration</label>
+            <select class="form-control" ng-model="configuration.questionConfigurationID" required>
+                <option value=""></option>
+                <option ng-repeat="(questionConfigurationKey, questionConfiguration) in questionConfigurations" ng-value="questionConfiguration.questionConfigurationID">{{questionConfiguration.questionConfigurationName}}</option>
+            </select>
+            <label for="">Interface Configuration</label>
+            <select class="form-control" ng-model="configuration.uiConfigurationID" required>
+                <option value=""></option>
+                <option ng-repeat="(uiConfigurationKey, uiConfiguration) in uiConfigurations" ng-value="uiConfiguration.uiConfigurationID">{{uiConfiguration.uiConfigurationName}}</option>
+            </select>
+            <label for="">Artifact</label>
+            <select class="form-control" ng-model="configuration.artifactID" required>
+                <option value=""></option>
+                <option ng-repeat="(artifactKey, artifact) in project.artifacts" ng-value="artifact.artifactID">{{artifact.artifactName}}</option>
+            </select>
+            <label for="">Scenario</label>
+            <select class="form-control" ng-model="configuration.scenarioID" required>
+                <option value=""></option>
+                <option ng-repeat="(scenarioKey, scenario) in project.scenarios" ng-value="scenario.scenarioID">{{scenario.scenarioName}}</option>
+            </select>
+            <label for="">Persona</label>
+            <select class="form-control" ng-model="configuration.personaID" required>
+                <option value=""></option>
+                <option ng-repeat="(personaKey, persona) in project.personas" ng-value="persona.personaID">{{persona.personaName}}</option>
+            </select>
+            <label for="">Role</label>
+            <select class="form-control" ng-model="configuration.roleID" required>
+                <option value=""></option>
+                <option ng-repeat="(roleKey, role) in project.roles" ng-value="role.roleID">{{role.roleName}}</option>
+            </select>
+        </div>
+        <!-- <div class="existing">
+            <h4>Associate an Existing Persona</h4>
+            <select class="form-control" ng-model="persona.personaID">
+                <option value=""></option>
+                <option ng-repeat="(personaKey, persona) in personas" ng-value="persona.personaID">{{persona.personaName}}</option>
+            </select>
+        </div> -->
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

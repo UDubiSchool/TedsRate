@@ -22,6 +22,7 @@ coverage/
 public/system/
 public/assets/
 attachments/
+upload/screenshots/
 
 # ignore specific file types
 *.log
@@ -30,6 +31,7 @@ attachments/
 *.sqlite3
 *.tmproj
 *.espressostorage
+*.env
 
 .rvmrc*
 .powrc*
@@ -45,6 +47,7 @@ db/schema.sql
 db/*.git
 .idea
 db_connect.php
+dbconnect.php
 
 
 delta_output.txt

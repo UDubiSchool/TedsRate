@@ -1,0 +1,27 @@
+<div id="page-wrapper" class="configurator" print-section >
+    <div id="alert-wrapper">
+    <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    </div>
+
+    <div class="menu clearfix" style="margin-left:-15px">
+        <a class="btn btn-primary" ng-click="modals.open('project')"><i class="fa fa-plus"></i> Start a project</a>
+    </div>
+
+    <div ng-repeat="(projectKey, project) in projects | orderObjectInt: 'projectID' : true" class="row clearfix project">
+
+        <div class="section-header clearfix clickable" ui-sref="project({id: project.projectID})">
+        <h3 class="pull-left">
+           <!-- <span ng-show="!project.loading"><i class="fa fa-angle-right rotate" ng-class="{quarter: !project.collapsed}"></i></span> -->
+           <!-- <span ng-show="project.loading"><i class="fa fa-circle-o-notch spin"></i></span> -->
+           {{project.projectName}}
+        </h3>
+        <h5 class="pull-left">Assessments: {{project.counts.assessments}}</h5>
+        <h5 class="pull-left">Completion Rate: {{project.counts.assessments ? ((project.counts.completed / project.counts.assessments) * 100 |number:1) + '%'  : 'No Assessments'}}</h5>
+        </div>
+<!-- <div class="collapsable clearfix" uib-collapse="project.collapsed">
+        </div>
+ -->
+
+
+    </div>
+</div>

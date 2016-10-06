@@ -1,26 +1,16 @@
 <?php
-//require_once "session_inc.php";
-//require_once "header.inc.php";
-//require_once "dbconnect.php";
-
-//set up some SQL statements
-//$sql["language"] = 'SELECT * from languages';
-
-//try {
-//$dbq = db_connect();
-//$dbq->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+// successful login validation
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
     session_regenerate_id();
 }
-if(isset($_SESSION['user_email'])) {    // if there is no valid session
+if(isset($_SESSION['user_email'])) {    // if there is a valid session
     header("Location: admin.php?notice=success");
 }
 
 ?>
 <!DOCTYPE html>
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!-- paulirish.com/2008/conditional-css-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
@@ -34,13 +24,12 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
         <meta name="author" content="">
         <title>Site Rater</title>
         <!-- Included CSS Files -->
-        <link rel="stylesheet" href="stylesheets/foundation.css">
-        <link rel="stylesheet" href="stylesheets/app.css">
-        <link rel="stylesheet" href="stylesheets/base.css">
+        <link rel="stylesheet" href="css/foundation.css">
+        <link rel="stylesheet" href="css/base.css">
         <!-- <link href='http://fonts.googleapis.com/css?family=Ropa+Sans:400,400italic' rel='stylesheet' type='text/css'>		 -->
 
         <!--[if lt IE 9]>
-        <link rel="stylesheet" href="stylesheets/ie.css">
+        <link rel="stylesheet" href="css/ie.css">
         <![endif]-->
 
 
@@ -52,12 +41,12 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
         <!-- template -->
 
         <!-- Bootstrap core CSS -->
-        <link href="stylesheets/bootstrap.css" rel="stylesheet">
+        <link href="css/bootstrap.css" rel="stylesheet">
         <!-- Add custom CSS here -->
-        <link href="stylesheets/sb-admin.css" rel="stylesheet">
+        <link href="css/sb-admin.css" rel="stylesheet">
         <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
         <!-- customized css -->
-        <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
         <!-- Page Specific CSS -->
         <!-- <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css"> -->
     </head>
@@ -89,13 +78,9 @@ if(isset($_SESSION['user_email'])) {    // if there is no valid session
 	<!-- sitecontainer -->
 
 	<!-- Included JS Files -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="javascripts/modernizr.foundation.js"></script>
-	<script src="javascripts/foundation.js"></script>
-	<script src="javascripts/app.js"></script>
-    <script src="javascripts/main.js"></script>
-    <script src="javascripts/notice.js"></script>
-    <?
+	<script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/notice.js"></script>
+    <?php
         require_once "notice.inc.php";
     ?>
 

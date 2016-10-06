@@ -1,0 +1,68 @@
+<h4>{{question.questionName}} <span class="red" ng-if="question.questionRequired">*</span></h4>
+<p>{{question.questionDesc}}</p>
+<div ng-if="question.questionData.questionType == 'Boolean'" class="clearfix">
+    <div class="col-xs-6 col-sm-4 col-xs-offset-2 clearfix Boolean">
+        <div class="col-xs-3">
+            {{question.questionData.Boolean.false}}
+        </div>
+        <div class="col-xs-3">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'0'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-3">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'1'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-3">
+            {{question.questionData.Boolean.true}}
+        </div>
+    </div>
+</div>
+<div ng-if="question.questionData.questionType == 'Radio'" class="clearfix">
+    <div class="col-xs-11 center-block clearfix likert">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-1">1</div>
+        <div class="col-xs-1">2</div>
+        <div class="col-xs-1">3</div>
+        <div class="col-xs-1">4</div>
+        <div class="col-xs-1">5</div>
+        <div class="col-xs-3"></div>
+    </div>
+    <div class="col-xs-11 center-block clearfix likert">
+        <div class="col-xs-3">
+            {{question.questionData.Radio.preface}}
+        </div>
+        <div class="col-xs-1">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'1'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-1">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'2'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-1">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'3'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-1">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'4'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-1">
+            <label class="btn checkbox" ng-model="question.response" uib-btn-radio="'5'" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+        </div>
+        <div class="col-xs-3">
+            {{question.questionData.Radio.postface}}
+        </div>
+    </div>
+</div>
+<div ng-if="question.questionData.questionType == 'Text'" class="clearfix">
+    <input class="form-control" type="text" ng-model="question.response" placeholder="{{question.questionData.Text.placeholder}}" ng-value="question.response" ng-change="trackProgress(question.response, '{{encodeURI(question.response)}}', {{question.questionRequired}}); save.response(question)" ng-model-options="{updateOn: 'blur'}">
+</div>
+<div ng-if="question.questionData.questionType == 'Select'" class="clearfix">
+    <select class="form-control col-sm-6" ng-model="question.response" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)">
+        <option value=""></option>
+        <option ng-repeat="option in question.questionData.Select.options" ng-value="option">{{option}}</option>
+    </select>
+</div>
+<div ng-if="question.questionData.questionType == 'Check'" class="clearfix">
+    <p>Check all that apply</p>
+    <div ng-repeat="check in question.questionData.Check.options" class="col-md-6">
+        {{check}}
+        <label class="btn checkbox" ng-model="question.response[check]" uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" ng-change="trackProgress(question.response, '{{question.response}}', {{question.questionRequired}}); save.response(question)"></label>
+    </div>
+</div>

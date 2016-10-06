@@ -1,0 +1,336 @@
+<div id="page-wrapper" class="configurator"print-section >
+    <div id="alert-wrapper">
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    </div>
+        <div ng-if="!loaded" class="col-xs-12 admin-loader text-center"><i class="fa fa-circle-o-notch spin"></i></div>
+      <div ng-if="project.loaded" class="clearfix project">
+          <div class="menu col-xs-12 clearfix">
+                <a ui-sref="projects" class="btn btn-primary"><i class="fa fa-chevron-left"></i> Back to Projects</a>
+                <a ng-href="CI/index.php/project/ExportAssessments/{{project.projectID}}" target="_blank" class="btn btn-primary">Download Assessments <i class="fa fa-download"></i></a>
+          </div>
+          <div class="project-info clearfix">
+                <h1>{{project.projectName}}</h1>
+                <h3>{{project.projectDescription}}</h3>
+          </div>
+
+        <teds-dropdown title="Artifacts" header-stats="{count: project.artifacts.length}" class="artifacts container col-xs-12" ng-click="project.grids.artifact.gridApi.core.handleWindowResize();">
+
+
+          <div ng-if="project.grids.artifact.selected" class="clearfix">
+            <h2><a ng-href="{{project.grids.artifact.selected.artifactURL}}">{{project.grids.artifact.selected.artifactName}}</a></h2>
+            <h5>Artifact Type: {{project.grids.artifact.selected.artifactTypeName}}</h5>
+            <p>{{project.grids.artifact.selected.artifactDescription}}</p>
+          </div>
+          <teds-pivot-table ng-if="project.grids.artifact.selected" class="clearfix" teds-data="project.grids.artifact.selected.stats" teds-options="pivotOptions" teds-passback="project.grids.artifact.selected.passback">
+              <div class="clearfix" ng-show="project.grids.artifact.selected.passback.cell">
+                <div class="clearfix">
+                  <h3>{{project.grids.artifact.selected.passback.column.name}}</h3>
+                  <h5>{{project.grids.artifact.selected.passback.column.desc}}</h5>
+                  <h4>Questions</h4>
+                  <div class="col-xs-12 pull-left" style="max-width: 100%;" ng-style="{width: '{{(question.chartOptions.chart.xDomain ? question.chartOptions.chart.xDomain.length : 2) * 8}}em'}" ng-repeat="question in project.grids.artifact.selected.passback.column.questions">
+                    <p>{{question.name}}</p>
+                    <h5>{{question.desc}}</h5>
+                    <nvd3 ng-if="question.responses.length > 0" options="question.chartOptions" data="question.chartData"></nvd3>
+                  </div>
+                </div>
+
+                <div class="divider clearfix"></div>
+
+                <div>
+                  <h3>{{project.grids.artifact.selected.passback.row.name}}</h3>
+                  <h5>{{project.grids.artifact.selected.passback.row.desc}}</h5>
+                </div>
+
+                <div class="divider clearfix"></div>
+
+                <div class="clearfix">
+                  <h4>Ratings</h4>
+                  <ul class="list-unstyled">
+                    <li class="col-sm-4 rating" ng-repeat="rating in project.grids.artifact.selected.passback.cell.ratings">
+                      <h5>ID: {{rating.ratingID}}</h5>
+                      <h5>Email: {{rating.email}}</h5>
+                      <h5>Value: {{rating.ratingValue}}</h5>
+                      <h5 ng-show="rating.comments.length > 0">Comment: <span>{{rating.comments[0].comment}}</span></h5>
+                      <div class="clearfix" ng-show="rating.screenshots.length > 0">
+                        <h5>Screenshots</h5>
+                        <div class="col-xs-6" ng-repeat="screenshot in rating.screenshots">
+                            <a class="clickable" ng-href="{{screenshot.screenshotPath}}" target="_blank">
+                              <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                            </a>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+          </teds-pivot-table>
+          <div class="clearfix">
+            <div ng-if="project.loaded" ui-grid="project.grids.artifact.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+          </div>
+
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('artifact', project, {})"><i class="fa fa-plus"></i> Add a Artifact</span>
+          </div>
+
+        </teds-dropdown>
+
+
+        <teds-dropdown title="Scenarios" header-stats="{count: project.scenarios.length}" class="scenarios container col-xs-12 clearfix" ng-click="project.grids.scenario.gridApi.core.handleWindowResize();">
+
+
+
+          <div ng-if="project.grids.scenario.selected" class="clearfix">
+            <h4>{{project.grids.scenario.selected.scenarioName}}</h4>
+            <h5>{{project.grids.scenario.selected.scenarioDescription}}</h5>
+          </div>
+          <teds-pivot-table ng-if="project.grids.scenario.selected" class="clearfix" teds-data="project.grids.scenario.selected.stats" teds-options="pivotOptions" teds-passback="project.grids.scenario.selected.passback">
+              <div ng-show="project.grids.scenario.selected.passback.row">
+                <h3>{{project.grids.scenario.selected.passback.row.name}}</h3>
+                <h5>{{project.grids.scenario.selected.passback.row.desc}}</h5>
+                <h4>Comments</h4>
+                <ul class="list-unstyled">
+                  <li ng-repeat="comment in project.grids.scenario.selected.passback.row.comments">
+                    {{comment.comment}}
+                  </li>
+                </ul>
+
+                <h4>Screenshots</h4>
+                <div class="col-xs-3" ng-repeat="screenshot in project.grids.scenario.selected.passback.row.screenshots">
+                    <a ng-click="Lightbox.openModal(project.grids.scenario.selected.passback.row.screenshots, $index)">
+                      <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                    </a>
+                </div>
+              </div>
+              <div class="divider" ng-show="project.grids.scenario.selected.passback.column && project.grids.scenario.selected.passback.row"></div>
+              <div ng-show="project.grids.scenario.selected.passback.column">
+                <h3>{{project.grids.scenario.selected.passback.column.name}}</h3>
+                <h5>{{project.grids.scenario.selected.passback.column.desc}}</h5>
+                <h4>Questions</h4>
+                <div class="col-sm-4" ng-repeat="question in project.grids.scenario.selected.passback.column.questions">
+                  <p>{{question.name}}</p>
+                  <h5>{{question.desc}}</h5>
+                  <nvd3 options="question.chartOptions" data="question.chartData"></nvd3>
+                </div>
+              </div>
+            </teds-pivot-table>
+          <div ng-if="project.loaded" ui-grid="project.grids.scenario.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('scenario', project, {})"><i class="fa fa-plus"></i> Add a Scenario</span>
+          </div>
+
+        </teds-dropdown>
+
+        <teds-dropdown title="Personas" header-stats="{count: project.personas.length}" class="personas container col-xs-12 clearfix">
+          <div ng-repeat="(personaKey, persona) in project.personas" class="clearfix col-xs-6 persona project-item">
+              <h5 class="name">{{persona.personaName}}</h5>
+              <h6 class="desc">{{persona.personaDesc}}</h6>
+          </div>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('persona', project, $index)"><i class="fa fa-plus"></i> Add a Persona</span>
+          </div>
+        </teds-dropdown>
+
+        <teds-dropdown title="Roles" header-stats="{count: project.roles.length}" class="roles container col-xs-12 clearfix">
+          <div ng-repeat="(roleKey, role) in project.roles" class="clearfix col-xs-6 role project-item">
+              <h5 class="name">{{role.roleName}}</h5>
+              <h6 class="desc">{{role.roleDesc}}</h6>
+          </div>
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('role', project, {})"><i class="fa fa-plus"></i> Add a Role</span>
+          </div>
+        </teds-dropdown>
+
+        <teds-dropdown title="Assessments" header-stats="project.assessmentsStats" class="assessments container col-xs-12 clearfix" ng-click="project.grids.assessment.gridApi.core.handleWindowResize();">
+
+
+          <div ng-if="project.grids.assessment.selected" class="clearfix">
+            <h4>Assessment - {{project.grids.assessment.selected.assessmentID}}</h4>
+            <h5>Issued: {{project.grids.assessment.selected.issuanceDate}}</h5>
+            <h5>Completed: {{project.grids.assessment.selected.completionDate}}</h5>
+            <h5>Edited: {{project.grids.assessment.selected.LastEditDate}}</h5>
+            <p><b>User</b></p>
+            <h5>{{project.grids.assessment.selected.firstName}} {{project.grids.assessment.selected.lastName}}</h5>
+            <h5>Email: {{project.grids.assessment.selected.email}}</h5>
+
+            <div class="menu col-xs-12 clearfix">
+                <button uib-popover-template="'deleteAssessmentPopover.html'" popover-title="" type="button" class="btn btn-danger" popover-is-open="project.grids.assessment.selected.popoverOpen" ng-click="project.grids.assessment.selected.popoverOpen = true"><i class="fa fa-trash"></i> Delete</button>
+
+                <script type="text/ng-template" id="deleteAssessmentPopover.html">
+                    <div>Are you sure you want to delete assessment {{project.grids.assessment.selected.assessmentID}}</div>
+                    <div class="form-group">
+                      <a class="btn btn-success" ng-click="deleteAssessment(project.grids.assessment.selected, project.assessments, project.grids.assessment.selected.$key)">Yes</a>
+                      <a class="btn btn-danger" ng-click="project.grids.assessment.selected.popoverOpen = false">No</a>
+                    </div>
+                </script>
+            </div>
+          </div>
+          <div ng-if="project.loaded" ui-grid="project.grids.assessment.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+          <div class="menu col-xs-12 clearfix">
+              <span class="btn btn-primary" ng-click="modals.open('assessment', project, {})"><i class="fa fa-plus"></i> Add an Assessment</span>
+          </div>
+
+        </teds-dropdown>
+
+        <teds-dropdown title="Configurations" header-stats="project.configurationsStats" class="configurations container col-xs-12 clearfix" ng-click="project.grids.configuration.gridApi.core.handleWindowResize();">
+
+
+
+           <div ng-if="project.grids.configuration.selected" class="clearfix">
+               <h4>
+                 Configuration - {{project.grids.configuration.selected.artifactName}}, {{project.grids.configuration.selected.scenarioName}}
+               </h4>
+               <div class="col-xs-6">
+                 <h5>Assessment Configuration</h5>
+                 <dl>
+                   <dt>Artifact</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.artifactName}} - {{project.grids.configuration.selected.artifactTypeName}}</h6>
+                     <h6>{{project.grids.configuration.selected.artifactDescription}}</h6>
+                   </dd>
+                   <dt>Scenario</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.scenarioName}}</h6>
+                     <h6>{{project.grids.configuration.selected.scenarioDescription}}</h6>
+                   </dd>
+                   <dt>Persona</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.personaName}}</h6>
+                     <h6>{{project.grids.configuration.selected.personaDescription}}</h6>
+                   </dd>
+                   <dt>Role</dt>
+                   <dd>
+                     <h6>{{project.grids.configuration.selected.roleName}}</h6>
+                     <h6>{{project.grids.configuration.selected.roleDesc}}</h6>
+                   </dd>
+                 </dl>
+               </div>
+               <div class="col-xs-6">
+                 <h5>Attribute Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.attributeConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.attributeConfigurationDesc}}</h6>
+               </div>
+               <div class="col-xs-6">
+                 <h5>Question Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.questionConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.questionConfigurationDesc}}</h6>
+               </div>
+               <div class="col-xs-6">
+                 <h5>UI Configuration</h5>
+                 <h6><b>{{project.grids.configuration.selected.uiConfigurationName}}</b></h6>
+                 <h6>{{project.grids.configuration.selected.uiConfigurationDesc}}</h6>
+               </div>
+           </div>
+
+           <teds-pivot-table ng-if="project.grids.configuration.selected" class="clearfix" teds-data="project.grids.configuration.selected.stats" teds-options="pivotOptions" teds-passback="project.grids.configuration.selected.passback">
+             <div ng-show="project.grids.configuration.selected.passback.row">
+               <h3>{{project.grids.configuration.selected.passback.row.name}}</h3>
+               <h5>{{project.grids.configuration.selected.passback.row.desc}}</h5>
+               <h4>Comments</h4>
+               <ul class="list-unstyled">
+                 <li ng-repeat="comment in project.grids.configuration.selected.passback.row.comments">
+                   {{comment.comment}}
+                 </li>
+               </ul>
+
+               <h4>Screenshots</h4>
+               <div class="col-xs-3" ng-repeat="screenshot in project.grids.configuration.selected.passback.row.screenshots">
+                   <a ng-click="Lightbox.openModal(project.grids.configuration.selected.passback.row.screenshots, $index)">
+                     <img ng-src="{{screenshot.screenshotPath}}" class="col-xs-12 img-thumbnail" alt="">
+                   </a>
+               </div>
+             </div>
+             <div class="divider" ng-show="project.grids.configuration.selected.passback.column && project.grids.configuration.selected.passback.row"></div>
+             <div ng-show="project.grids.configuration.selected.passback.column">
+               <h3>AssessmentID: {{project.grids.configuration.selected.passback.column.name}}</h3>
+               <h5>Owner: {{project.grids.configuration.selected.passback.column.email}}</h5>
+               <h4>Questions</h4>
+               <div class="col-sm-6" ng-repeat="question in project.grids.configuration.selected.passback.column.questions">
+                 <p>{{question.name}}</p>
+                 <h5>{{question.desc}}</h5>
+                 <h6>Answer: {{question.responses[0].answer}}</h6>
+                 <!-- <nvd3 options="question.chartOptions" data="question.chartData"></nvd3> -->
+               </div>
+             </div>
+           </teds-pivot-table>
+           <div ng-if="project.loaded" ui-grid="project.grids.configuration.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+           <div class="menu col-xs-12 clearfix">
+               <span class="btn btn-primary" ng-click="modals.open('configuration', project, {})"><i class="fa fa-plus"></i> Add a Configuration</span>
+           </div>
+
+        </teds-dropdown>
+
+        <teds-dropdown title="Groups" header-stats="project.groupStats" class="groups container col-xs-12 clearfix" ng-click="project.grids.group.gridApi.core.handleWindowResize();">
+
+
+
+           <div ng-if="project.grids.group.selected" class="clearfix">
+              <a class="btn btn-primary" ng-click="project.grids.group.selected = undefined">Back</a>
+               <h4>
+                 Group - {{project.grids.group.selected.groupName}}, {{project.grids.group.selected.groupDesc}}
+               </h4>
+               <div class="col-xs-6" ng-if="project.grids.group.selected.groupTypeName == 'Lottery'">
+                 <h5>Lottery Configuration</h5>
+                 <dl>
+                    <dt>Start Date</dt>
+                    <dd>
+                      <h6>{{project.grids.group.selected.lotteryStartDate}}</h6>
+                    </dd>
+                    <dt>End Date</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryEndDate}}</h6>
+                   </dd>
+                   <dt>Jackpot</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryJackpot}}</h6>
+                   </dd>
+                   <dt>Second Place</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotterySecond}}</h6>
+                     <h6>Winners: {{project.grids.group.selected.lotterySecondAmount}}</h6>
+                   </dd>
+                   <dt>Third Place</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryThird}}</h6>
+                     <h6>Winners: {{project.grids.group.selected.lotteryThirdAmount}}</h6>
+                   </dd>
+                   <dt>Tickets Per Assessment</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerAssessment}}</h6>
+                   </dd>
+                   <dt>Tickets Per Share</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerShare}}</h6>
+                   </dd>
+                   <dt>Tickets Per Comment</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerComment}}</h6>
+                   </dd>
+                   <dt>Tickets Per Screenshot</dt>
+                   <dd>
+                     <h6>{{project.grids.group.selected.lotteryTicketsPerScreenshot}}</h6>
+                   </dd>
+                 </dl>
+               </div>
+               <div class="col-xs-6 group-configurations">
+                  <h4>Attached Configurations</h4>
+                 <div ng-repeat="(key, config) in project.grids.group.selected.configurations">
+                    <h5>#{{key+1}}: {{config.artifactName}} - {{config.scenarioName}} - {{config.personaName}}</h5>
+                 </div>
+               </div>
+           </div>
+
+           <div ng-if="project.loaded" ui-grid="project.grids.group.gridOptions" ui-grid-selection class="teds-grid clearfix"></div>
+
+           <div class="menu col-xs-12 clearfix">
+               <span class="btn btn-primary" ng-click="modals.open('group', project, {groups: project.grids.group})"><i class="fa fa-plus"></i> Add a Group</span>
+           </div>
+
+        </teds-dropdown>
+      </div>
+
+
+</div>

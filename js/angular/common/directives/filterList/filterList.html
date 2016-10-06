@@ -1,0 +1,51 @@
+ <style>
+   .pivot-table .selected {
+     background-color: #ddd;
+   }
+
+   teds-filter-list > .details-panel {
+     /*background-color: #ededed;*/
+     padding:10px 5px;
+     margin-top:10px;
+     border-top: 1px solid #e1e1e1;
+   }
+ </style>
+ <div class="details-panel col-xs-12 clearfix" ng-if="selected">
+    <button class="btn btn-primary" ng-click="unsetSelected()">Back</button>
+    <div class="clearfix" ng-transclude>
+
+    </div>
+ </div>
+<div id="" class="col-xs-12">
+    <table ng-if="table.length > 0" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th ng-repeat="(key, value) in options">
+                    {{key | capitalize}}
+                    <select class="form-control pull-left" name="{{key}}" ng-model="filters.listData[key]">
+                        <option value=""></option>
+                        <option ng-repeat="option in options[key]" value="{{option}}">{{option}}</option>
+                    </select>
+                </th>
+
+                <th ng-repeat="(key, value) in specialOptions">
+                    {{key | capitalize}}
+                    <select class="form-control pull-left" name="{{key}}" ng-model="filters.specialFields[key].filterCheck">
+                        <option value=""></option>
+                        <option ng-repeat="option in specialOptions[key]" value="{{option}}">{{option}}</option>
+                    </select>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="clickable" ng-repeat="item in table | filter: filters track by $index" ng-click="select(item, $index)">
+                <td ng-repeat="param in item.listData">{{param}}</td>
+                <td ng-repeat="param in item.specialFields">
+                    <div ng-if="param.type == 'link'"><a ng-href="{{param.value}}" target="_blank">Link</a></div>
+                    <div ng-if="param.type == 'date'">{{param.value ? param.preface : ''}} {{param.value}}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

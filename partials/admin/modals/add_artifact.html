@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add an Artifact to {{project.projectName}}</h3>
+</div>
+<div class="modal-body">
+    <form name="addArtifactForm" novalidate>
+        <div class="new">
+            <h4>Create a New Artifact</h4>
+            <label for="">Artifact Name</label>
+            <input type="text" class="form-control" ng-model="artifact.artifactName" placeholder="Artifact Name" required/>
+            <label for="">Artifact Description</label>
+            <input type="text" class="form-control" ng-model="artifact.artifactDescription" placeholder="Artifact Description"/>
+            <label for="">Artifact Type</label>
+            <select class="form-control" ng-model="artifact.artifactTypeID" required>
+                <option value=""></option>
+                <option ng-repeat="(artifactTypeKey, artifactType) in artifactTypes" ng-value="artifactType.artifactTypeID">{{artifactType.artifactTypeName}}</option>
+            </select>
+            <label for="">Artifact URL</label>
+            <input type="text" class="form-control" ng-model="artifact.artifactURL" placeholder="Artifact URL"/>
+            <label for="">Artifact Language</label>
+            <select class="form-control" ng-model="artifact.languageID" required>
+                <option value=""></option>
+                <option ng-repeat="(languageKey, language) in $parent.languages" ng-value="language.languageID">{{language.languageName}}</option>
+            </select>
+            <label for="">Is it an Anchor?</label>
+            <input type="checkbox" class="" ng-model="artifact.isAnchor"/>
+        </div>
+        <div class="existing">
+            <h4>Associate an Existing Artifact</h4>
+            <select class="form-control" ng-model="artifact.artifactID">
+                <option value=""></option>
+                <option ng-repeat="(artifactKey, artifact) in artifacts" ng-value="artifact.artifactID">{{artifact.artifactName}}</option>
+            </select>
+        </div>
+        <!-- <input type="hidden" ng-model="artifact.projectID" ng-value="project.projectID"> -->
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

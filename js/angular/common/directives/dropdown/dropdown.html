@@ -1,0 +1,8 @@
+<div class="section-header clearfix clickable" ng-class="{open : !collapsed}" ng-click="collapsed = !collapsed">
+    <h4 class="pull-left">
+        <span><i class="fa fa-angle-right rotate" ng-class="{quarter: !collapsed}"></i></span>
+        {{title | capitalize}}
+    </h4>
+    <h5 class="pull-left" ng-repeat="(key,stat) in stats">{{key | capitalize}}: {{stat}}</h5>
+</div>
+<div class="collapsable clearfix" uib-collapse="collapsed" ng-transclude></div>
