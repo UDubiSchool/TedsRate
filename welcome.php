@@ -104,11 +104,11 @@
                     ?>
 
                     <div class="col-xs-6">
-                        <a class="btn btn-primary btn-block" href="start.php?c=04a8708c3a481ced13845a30de522486895de0592222c29326d9139ec2b9df25">Start Player Information</a>
+                        <a class="btn btn-primary btn-block" href="start.php?c=62f77e7d6197863ac98d9e0cfa76bea0c8e05379ed5281afbe72f7fc206fe37b">Start Player Information</a>
 
                     </div>
                     <div class="col-xs-6">
-                        <a class="btn btn-primary btn-block" href="start.php?c=09a1b036b82baba3177d83c27c1f7d0beacaac6de1c5fdcc9680c49f638c5fb9">Start Schedule, Results and League</a>
+                        <a class="btn btn-primary btn-block" href="start.php?c=e52d08747b9d7a6d04551bb86ee3f7ee6c49f7477c8cd66f77448378cc30b92b">Start Schedule, Results and League</a>
                     </div>
 
                     <p>
