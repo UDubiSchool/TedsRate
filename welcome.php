@@ -114,12 +114,16 @@
                     <p>
                         The UW TEDS Soccer Research Project is a research from the University of Washington Information School testing a methodology to measure the usability of iOS (Apple) mobile soccer apps. We would really appreciate your evaluation feedback of the Sounders FC iOS mobile application.
                     </p>
+		    <p>
+			Please make sure you have the latest version of the Sounders iOS app before doing your analysis. To do this, go to the app store and update to the latest version if it that option is available.
+		    </p>
                     <p>
                         The Sounders FC application is one of 11 mobile soccer applications from around the world we are comparing in this study. In addition to the academic study, the analysis and data collected will be anonymized and presented to the Sounders to assist in improving their application.
                     </p>
                     <p>
                         We are analyzing 2 scenarios in this study, "Player Information", and "Schedule, Results and League". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too.  Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion.   The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
                     </p>
+
                     <!-- <p>
                         Please use the following link to evaluate the "Player Information" features. (Roster, player card, player stats, etc):
                         <br>
