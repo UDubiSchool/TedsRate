@@ -110,7 +110,7 @@
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-block" href="start.php?c=e52d08747b9d7a6d04551bb86ee3f7ee6c49f7477c8cd66f77448378cc30b92b">Start Schedule, Results and League</a>
                     </div>
-
+		    <br/>
                     <p>
                         The UW TEDS Soccer Research Project is a research from the University of Washington Information School testing a methodology to measure the usability of iOS (Apple) mobile soccer apps. We would really appreciate your evaluation feedback of the Sounders FC iOS mobile application.
                     </p>
