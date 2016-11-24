@@ -197,9 +197,10 @@
 
                 </li>
             </ul>
-            <p><d>Responses</d></p>
+            <br>
+            <p><b>Responses</b></p>
             <ul class="list-unstyled">
-              <li ng-repeat="response in project.grids.assessment.selected.responses">
+              <li ng-repeat="response in project.grids.assessment.selected.responses" class="col-sm-6">
                   <h4>{{response.questionName}}</h4>
                   <h5>Answer: {{response.responseAnswer}}</h5>
               </li>
