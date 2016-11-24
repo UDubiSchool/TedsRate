@@ -184,7 +184,7 @@
             <h5>Email: {{project.grids.assessment.selected.email}}</h5>
             <p><b>Ratings</b></p>
             <ul class="list-unstyled">
-                <li ng-repeat="rating in project.grids.assessment.selected.ratings">
+                <li ng-repeat="rating in project.grids.assessment.selected.ratings" class="col-sm-6">
                     <h4>{{rating.attributeName}}</h4>
                     <h5>Rating: {{rating.ratingValue}}</h5>
                     <div ng-if="rating.comments.length > 0">
