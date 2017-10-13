@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost:5432',
+	'hostname' => 'ovid.u.washington.edu:5432',
 	'username' => 'root',
 	'password' => '+t3dsrat3+',
 	'database' => 'tedsrate',
