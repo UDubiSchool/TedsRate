@@ -25,7 +25,7 @@ if ($_POST) {
                                                 JOIN authority a ON a.authorityID = ua.authorityID
                                                 WHERE email = '$user_email'
                                                 AND a.AuthorityLevel = 2";
-                        $result     = $dbq->query($auth_query)->fetchAll();
+                        $result     = $dbq->query($auth_query)->mysqli_fetch_all($result, MYSQLI_ASSOC);
                         if ($result) {
                             if ($password == $result[0]['passwordValue']) {
                                 $authenticated = true;
