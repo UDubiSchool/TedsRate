@@ -28,10 +28,10 @@ if ($_POST) {
                         $result = $dbq->query($auth_query);
                         $result = $result->fetch_assoc();
                         if ($result) {
-                            if ($password == $result[0]['passwordValue']) {
+                            if ($password == $result['passwordValue']) {
                                 $authenticated = true;
                             }
-                            $userID = $result[0]['userID'];
+                            $userID = $result['userID'];
                         }
                     }
                 }
