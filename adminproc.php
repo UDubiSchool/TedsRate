@@ -1,6 +1,6 @@
 <?php
 // ============================== authentication ===============================
-require_once "session_inc.php";
+// require_once "session_inc.php";
 // ============================== authentication ===============================
 
 require_once "dbconnect.php";
