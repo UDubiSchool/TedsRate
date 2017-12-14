@@ -102,14 +102,37 @@
                     <?php
                     } else {
                     ?>
-
-                    <div class="col-xs-6">
-                        <a class="btn btn-primary btn-block" href="start.php?c=62f77e7d6197863ac98d9e0cfa76bea0c8e05379ed5281afbe72f7fc206fe37b">Start Player Information</a>
-
-                    </div>
-                    <div class="col-xs-6">
-                        <a class="btn btn-primary btn-block" href="start.php?c=e52d08747b9d7a6d04551bb86ee3f7ee6c49f7477c8cd66f77448378cc30b92b">Start Schedule, Results and League</a>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Team</td>
+                                <td>Player Information</td>
+                                <td>Schedule, Results and League</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sounders FC</td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=01299ac65733b5a3d774265fbfe8396b8611e5e3321855dbc541cd301e71fe5e">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=de5872c6bb4494cebd250152ce148cd6231654e4469229f2f993984b3950b422">Start Survey</a></td>
+                            </tr>
+                            <tr>
+                                <td>FC Barcelona</td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=2c4cf657337835125bc4258d0e2e546af4185bdb70f64e1b0aa46d1d78017404">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=21ef779311a43f0e067d0f4f600bb5451a8a7e093662086a1fe6a75d27d7892a">Start Survey</a></td>
+                            </tr>
+                            <tr>
+                                <td>Real Madrid</td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=64c212df34c66e6fe9fccbfebc8899c10584cfa1669c42a175d65db073b13bc0">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=2af4dd48399a5cf64c23fc7933e11aaf6171d80001b4b1377498ae6056b1acbf">Start Survey</a></td>
+                            </tr>
+                            <tr>
+                                <td>Arsenal</td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=392a52e4f77c40bf3321dc2feac356fac2a906a80c961748170af4ce2bce1e6a">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=f65ccfbfec288565c1d414275985547799fde0ed286c85a50bd0ec5faa01d1ac">Start Survey</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
 		    <br/>
 		    <br/>
 		    <br/>
@@ -120,10 +143,10 @@
 			Please make sure you have the latest version of the Sounders iOS app before doing your analysis. To do this, go to the app store and update to the latest version if it that option is available.
 		    </p>
                     <p>
-                        The Sounders FC application is one of 11 mobile soccer applications from around the world we are comparing in this study. In addition to the academic study, the analysis and data collected will be anonymized and presented to the Sounders to assist in improving their application.
+                        The Sounders FC application is one of 4 mobile soccer applications from around the world we are comparing in this round of our study. This research is not funded by the Sounders FC or any other soccer organization. It is strictly an academic study evaluating and comparing mobile applications on iOS.
                     </p>
                     <p>
-                        We are analyzing 2 scenarios in this study, "Player Information", and "Schedule, Results and League". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too.  Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion.   The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
+                      We are analyzing 2 scenarios in this study, "Player Information", and "Schedule, Results and League". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too. Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion. The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
                     </p>
 
                     <!-- <p>
