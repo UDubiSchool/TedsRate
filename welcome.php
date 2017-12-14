@@ -102,7 +102,8 @@
                     <?php
                     } else {
                     ?>
-                    <table class="table table-striped col-sm-6 col-sm-offset-3">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <table class="table table-striped">
                         <thead>
                             <tr>
                                 <td>Team</td>
@@ -133,6 +134,8 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>    
+                    
 		    <br/>
 		    <br/>
 		    <br/>
