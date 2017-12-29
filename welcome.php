@@ -107,9 +107,9 @@
                         <table class="table table-striped">
                         <thead>
                             <tr>
-                                <td>Team</td>
-                                <td>Player Information</td>
-                                <td>Schedule, Results and League</td>
+                                <td class="col-sm-2">Team</td>
+                                <td class="col-sm-5">Player Information</td>
+                                <td class="col-sm-5">Schedule, Results and League</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +129,7 @@
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=2af4dd48399a5cf64c23fc7933e11aaf6171d80001b4b1377498ae6056b1acbf">Start Survey</a></td>
                             </tr>
                             <tr>
-                                <td>Arsenal</td>
+                                <td>Arsenal FC</td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=392a52e4f77c40bf3321dc2feac356fac2a906a80c961748170af4ce2bce1e6a">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=f65ccfbfec288565c1d414275985547799fde0ed286c85a50bd0ec5faa01d1ac">Start Survey</a></td>
                             </tr>
@@ -170,7 +170,7 @@
                         Thanks!
                         <br>
                         <br>
-                        <i>The Teds Team</i>
+                        <i>The TEDS Team</i>
                     </p>
 
                     <?php
