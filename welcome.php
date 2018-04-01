@@ -108,37 +108,37 @@
                         <thead>
                             <tr>
                                 <td class="col-sm-2">Team</td>
-                                <td class="col-sm-5">Player Information</td>
                                 <td class="col-sm-5">Schedule, Results and League</td>
+                                <td class="col-sm-5">Player Information</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Sounders FC</td>
-                                <td><a class="btn btn-primary btn-block" href="start.php?c=01299ac65733b5a3d774265fbfe8396b8611e5e3321855dbc541cd301e71fe5e">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=de5872c6bb4494cebd250152ce148cd6231654e4469229f2f993984b3950b422">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=01299ac65733b5a3d774265fbfe8396b8611e5e3321855dbc541cd301e71fe5e">Start Survey</a></td>
                             </tr>
                             <tr>
                                 <td>FC Barcelona</td>
-                                <td><a class="btn btn-primary btn-block" href="start.php?c=2c4cf657337835125bc4258d0e2e546af4185bdb70f64e1b0aa46d1d78017404">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=21ef779311a43f0e067d0f4f600bb5451a8a7e093662086a1fe6a75d27d7892a">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=2c4cf657337835125bc4258d0e2e546af4185bdb70f64e1b0aa46d1d78017404">Start Survey</a></td>
                             </tr>
                             <tr>
                                 <td>Real Madrid</td>
-                                <td><a class="btn btn-primary btn-block" href="start.php?c=64c212df34c66e6fe9fccbfebc8899c10584cfa1669c42a175d65db073b13bc0">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=2af4dd48399a5cf64c23fc7933e11aaf6171d80001b4b1377498ae6056b1acbf">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=64c212df34c66e6fe9fccbfebc8899c10584cfa1669c42a175d65db073b13bc0">Start Survey</a></td>
                             </tr>
                             <tr>
                                 <td>Arsenal FC</td>
-                                <td><a class="btn btn-primary btn-block" href="start.php?c=392a52e4f77c40bf3321dc2feac356fac2a906a80c961748170af4ce2bce1e6a">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=f65ccfbfec288565c1d414275985547799fde0ed286c85a50bd0ec5faa01d1ac">Start Survey</a></td>
+                                <td><a class="btn btn-primary btn-block" href="start.php?c=392a52e4f77c40bf3321dc2feac356fac2a906a80c961748170af4ce2bce1e6a">Start Survey</a></td>
                             </tr>
                         </tbody>
                     </table>
-                    </div>   
                     </div>
-                     
-                    
+                    </div>
+
+
 		    <br/>
 		    <br/>
 		    <br/>
@@ -152,7 +152,7 @@
                         In this round of our study we are comparing four mobile soccer applications from around the world. This research is not funded by the four teams in this study or any other soccer organization. It is strictly an academic study evaluating and comparing mobile applications on iOS.
                     </p>
                     <p>
-                      We are analyzing 2 scenarios in this study, "Player Information", and "Schedule, Results and League". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too. Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion. The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
+                      We are analyzing 2 scenarios in this study,  "Schedule, Results and League", and "Player Information". We'd love your opinion on both scenarios if possible, but if you only do one, that's fine too. Each survey takes about 5 minutes to complete. We appreciate you taking the time and your valuable opinion. The first 25 users who complete both surveys will receive a $5 Amazon gift card. Thanks!
                     </p>
 
                     <!-- <p>
