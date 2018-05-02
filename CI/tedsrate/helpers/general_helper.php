@@ -22,7 +22,7 @@
                 if(is_string($str)){
                     $str = "\"$str\"";
                 }
-            }));
+            });
             $toEcho .= implode(", ", $row);
             $toEcho .= "\n";
         }
