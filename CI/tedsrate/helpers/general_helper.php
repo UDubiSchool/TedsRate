@@ -18,7 +18,11 @@
         header("Expires: 0");
         $toEcho = "";
         foreach ($data as $key => $row) {
-            array_walk($row, create_function('&$str', 'if(is_string($str)){$str = "\"$str\"";}'));
+            array_walk($row, function(&$str) {
+                if(is_string($str)){
+                    $str = "\"$str\"";
+                }
+            }));
             $toEcho .= implode(", ", $row);
             $toEcho .= "\n";
         }
