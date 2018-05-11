@@ -113,11 +113,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--<tr>
+                            <tr>
                                 <td>Sounders FC</td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=de5872c6bb4494cebd250152ce148cd6231654e4469229f2f993984b3950b422">Start Survey</a></td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=01299ac65733b5a3d774265fbfe8396b8611e5e3321855dbc541cd301e71fe5e">Start Survey</a></td>
-                            </tr> -->
+                            </tr>
                             <tr>
                                 <td>FC Barcelona</td>
                                 <td><a class="btn btn-primary btn-block" href="start.php?c=21ef779311a43f0e067d0f4f600bb5451a8a7e093662086a1fe6a75d27d7892a">Start Survey</a></td>
